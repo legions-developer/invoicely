@@ -46,7 +46,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   const [isClient, setIsClient] = useState(true);
   const [data, setData] = useState(form.getValues());
   const [pdfError, setPdfError] = useState<Error | null>(null);
-  const setInvoiceError = useSetAtom(invoiceErrorAtom);
+  const setInvoiceErrors = useSetAtom(invoiceErrorAtom);
 
   // Create a debounced function to update data
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,9 +56,9 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       const isDataValid = createInvoiceSchema.safeParse(value);
       if (isDataValid.success) {
         setData(value);
-        setInvoiceError([]);
+        setInvoiceErrors([]);
       } else {
-        setInvoiceError(isDataValid.error.issues);
+        setInvoiceErrors(isDataValid.error.issues);
       }
     }, 1000),
     [],
