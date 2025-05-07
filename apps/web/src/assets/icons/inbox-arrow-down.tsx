@@ -1,21 +1,11 @@
 import { IconProps } from "@/types";
 import React from "react";
 
-function InboxArrowDown({
-  fill = "currentColor",
-  secondaryfill,
-  ...props
-}: IconProps) {
+function InboxArrowDown({ fill = "currentColor", secondaryfill, ...props }: IconProps) {
   secondaryfill = secondaryfill || fill;
 
   return (
-    <svg
-      height="18"
-      width="18"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg height="18" width="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g fill={fill}>
         <path
           d="M3.30295 3.74372C3.71678 2.69059 4.7328 1.99899 5.86299 1.99899H12.136C13.2678 1.99899 14.2823 2.69219 14.6959 3.74341L16.809 9.12278C16.8897 9.32885 17 9.77524 17 10L17.0001 13C17.0001 13.2004 16.92 13.3924 16.7775 13.5333C16.635 13.6742 16.442 13.7522 16.2417 13.75L1.73977 13.5863C1.32889 13.5817 0.998238 13.2473 0.998237 12.8363V10C0.998236 9.77474 1.10867 9.32826 1.19018 9.12212L3.30295 3.74372Z"

@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { usePostHog } from "posthog-js/react";
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
-import { usePostHog } from "posthog-js/react";
 
 import { cn } from "@/lib/utils";
 
@@ -36,7 +36,7 @@ const buttonVariants = cva(
   },
 );
 
-type AnalyticsEventSuffix = '-click' | '-action' | '-submit' | '-download' | '-toggle' | '-select' | '-open' | '-close';
+type AnalyticsEventSuffix = "-click" | "-action" | "-submit" | "-download" | "-toggle" | "-select" | "-open" | "-close";
 
 type Analytics = {
   name: `${string}${AnalyticsEventSuffix}`;
@@ -73,15 +73,15 @@ function Button({
       // Call the original onClick handler if provided
       onClick?.(event);
     },
-    [analytics, onClick, posthog, variant, size]
+    [analytics, onClick, posthog, variant, size],
   );
 
   return (
-    <Comp 
-      data-slot="button" 
-      className={cn(buttonVariants({ variant, size, className }))} 
+    <Comp
+      data-slot="button"
+      className={cn(buttonVariants({ variant, size, className }))}
       onClick={handleClick}
-      {...props} 
+      {...props}
     />
   );
 }

@@ -8,32 +8,18 @@ import { cn } from "@/lib/utils";
 
 type AccordionProps = React.ComponentProps<typeof AccordionPrimitive.Root>;
 type AccordionItemProps = React.ComponentProps<typeof AccordionPrimitive.Item>;
-type AccordionTriggerProps = React.ComponentProps<
-  typeof AccordionPrimitive.Trigger
->;
-type AccordionContentProps = React.ComponentProps<
-  typeof AccordionPrimitive.Content
->;
+type AccordionTriggerProps = React.ComponentProps<typeof AccordionPrimitive.Trigger>;
+type AccordionContentProps = React.ComponentProps<typeof AccordionPrimitive.Content>;
 
 function Accordion({ ...props }: AccordionProps) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
 
 function AccordionItem({ className, ...props }: AccordionItemProps) {
-  return (
-    <AccordionPrimitive.Item
-      data-slot="accordion-item"
-      className={cn("", className)}
-      {...props}
-    />
-  );
+  return <AccordionPrimitive.Item data-slot="accordion-item" className={cn("", className)} {...props} />;
 }
 
-function AccordionTrigger({
-  className,
-  children,
-  ...props
-}: AccordionTriggerProps) {
+function AccordionTrigger({ className, children, ...props }: AccordionTriggerProps) {
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
@@ -51,11 +37,7 @@ function AccordionTrigger({
   );
 }
 
-function AccordionContent({
-  className,
-  children,
-  ...props
-}: AccordionContentProps) {
+function AccordionContent({ className, children, ...props }: AccordionContentProps) {
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"

@@ -50,10 +50,7 @@ export const FormTextarea = <
               <FormLabel className="flex items-center">
                 <span className="text-xs capitalize">{props.label}</span>
                 {isOptional ? (
-                  <Badge
-                    size="xs"
-                    variant={Boolean(error) ? "destructive" : "secondary"}
-                  >
+                  <Badge size="xs" variant={Boolean(error) ? "destructive" : "secondary"}>
                     {props.sublabel ?? "Optional"}
                   </Badge>
                 ) : null}
@@ -64,8 +61,7 @@ export const FormTextarea = <
                 className={cn(
                   "resize-none",
                   className,
-                  Boolean(error) &&
-                    "focus-visible:ring-destructive !border-destructive ring-transparent duration-200",
+                  Boolean(error) && "focus-visible:ring-destructive !border-destructive ring-transparent duration-200",
                 )}
                 {...props}
                 id={props.name}

@@ -1,21 +1,11 @@
 import { IconProps } from "@/types";
 import React from "react";
 
-function Receipt2({
-  fill = "currentColor",
-  secondaryfill,
-  ...props
-}: IconProps) {
+function Receipt2({ fill = "currentColor", secondaryfill, ...props }: IconProps) {
   secondaryfill = secondaryfill || fill;
 
   return (
-    <svg
-      height="18"
-      width="18"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg height="18" width="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g fill={fill}>
         <path
           d="M2.5 2.97739H15.5V16.25C15.5 16.5147 15.3605 16.7598 15.1328 16.8949C14.9052 17.0301 14.6232 17.0352 14.3909 16.9084L11.9849 15.5961L9.33541 16.9208C9.12426 17.0264 8.87574 17.0264 8.66459 16.9208L6.0151 15.5961L3.60914 16.9084C3.37676 17.0352 3.09477 17.0301 2.86715 16.8949C2.63953 16.7598 2.5 16.5147 2.5 16.25V2.97739Z"

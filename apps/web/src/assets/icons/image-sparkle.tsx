@@ -1,21 +1,11 @@
 import { IconProps } from "@/types";
 import React from "react";
 
-function ImageSparkle2({
-  fill = "currentColor",
-  secondaryfill,
-  ...props
-}: IconProps) {
+function ImageSparkle2({ fill = "currentColor", secondaryfill, ...props }: IconProps) {
   secondaryfill = secondaryfill || fill;
 
   return (
-    <svg
-      height="18"
-      width="18"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg height="18" width="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g fill={fill}>
         <path
           d="M13.5819 4.54486L14.1334 4.36103C14.7565 4.15333 15.2263 3.65833 15.4129 3.05132C15.7807 3.51891 16 4.10875 16 4.75V13.25C16 14.7693 14.7687 16 13.25 16H4.75C3.23128 16 2 14.7693 2 13.25V4.75C2 3.23069 3.23128 2 4.75 2H7.55367C7.47361 2.33661 7.48221 2.69309 7.5795 3.02543C7.71633 3.49287 8.01963 3.89534 8.43278 4.15569C8.73298 4.34487 9.08435 4.43381 9.41817 4.54485L9.55258 4.9481L9.56033 4.97191C9.62373 5.1687 9.87139 5.93743 10.7038 6.29868C11.3286 6.56982 12.0628 6.49867 12.6223 6.11925C13.2168 5.7161 13.404 5.09248 13.4419 4.96614L13.4475 4.9481L13.5819 4.54486ZM11.75 13C12.1642 13 12.5 12.664 12.5 12.25C12.5 11.836 12.1642 11.5 11.75 11.5C11.3358 11.5 11 11.836 11 12.25C11 12.664 11.3358 13 11.75 13Z"

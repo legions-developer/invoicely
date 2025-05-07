@@ -1,7 +1,7 @@
-import * as React from "react";
 import { usePostHog } from "posthog-js/react";
+import * as React from "react";
 
-type AnalyticsEventSuffix = '-click' | '-action' | '-submit' | '-download' | '-toggle' | '-select' | '-open' | '-close';
+type AnalyticsEventSuffix = "-click" | "-action" | "-submit" | "-download" | "-toggle" | "-select" | "-open" | "-close";
 
 type Analytics = {
   name: `${string}${AnalyticsEventSuffix}`;
@@ -34,16 +34,10 @@ function InteractableElement({
       // Call the original onClick handler if provided
       onClick?.(event);
     },
-    [analytics, onClick, posthog]
+    [analytics, onClick, posthog],
   );
 
-  return (
-    <Component
-      className={className}
-      onClick={handleClick}
-      {...props}
-    />
-  );
+  return <Component className={className} onClick={handleClick} {...props} />;
 }
 
-export { InteractableElement }; 
+export { InteractableElement };

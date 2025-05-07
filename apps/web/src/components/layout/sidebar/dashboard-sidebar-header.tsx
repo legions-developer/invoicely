@@ -20,9 +20,7 @@ const DashboardSidebarHeader = ({ children }: ISidebarHeader) => {
     <header className="bg-background sticky top-0 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear select-none group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger className="-ml-1" />
-        {route ? (
-          <Separator orientation="vertical" className="mr-2 min-h-4" />
-        ) : null}
+        {route ? <Separator orientation="vertical" className="mr-2 min-h-4" /> : null}
         <AnimatePresence mode="wait">
           {route ? (
             <motion.div
@@ -37,9 +35,7 @@ const DashboardSidebarHeader = ({ children }: ISidebarHeader) => {
                 <div className="from-light-primary to-primary rounded-md bg-gradient-to-br p-[7px] text-white [&>svg]:size-3.5">
                   {route.icon}
                 </div>
-                <div className="instrument-serif text-xl font-semibold">
-                  {route.name}
-                </div>
+                <div className="instrument-serif text-xl font-semibold">{route.name}</div>
               </div>
               <>{children}</>
             </motion.div>

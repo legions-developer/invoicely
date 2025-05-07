@@ -17,21 +17,14 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center gap-2">
         <div className="flex items-center gap-3">
           <LogoIcon />
-          <div className="instrument-serif text-5xl font-semibold">
-            Invoicely
-          </div>
+          <div className="instrument-serif text-5xl font-semibold">Invoicely</div>
         </div>
-        <p className="text-muted-foreground text-center text-sm">
-          The easiest way to create and send invoices
-        </p>
+        <p className="text-muted-foreground text-center text-sm">The easiest way to create and send invoices</p>
         <div className="mt-4 flex gap-2">
           <Link href={LINKS.DASHBOARD}>
             <Button>Get Started</Button>
           </Link>
-          <Button
-            variant="secondary"
-            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          >
+          <Button variant="secondary" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
             Switch Theme
           </Button>
         </div>

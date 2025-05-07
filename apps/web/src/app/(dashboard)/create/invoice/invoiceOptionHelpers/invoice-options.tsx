@@ -5,6 +5,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import { InteractableElement } from "@/components/ui/interactable-element";
 import InvoiceErrorsModal from "./invoice-errors-modal";
 import InvoiceTabSwitch from "./invoice-tab-switch";
 import { InboxArrowDownIcon } from "@/assets/icons";
@@ -14,7 +15,6 @@ import { useEffect, useState } from "react";
 import { pdf } from "@react-pdf/renderer";
 import InvoicePDF from "../pdf-document";
 import { pdfjs } from "react-pdf";
-import { InteractableElement } from "@/components/ui/interactable-element";
 
 const generatePdfBlob = (data: ZodCreateInvoiceSchema) => {
   return new Promise<Blob>((resolve, reject) => {
@@ -159,8 +159,8 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       <InteractableElement analytics={{ name: "error-modal-open", group: "create-invoice-page" }}>
         <InvoiceErrorsModal />
       </InteractableElement>
-        <div className="flex flex-row items-center gap-2">
-          <InvoiceTabSwitch />
+      <div className="flex flex-row items-center gap-2">
+        <InvoiceTabSwitch />
         <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button variant="default" analytics={{ name: "download-invoice-action", group: "create-invoice-page" }}>

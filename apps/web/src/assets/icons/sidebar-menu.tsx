@@ -1,21 +1,11 @@
 import { IconProps } from "@/types";
 import React from "react";
 
-function SidebarMenu({
-  fill = "currentColor",
-  secondaryfill,
-  ...props
-}: IconProps) {
+function SidebarMenu({ fill = "currentColor", secondaryfill, ...props }: IconProps) {
   secondaryfill = secondaryfill || fill;
 
   return (
-    <svg
-      height="18"
-      width="18"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg height="18" width="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g fill={fill}>
         <path
           d="M3.75011 16L9.00009 16L9.00009 2L3.75011 2C2.23351 2 1.00011 3.2334 1.00011 4.75L1.00011 13.25C1.00011 14.7666 2.23351 16 3.75011 16Z"

@@ -1,21 +1,11 @@
 import { IconProps } from "@/types";
 import React from "react";
 
-function SquareWandSparkle({
-  fill = "currentColor",
-  secondaryfill,
-  ...props
-}: IconProps) {
+function SquareWandSparkle({ fill = "currentColor", secondaryfill, ...props }: IconProps) {
   secondaryfill = secondaryfill || fill;
 
   return (
-    <svg
-      height="18"
-      width="18"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg height="18" width="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g fill={fill}>
         <path
           d="M2 4.75C2 3.23079 3.23079 2 4.75 2H13.25C14.7692 2 16 3.23079 16 4.75V13.25C16 14.7692 14.7692 16 13.25 16H4.75C3.23079 16 2 14.7692 2 13.25V4.75ZM6.5 9.5L8.5 7.5L10.5 9.5L8.5 11.5L6.5 9.5Z"

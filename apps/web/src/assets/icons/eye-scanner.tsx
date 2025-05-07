@@ -1,21 +1,11 @@
 import { IconProps } from "@/types";
 import React from "react";
 
-function EyeScanner({
-  fill = "currentColor",
-  secondaryfill,
-  ...props
-}: IconProps) {
+function EyeScanner({ fill = "currentColor", secondaryfill, ...props }: IconProps) {
   secondaryfill = secondaryfill || fill;
 
   return (
-    <svg
-      height="18"
-      width="18"
-      viewBox="0 0 18 18"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
+    <svg height="18" width="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" {...props}>
       <g fill={fill}>
         <path
           d="M3.14182 7.76057C3.96563 6.58466 5.86467 4.5 9 4.5C12.1353 4.5 14.0344 6.58466 14.8582 7.76057C15.3812 8.50694 15.3812 9.49308 14.8582 10.2394C14.0344 11.4153 12.1353 13.5 9 13.5C5.86467 13.5 3.96555 11.4152 3.14174 10.2393C2.61877 9.49298 2.61885 8.5069 3.14182 7.76057Z"

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,11 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ISidebarUser } from "@/types";
@@ -36,14 +25,9 @@ export function NavigationUser({ user }: { user: ISidebarUser | null }) {
           <div className="bg-muted-foreground/5 flex flex-col gap-1 rounded-lg p-4 shadow-xs">
             <div className="instrument-serif font-semibold">Login</div>
             <p className="text-muted-foreground text-xs">
-              Login to your account to save your data and access your data
-              anywhere
+              Login to your account to save your data and access your data anywhere
             </p>
-            <Button
-              className="mt-2 h-5 w-fit rounded-sm px-2 text-xs"
-              variant="default"
-              size="sm"
-            >
+            <Button className="mt-2 h-5 w-fit rounded-sm px-2 text-xs" variant="default" size="sm">
               Login
             </Button>
           </div>
@@ -67,12 +51,8 @@ export function NavigationUser({ user }: { user: ISidebarUser | null }) {
                 <AvatarFallback className="rounded-lg">L</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight tracking-tight">
-                <span className="instrument-sans truncate font-semibold capitalize">
-                  {user.name}
-                </span>
-                <span className="jetbrains-mono truncate text-xs">
-                  {user.email}
-                </span>
+                <span className="instrument-sans truncate font-semibold capitalize">{user.name}</span>
+                <span className="jetbrains-mono truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
