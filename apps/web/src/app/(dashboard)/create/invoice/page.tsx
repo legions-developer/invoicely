@@ -7,16 +7,13 @@ import {
 } from "@/zod-schemas/invoice/create-invoice";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import InvoiceOptions from "./invoiceOptionHelpers/invoice-options";
-import { invoiceTabAtom } from "@/global/atoms/invoice-atom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InvoicePreview from "./invoice-preview";
 import { useForm } from "react-hook-form";
 import InvoiceForm from "./invoice-form";
-import { useAtomValue } from "jotai";
 import React from "react";
 
 const Page = () => {
-  const invoiceTab = useAtomValue(invoiceTabAtom);
   const form = useForm<ZodCreateInvoiceSchema>({
     resolver: zodResolver(createInvoiceSchema),
     defaultValues: createInvoiceSchemaDefaultValues,

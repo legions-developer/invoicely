@@ -1,5 +1,5 @@
 import { Geist, Geist_Mono, JetBrains_Mono, Instrument_Serif, Instrument_Sans, Urbanist } from "next/font/google";
-import { ReactScanProvider, JotaiProvider } from "@/providers";
+import { ReactScanProvider, JotaiProvider, PostHogProvider } from "@/providers";
 import { ThemeProvider } from "next-themes";
 import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
@@ -71,13 +71,15 @@ export default function RootLayout({
           "antialiased",
         )}
       >
-        <JotaiProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" storageKey="invoicely-theme">
-            <ReactScanProvider />
-            <Toaster />
-            <>{children}</>
-          </ThemeProvider>
-        </JotaiProvider>
+        <PostHogProvider>
+          <JotaiProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" storageKey="invoicely-theme">
+              <ReactScanProvider />
+              <Toaster />
+              {children}
+            </ThemeProvider>
+          </JotaiProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

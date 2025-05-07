@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
+import { usePostHog } from "posthog-js/react";
 
 import { cn } from "@/lib/utils";
 
@@ -35,19 +36,54 @@ const buttonVariants = cva(
   },
 );
 
+type AnalyticsEventSuffix = '-click' | '-action' | '-submit' | '-download' | '-toggle' | '-select' | '-open' | '-close';
+
+type Analytics = {
+  name: `${string}${AnalyticsEventSuffix}`;
+  group?: string;
+};
+
 function Button({
   className,
   variant,
   size,
   asChild = false,
+  analytics,
+  onClick,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    analytics?: Analytics;
   }) {
   const Comp = asChild ? Slot : "button";
+  const posthog = usePostHog();
 
-  return <Comp data-slot="button" className={cn(buttonVariants({ variant, size, className }))} {...props} />;
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      // Track analytics event if analytics name is provided
+      if (analytics?.name && posthog) {
+        posthog.capture(analytics.name, {
+          buttonGroup: analytics.group,
+          buttonVariant: variant,
+          buttonSize: size,
+        });
+      }
+
+      // Call the original onClick handler if provided
+      onClick?.(event);
+    },
+    [analytics, onClick, posthog, variant, size]
+  );
+
+  return (
+    <Comp 
+      data-slot="button" 
+      className={cn(buttonVariants({ variant, size, className }))} 
+      onClick={handleClick}
+      {...props} 
+    />
+  );
 }
 
 export { Button, buttonVariants };

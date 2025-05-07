@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { pdf } from "@react-pdf/renderer";
 import InvoicePDF from "../pdf-document";
 import { pdfjs } from "react-pdf";
+import { InteractableElement } from "@/components/ui/interactable-element";
 
 const generatePdfBlob = (data: ZodCreateInvoiceSchema) => {
   return new Promise<Blob>((resolve, reject) => {
@@ -155,12 +156,14 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
 
   return (
     <div className="flex h-12 shrink-0 flex-row items-center justify-between gap-2 border-b px-2">
-      <InvoiceErrorsModal />
-      <div className="flex flex-row items-center gap-2">
-        <InvoiceTabSwitch />
+      <InteractableElement analytics={{ name: "error-modal-open", group: "create-invoice-page" }}>
+        <InvoiceErrorsModal />
+      </InteractableElement>
+        <div className="flex flex-row items-center gap-2">
+          <InvoiceTabSwitch />
         <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
-            <Button variant="default">
+            <Button variant="default" analytics={{ name: "download-invoice-action", group: "create-invoice-page" }}>
               <InboxArrowDownIcon />
               Download
             </Button>
