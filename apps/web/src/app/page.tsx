@@ -1,6 +1,7 @@
 "use client";
 
 import { PostHogAnalytics } from "@/components/ui/posthog-analytics";
+import OpenSourceBadge from "@/components/ui/open-source-badge";
 import LogoIcon from "@/components/assets/logo-icon";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
@@ -16,6 +17,7 @@ export default function Home() {
       <hr className="absolute top-0 left-12 h-full w-px border-l border-dashed sm:left-24" />
       <hr className="absolute right-12 bottom-0 h-full w-px border-r border-dashed sm:right-24" />
       <div className="flex flex-col items-center justify-center gap-2">
+        <OpenSourceBadge />
         <div className="flex items-center gap-3">
           <LogoIcon />
           <div className="instrument-serif text-5xl font-semibold">Invoicely</div>

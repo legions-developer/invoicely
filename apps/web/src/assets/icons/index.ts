@@ -14,3 +14,4 @@ export { default as FileAlertIcon } from "./file-alert";
 export { default as FileFeatherIcon } from "./file-feather";
 export { default as FileDownloadIcon } from "./file-download";
 export { default as FileTreeIcon } from "./file-tree";
+export { default as GithubIcon } from "./github";

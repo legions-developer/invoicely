@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import OpenSourceBadge from "@/components/ui/open-source-badge";
 import { Button } from "@/components/ui/button";
-import { ISidebarUser } from "@/types";
+import type { ISidebarUser } from "@/types";
 
 export function NavigationUser({ user }: { user: ISidebarUser | null }) {
   // if user is null, return a login state
@@ -22,6 +23,7 @@ export function NavigationUser({ user }: { user: ISidebarUser | null }) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
+          <OpenSourceBadge group="sidebar" />
           <div className="bg-muted-foreground/5 flex flex-col gap-1 rounded-lg p-4 shadow-xs">
             <div className="instrument-serif font-semibold">Login</div>
             <p className="text-muted-foreground text-xs">
