@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    NODE_ENV: z.enum(["development", "test", "production"]),
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     DATABASE_URL: z.string(),
   },
   client: {
@@ -18,6 +18,5 @@ export const env = createEnv({
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     DATABASE_URL: process.env.DATABASE_URL,
   },
-
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
