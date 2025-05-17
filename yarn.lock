@@ -8191,7 +8191,7 @@ __metadata:
     prettier: "npm:^3.5.3"
     prettier-plugin-sort-imports: "npm:^1.8.7"
     prettier-plugin-tailwindcss: "npm:^0.6.11"
-    turbo: "npm:^2.5.2"
+    turbo: "npm:^2.5.3"
     typescript: "npm:5.8.2"
   languageName: unknown
   linkType: soft
@@ -13667,7 +13667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo@npm:^2.5.2":
+"turbo@npm:^2.5.3":
   version: 2.5.3
   resolution: "turbo@npm:2.5.3"
   dependencies:
