@@ -7,6 +7,7 @@ import {
 } from "@/providers";
 import { Geist, Geist_Mono, JetBrains_Mono, Instrument_Serif, Instrument_Sans, Urbanist } from "next/font/google";
 import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants";
+import { TOAST_ICONS, TOAST_OPTIONS } from "@/constants/toast";
 import { ThemeProvider } from "next-themes";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
@@ -78,7 +79,13 @@ export default function RootLayout({
               <JotaiProvider>
                 <ThemeProvider attribute="class" defaultTheme="system" storageKey="invoicely-theme">
                   <ReactScanProvider />
-                  <Toaster richColors position="top-right" />
+                  <Toaster
+                    richColors
+                    position="top-right"
+                    toastOptions={TOAST_OPTIONS}
+                    icons={TOAST_ICONS}
+                    visibleToasts={4}
+                  />
                   {children}
                 </ThemeProvider>
               </JotaiProvider>

@@ -31,7 +31,17 @@ export function NavigationUser({ user }: { user: ISidebarUser | null }) {
               Login to your account to save your data and access your data anywhere
             </p>
             <Button
-              onClick={() => toast.error("Login is not available yet")}
+              onClick={() => {
+                toast.error("Error Occured", {
+                  description: "Please try again later! Login is not available yet.",
+                  action: {
+                    label: "Updates?",
+                    onClick: () => {
+                      window.open("https://github.com/legions-developer/invoicely", "_blank");
+                    },
+                  },
+                });
+              }}
               className="mt-2 h-5 w-fit rounded-sm px-2 text-xs"
               variant="default"
               size="sm"

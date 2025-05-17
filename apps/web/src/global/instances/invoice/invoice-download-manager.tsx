@@ -65,10 +65,10 @@ export class InvoiceDownloadManager {
       }),
     );
 
-    if (success) {
-      toast.success("Invoice saved to indexedDB");
-    } else {
-      toast.error("Invoice not saved to indexedDB");
+    if (!success) {
+      toast.error("IndexDB Error", {
+        description: "Error saving invoice to indexedDB",
+      });
     }
   }
 

@@ -75,7 +75,7 @@ export const FormImageInput = <
                 }}
                 onFileRemove={() => {
                   // remove the file from the field
-                  field.onChange(undefined);
+                  field.onChange("");
                 }}
                 {...props}
                 {...field}

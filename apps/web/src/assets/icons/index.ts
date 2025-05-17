@@ -17,3 +17,7 @@ export { default as FileTreeIcon } from "./file-tree";
 export { default as GithubIcon } from "./github";
 export { default as BlogIcon } from "./blog";
 export { default as SignatureIcon } from "./signature";
+export { default as CircleXmarkIcon } from "./circle-x-mark";
+export { default as CircleCheckIcon } from "./circle-check";
+export { default as TriangleWarningIcon } from "./triangle-warning";
+export { default as LabelInfoIcon } from "./label-info";
