@@ -4,12 +4,17 @@ import { PostHogAnalytics } from "@/components/ui/posthog-analytics";
 import OpenSourceBadge from "@/components/ui/open-source-badge";
 import LogoIcon from "@/components/assets/logo-icon";
 import { Button } from "@/components/ui/button";
+import { clientAuth } from "@/lib/client-auth";
 import { useTheme } from "next-themes";
 import { LINKS } from "@/constants";
 import Link from "next/link";
 
 export default function Home() {
   const { theme, setTheme } = useTheme();
+
+  const session = clientAuth.useSession();
+
+  console.log("[session]", session);
 
   return (
     <div className="flex h-screen items-center justify-center">
@@ -37,6 +42,12 @@ export default function Home() {
           </PostHogAnalytics>
           <Button variant="secondary" onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
             Switch Theme
+          </Button>
+          <Button variant="secondary" onClick={() => clientAuth.signIn.social({ provider: "google" })}>
+            Google Login
+          </Button>
+          <Button variant="secondary" onClick={() => clientAuth.signOut()}>
+            Sign Out
           </Button>
         </div>
       </div>
