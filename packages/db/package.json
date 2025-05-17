@@ -1,0 +1,28 @@
+{
+  "name": "@invoicely/db",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "drizzle-orm": "0.43.1",
+    "postgres": "3.4.5"
+  },
+  "scripts": {
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "devDependencies": {
+    "@invoicely/eslint-config": "workspace:*",
+    "@invoicely/typescript-config": "workspace:*",
+    "@invoicely/utilities": "workspace:*",
+    "@types/node": "22.13.8",
+    "dotenv": "16.4.7",
+    "drizzle-kit": "0.31.1",
+    "typescript": "5.8.2"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { LINKS } from "@/constants";
 import Link from "next/link";
+
 export default function Home() {
   const { theme, setTheme } = useTheme();
 
