@@ -24,10 +24,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "db:generate": "turbo run db:generate",
-    "db:migrate": "turbo run db:migrate",
-    "db:push": "turbo run db:push",
-    "db:studio": "turbo run db:studio"
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "devDependencies": {
     "@invoicely/eslint-config": "workspace:*",
@@ -42,6 +41,7 @@
     "typescript": "5.8.2"
   },
   "dependencies": {
-    "@t3-oss/env-nextjs": "^0.13.4"
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "drizzle-kit": "^0.31.1"
   }
 }
