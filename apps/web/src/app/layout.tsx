@@ -1,11 +1,19 @@
 import {
+  Geist,
+  Geist_Mono,
+  JetBrains_Mono,
+  Instrument_Serif,
+  Instrument_Sans,
+  Urbanist,
+  Bricolage_Grotesque,
+} from "next/font/google";
+import {
   ReactScanProvider,
   JotaiProvider,
   PostHogProvider,
   OneDollarStatsProvider,
   OpenPanelProvider,
 } from "@/providers";
-import { Geist, Geist_Mono, JetBrains_Mono, Instrument_Serif, Instrument_Sans, Urbanist } from "next/font/google";
 import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants";
 import { TOAST_ICONS, TOAST_OPTIONS } from "@/constants/toast";
 import { ThemeProvider } from "next-themes";
@@ -52,6 +60,13 @@ const urbanist = Urbanist({
   subsets: ["latin"],
 });
 
+// Bricolage Grotesque
+const bricolageGrotesque = Bricolage_Grotesque({
+  variable: "--font-bricolage-grotesque",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata = defaultWebsiteMetadata;
 export const viewport = defaultWebsiteViewport;
 
@@ -70,6 +85,7 @@ export default function RootLayout({
           instrumentSerif.variable,
           instrumentSans.variable,
           urbanist.variable,
+          bricolageGrotesque.variable,
           "antialiased",
         )}
       >

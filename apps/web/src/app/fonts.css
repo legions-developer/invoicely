@@ -33,3 +33,8 @@ body {
 .urbanist {
   font-family: var(--font-urbanist);
 }
+
+/* Bricolage Grotesque */
+.bricolage-grotesque {
+  font-family: var(--font-bricolage-grotesque);
+}

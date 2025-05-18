@@ -1710,6 +1710,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@number-flow/react@npm:^0.5.9":
+  version: 0.5.9
+  resolution: "@number-flow/react@npm:0.5.9"
+  dependencies:
+    esm-env: "npm:^1.1.4"
+    number-flow: "npm:0.5.7"
+  peerDependencies:
+    react: ^18 || ^19
+    react-dom: ^18 || ^19
+  checksum: 10c0/73403c131c371bda892d83ec2c9d5b931f53b9d3db987d0b14aa2e93c950598a8b7fc21f8b59fa2807dadbe3f76d1d3a833360606953c199a91b751d69a67dd5
+  languageName: node
+  linkType: hard
+
 "@openpanel/nextjs@npm:^1.0.8":
   version: 1.0.8
   resolution: "@openpanel/nextjs@npm:1.0.8"
@@ -2066,6 +2079,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-checkbox@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "@radix-ui/react-checkbox@npm:1.3.1"
+  dependencies:
+    "@radix-ui/primitive": "npm:1.1.2"
+    "@radix-ui/react-compose-refs": "npm:1.1.2"
+    "@radix-ui/react-context": "npm:1.1.2"
+    "@radix-ui/react-presence": "npm:1.1.4"
+    "@radix-ui/react-primitive": "npm:2.1.2"
+    "@radix-ui/react-use-controllable-state": "npm:1.2.2"
+    "@radix-ui/react-use-previous": "npm:1.1.1"
+    "@radix-ui/react-use-size": "npm:1.1.1"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 10c0/e2360ce7c0d894f196e0a4aaa7fe7482a5f1ca035e62d5bee364c6828d30a6024c3de4ea0ed77067489ccab1a583d09f23211ddeda78fa092e09a2026035b86c
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-collapsible@npm:1.1.10, @radix-ui/react-collapsible@npm:^1.1.10, @radix-ui/react-collapsible@npm:^1.1.8":
   version: 1.1.10
   resolution: "@radix-ui/react-collapsible@npm:1.1.10"
@@ -2114,7 +2153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-compose-refs@npm:1.1.2":
+"@radix-ui/react-compose-refs@npm:1.1.2, @radix-ui/react-compose-refs@npm:^1.1.1":
   version: 1.1.2
   resolution: "@radix-ui/react-compose-refs@npm:1.1.2"
   peerDependencies:
@@ -2140,7 +2179,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dialog@npm:^1.1.11, @radix-ui/react-dialog@npm:^1.1.13":
+"@radix-ui/react-dialog@npm:^1.1.13, @radix-ui/react-dialog@npm:^1.1.6":
   version: 1.1.13
   resolution: "@radix-ui/react-dialog@npm:1.1.13"
   dependencies:
@@ -2208,7 +2247,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dropdown-menu@npm:^2.1.12":
+"@radix-ui/react-dropdown-menu@npm:^2.1.14":
   version: 2.1.14
   resolution: "@radix-ui/react-dropdown-menu@npm:2.1.14"
   dependencies:
@@ -2276,7 +2315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-id@npm:1.1.1":
+"@radix-ui/react-id@npm:1.1.1, @radix-ui/react-id@npm:^1.1.0":
   version: 1.1.1
   resolution: "@radix-ui/react-id@npm:1.1.1"
   dependencies:
@@ -2291,7 +2330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-label@npm:^2.1.4":
+"@radix-ui/react-label@npm:^2.1.6":
   version: 2.1.6
   resolution: "@radix-ui/react-label@npm:2.1.6"
   dependencies:
@@ -2378,7 +2417,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-popover@npm:^1.1.11, @radix-ui/react-popover@npm:^1.1.13":
+"@radix-ui/react-popover@npm:^1.1.13":
   version: 1.1.13
   resolution: "@radix-ui/react-popover@npm:1.1.13"
   dependencies:
@@ -2479,7 +2518,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-primitive@npm:2.1.2":
+"@radix-ui/react-primitive@npm:2.1.2, @radix-ui/react-primitive@npm:^2.0.2":
   version: 2.1.2
   resolution: "@radix-ui/react-primitive@npm:2.1.2"
   dependencies:
@@ -2591,7 +2630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-separator@npm:^1.1.4":
+"@radix-ui/react-separator@npm:^1.1.6":
   version: 1.1.6
   resolution: "@radix-ui/react-separator@npm:1.1.6"
   dependencies:
@@ -2610,7 +2649,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-slot@npm:1.2.2, @radix-ui/react-slot@npm:^1.2.0, @radix-ui/react-slot@npm:^1.2.2":
+"@radix-ui/react-slider@npm:^1.3.4":
+  version: 1.3.4
+  resolution: "@radix-ui/react-slider@npm:1.3.4"
+  dependencies:
+    "@radix-ui/number": "npm:1.1.1"
+    "@radix-ui/primitive": "npm:1.1.2"
+    "@radix-ui/react-collection": "npm:1.1.6"
+    "@radix-ui/react-compose-refs": "npm:1.1.2"
+    "@radix-ui/react-context": "npm:1.1.2"
+    "@radix-ui/react-direction": "npm:1.1.1"
+    "@radix-ui/react-primitive": "npm:2.1.2"
+    "@radix-ui/react-use-controllable-state": "npm:1.2.2"
+    "@radix-ui/react-use-layout-effect": "npm:1.1.1"
+    "@radix-ui/react-use-previous": "npm:1.1.1"
+    "@radix-ui/react-use-size": "npm:1.1.1"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 10c0/cdb1e19f91699d3f698ce1b30ff7570c62282e891e0eb098621499084fd6ac3a68e88a8ea746bd21f7f4995e5a3afec5dca5ee221dd72d44212a99d3cf399b71
+  languageName: node
+  linkType: hard
+
+"@radix-ui/react-slot@npm:1.2.2, @radix-ui/react-slot@npm:^1.2.2":
   version: 1.2.2
   resolution: "@radix-ui/react-slot@npm:1.2.2"
   dependencies:
@@ -2625,7 +2693,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-tabs@npm:^1.1.11, @radix-ui/react-tabs@npm:^1.1.9":
+"@radix-ui/react-tabs@npm:^1.1.11":
   version: 1.1.11
   resolution: "@radix-ui/react-tabs@npm:1.1.11"
   dependencies:
@@ -3591,6 +3659,25 @@ __metadata:
     postcss: "npm:^8.4.41"
     tailwindcss: "npm:4.1.7"
   checksum: 10c0/3779c34001dfa2741efa037089b9331807e15946e766decc983baef8ba5d4d519a1b86e7f27fffcf1a028bda19e0fdf5a87479a89b9e1cd2d7df5769273777c8
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-table@npm:^8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/react-table@npm:8.21.3"
+  dependencies:
+    "@tanstack/table-core": "npm:8.21.3"
+  peerDependencies:
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 10c0/85d1d0fcb690ecc011f68a5a61c96f82142e31a0270dcf9cbc699a6f36715b1653fe6ff1518302a6d08b7093351fc4cabefd055a7db3cd8ac01e068956b0f944
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.21.3":
+  version: 8.21.3
+  resolution: "@tanstack/table-core@npm:8.21.3"
+  checksum: 10c0/40e3560e6d55e07cc047024aa7f83bd47a9323d21920d4adabba8071fd2d21230c48460b26cedf392588f8265b9edc133abb1b0d6d0adf4dae0970032900a8c9
   languageName: node
   linkType: hard
 
@@ -5248,6 +5335,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cmdk@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "cmdk@npm:1.1.1"
+  dependencies:
+    "@radix-ui/react-compose-refs": "npm:^1.1.1"
+    "@radix-ui/react-dialog": "npm:^1.1.6"
+    "@radix-ui/react-id": "npm:^1.1.0"
+    "@radix-ui/react-primitive": "npm:^2.0.2"
+  peerDependencies:
+    react: ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/5605ac4396ec9bc65c82f954da19dd89a0636a54026df72780e2470da1381f9d57434a80a53f2d57eaa4e759660a3ebba9232b74258dc09970576591eae03116
+  languageName: node
+  linkType: hard
+
 "collapse-white-space@npm:^2.0.0":
   version: 2.1.0
   resolution: "collapse-white-space@npm:2.1.0"
@@ -6766,6 +6868,13 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 10c0/fb5ba6ce2b85a6c26c89bc1ca9b34f0ffa2166ba85d3d007a06bb2350151fb665e9a5f99d7f24051a00dc713203b50ece6e724a29fed7b297e432cdc79482fec
+  languageName: node
+  linkType: hard
+
+"esm-env@npm:^1.1.4":
+  version: 1.2.2
+  resolution: "esm-env@npm:1.2.2"
+  checksum: 10c0/3d25c973f2fd69c25ffff29c964399cea573fe10795ecc1d26f6f957ce0483d3254e1cceddb34bf3296a0d7b0f1d53a28992f064ba509dfe6366751e752c4166
   languageName: node
   linkType: hard
 
@@ -10563,6 +10672,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"number-flow@npm:0.5.7":
+  version: 0.5.7
+  resolution: "number-flow@npm:0.5.7"
+  dependencies:
+    esm-env: "npm:^1.1.4"
+  checksum: 10c0/3e7dbd90793b22246696cc9a1c1aecf98e1cae54cc91fb98852fe46515d2e81a07f9434dd8da690d972738d39719d4d185512c655055695049054cf79934172f
+  languageName: node
+  linkType: hard
+
 "number-to-words@npm:^1.2.4":
   version: 1.2.4
   resolution: "number-to-words@npm:1.2.4"
@@ -14328,23 +14446,27 @@ __metadata:
     "@hookform/resolvers": "npm:^5.0.1"
     "@invoicely/utilities": "workspace:*"
     "@mantine/hooks": "npm:^8.0.1"
+    "@number-flow/react": "npm:^0.5.9"
     "@openpanel/nextjs": "npm:^1.0.8"
     "@radix-ui/react-accordion": "npm:^1.2.8"
     "@radix-ui/react-avatar": "npm:^1.1.7"
+    "@radix-ui/react-checkbox": "npm:^1.3.1"
     "@radix-ui/react-collapsible": "npm:^1.1.8"
-    "@radix-ui/react-dialog": "npm:^1.1.11"
-    "@radix-ui/react-dropdown-menu": "npm:^2.1.12"
+    "@radix-ui/react-dialog": "npm:^1.1.13"
+    "@radix-ui/react-dropdown-menu": "npm:^2.1.14"
     "@radix-ui/react-icons": "npm:^1.3.2"
-    "@radix-ui/react-label": "npm:^2.1.4"
-    "@radix-ui/react-popover": "npm:^1.1.11"
+    "@radix-ui/react-label": "npm:^2.1.6"
+    "@radix-ui/react-popover": "npm:^1.1.13"
     "@radix-ui/react-scroll-area": "npm:^1.2.6"
     "@radix-ui/react-select": "npm:^2.2.2"
-    "@radix-ui/react-separator": "npm:^1.1.4"
-    "@radix-ui/react-slot": "npm:^1.2.0"
-    "@radix-ui/react-tabs": "npm:^1.1.9"
+    "@radix-ui/react-separator": "npm:^1.1.6"
+    "@radix-ui/react-slider": "npm:^1.3.4"
+    "@radix-ui/react-slot": "npm:^1.2.2"
+    "@radix-ui/react-tabs": "npm:^1.1.11"
     "@radix-ui/react-tooltip": "npm:^1.2.4"
     "@react-pdf/renderer": "npm:^4.3.0"
     "@tailwindcss/postcss": "npm:^4"
+    "@tanstack/react-table": "npm:^8.21.3"
     "@types/lodash": "npm:^4"
     "@types/node": "npm:^20"
     "@types/number-to-words": "npm:^1"
@@ -14353,6 +14475,7 @@ __metadata:
     better-auth: "npm:^1.2.8"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
+    cmdk: "npm:^1.1.1"
     currency-symbol-map: "npm:^5.1.0"
     date-fns: "npm:^4.1.0"
     eslint: "npm:^9"
