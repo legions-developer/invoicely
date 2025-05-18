@@ -17,7 +17,8 @@ export interface IDBInvoice {
   id: string;
   type: INVOICE_TYPE;
   createdAt: Date;
+  updatedAt: Date;
   status: INVOICE_STATUS;
   paidAt: Date | null;
-  data: ZodCreateInvoiceSchema;
+  invoiceFields: ZodCreateInvoiceSchema;
 }

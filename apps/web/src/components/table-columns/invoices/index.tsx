@@ -18,26 +18,29 @@ export const columns = [
     cell: ({ row }) => <div className="text-muted-foreground text-xs">{row.original.id}</div>,
   }),
 
-  columnHelper.accessor((row) => `${row.data.invoiceDetails.prefix}${row.data.invoiceDetails.serialNumber}`, {
-    id: "serialNumber",
-    header: ({ column }) => <HeaderColumnButton column={column}>Serial No</HeaderColumnButton>,
-    cell: ({ row }) => (
-      <div className="text-xs">{`${row.original.data.invoiceDetails.prefix}${row.original.data.invoiceDetails.serialNumber}`}</div>
-    ),
-  }),
+  columnHelper.accessor(
+    (row) => `${row.invoiceFields.invoiceDetails.prefix}${row.invoiceFields.invoiceDetails.serialNumber}`,
+    {
+      id: "serialNumber",
+      header: ({ column }) => <HeaderColumnButton column={column}>Serial No</HeaderColumnButton>,
+      cell: ({ row }) => (
+        <div className="text-xs">{`${row.original.invoiceFields.invoiceDetails.prefix}${row.original.invoiceFields.invoiceDetails.serialNumber}`}</div>
+      ),
+    },
+  ),
 
-  columnHelper.accessor((row) => getTotalValue(row.data), {
+  columnHelper.accessor((row) => getTotalValue(row.invoiceFields), {
     id: "total",
     header: ({ column }) => <HeaderColumnButton column={column}>Total</HeaderColumnButton>,
     cell: ({ row }) => (
-      <div className="text-xs">{`${getSymbolFromCurrency(row.original.data.invoiceDetails.currency)} ${getTotalValue(row.original.data)}`}</div>
+      <div className="text-xs">{`${getSymbolFromCurrency(row.original.invoiceFields.invoiceDetails.currency)} ${getTotalValue(row.original.invoiceFields)}`}</div>
     ),
   }),
 
-  columnHelper.accessor((row) => row.data.items.length, {
+  columnHelper.accessor((row) => row.invoiceFields.items.length, {
     id: "items",
     header: ({ column }) => <HeaderColumnButton column={column}>Items</HeaderColumnButton>,
-    cell: ({ row }) => <div className="text-xs">{row.original.data.items.length} Items</div>,
+    cell: ({ row }) => <div className="text-xs">{row.original.invoiceFields.items.length} Items</div>,
   }),
 
   columnHelper.accessor((row) => row.status, {

@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.13.4",
+    "decimal.js": "^10.5.0",
     "drizzle-kit": "^0.31.1"
   }
 }

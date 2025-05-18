@@ -60,8 +60,9 @@ export class InvoiceDownloadManager {
         id: uuidv4(),
         type: INVOICE_TYPE.INDEX_DB,
         status: INVOICE_STATUS.PENDING,
-        data: this.isInvoiceDataInitialized(),
+        invoiceFields: this.isInvoiceDataInitialized(),
         createdAt: new Date(),
+        updatedAt: new Date(),
         paidAt: null,
       }),
     );
