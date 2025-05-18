@@ -37,7 +37,7 @@ export const invoiceCompanyDetails = pgTable("invoice_company_details", {
     .notNull(),
 });
 
-export const invoiceCompanyDetailsLabelAndValues = pgTable("invoice_company_details_label_and_values", {
+export const invoiceCompanyDetailsMetadata = pgTable("invoice_company_details_metadata", {
   id: uuid("id").primaryKey().defaultRandom(),
   label: text("label").notNull(),
   value: text("value").notNull(),
@@ -54,7 +54,7 @@ export const invoiceClientDetails = pgTable("invoice_client_details", {
     .notNull(),
 });
 
-export const invoiceClientDetailsLabelAndValues = pgTable("invoice_client_details_label_and_values", {
+export const invoiceClientDetailsMetadata = pgTable("invoice_client_details_metadata", {
   id: uuid("id").primaryKey().defaultRandom(),
   label: text("label").notNull(),
   value: text("value").notNull(),
@@ -77,9 +77,10 @@ export const invoiceDetails = pgTable("invoice_details", {
     .notNull(),
 });
 
-export const invoiceDetailsBillingDetailsLabelAndValues = pgTable("invoice_details_billing_details_label_and_values", {
+export const invoiceDetailsBillingDetails = pgTable("invoice_details_billing_details", {
   id: uuid("id").primaryKey().defaultRandom(),
   label: text("label"),
+  type: invoiceValueTypesEnum("type").notNull(),
   value: Numeric("value", { precision: 10, scale: 2 }).notNull(),
   invoiceDetailsId: uuid("invoice_details_id")
     .references(() => invoiceDetails.id)
@@ -106,14 +107,11 @@ export const invoiceMetadata = pgTable("invoice_metadata", {
     .notNull(),
 });
 
-export const invoiceMetadataPaymentInformationLabelAndValues = pgTable(
-  "invoice_metadata_payment_information_label_and_values",
-  {
-    id: uuid("id").primaryKey().defaultRandom(),
-    label: text("label"),
-    value: text("value"),
-    invoiceMetadataId: uuid("invoice_metadata_id")
-      .references(() => invoiceMetadata.id)
-      .notNull(),
-  },
-);
+export const invoiceMetadataPaymentInformation = pgTable("invoice_metadata_payment_information", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  label: text("label"),
+  value: text("value"),
+  invoiceMetadataId: uuid("invoice_metadata_id")
+    .references(() => invoiceMetadata.id)
+    .notNull(),
+});
