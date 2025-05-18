@@ -132,7 +132,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
               Billed By
             </Text>
             <Text style={tw("text-2xs font-semibold")}>{data.companyDetails.name}</Text>
-            <Text style={tw("text-2xs font-normal text-neutral-500")}>{data.companyDetails.address.value}</Text>
+            <Text style={tw("text-2xs font-normal text-neutral-500")}>{data.companyDetails.address}</Text>
             {data.companyDetails.metadata.map((metadata) => (
               <View key={metadata.label} style={tw("flex flex-row items-center gap-1")}>
                 <Text style={tw("text-2xs font-semibold")}>{metadata.label}</Text>
@@ -149,7 +149,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
               Billed To
             </Text>
             <Text style={tw("text-2xs font-semibold")}>{data.clientDetails.name}</Text>
-            <Text style={tw("text-2xs font-normal text-neutral-500")}>{data.clientDetails.address.value}</Text>
+            <Text style={tw("text-2xs font-normal text-neutral-500")}>{data.clientDetails.address}</Text>
             {data.clientDetails.metadata.map((metadata) => (
               <View key={metadata.label} style={tw("flex flex-row items-center gap-1")}>
                 <Text style={tw("text-2xs font-semibold")}>{metadata.label}</Text>
@@ -235,7 +235,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
               </View>
             ) : null}
             {/* Terms and conditions */}
-            {data.metadata.terms.value && (
+            {data.metadata.terms && (
               <View style={tw("flex flex-col gap-0.5 pr-2.5")}>
                 <Text
                   style={tw(
@@ -244,11 +244,11 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
                 >
                   Terms
                 </Text>
-                <Text style={tw("text-2xs font-normal text-neutral-500 mt-1")}>{data.metadata.terms.value}</Text>
+                <Text style={tw("text-2xs font-normal text-neutral-500 mt-1")}>{data.metadata.terms}</Text>
               </View>
             )}
             {/* Notes */}
-            {data.metadata.notes.value && (
+            {data.metadata.notes && (
               <View style={tw("flex flex-col gap-0.5 pr-2.5")}>
                 <Text
                   style={tw(
@@ -257,12 +257,12 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
                 >
                   Notes
                 </Text>
-                <Text style={tw("text-2xs font-normal text-neutral-500 mt-1")}>{data.metadata.notes.value}</Text>
+                <Text style={tw("text-2xs font-normal text-neutral-500 mt-1")}>{data.metadata.notes}</Text>
               </View>
             )}
           </View>
           {/* Pricing  */}
-          <View style={tw("flex flex-col gap-1.5 p-2.5 w-1/2 min-w-[50%] justify-end")}>
+          <View style={tw("flex flex-col gap-1 p-2.5 w-1/2 min-w-[50%] justify-end")}>
             {/* Signature */}
             {data.companyDetails.signature && (
               <View style={tw("flex flex-col gap-1 mb-1.5 items-end w-full")}>
@@ -278,16 +278,27 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             )}
             <View style={tw("flex flex-row items-center justify-between")}>
               <Text style={tw("text-2xs font-semibold")}>Subtotal</Text>
-              <Text style={tw("text-2xs font-geistmono tracking-tighter text-neutral-500")}>
+              <Text style={tw("text-2xs font-geistmono tracking-tight text-neutral-500")}>
                 {formatCurrencyText(data.invoiceDetails.currency, subtotal)}
               </Text>
             </View>
             {/* Billing Details */}
             {data.invoiceDetails.billingDetails.map((billingDetail, index) => {
+              if (billingDetail.type === "percentage") {
+                return (
+                  <View key={index} style={tw("flex flex-row items-center justify-between")}>
+                    <Text style={tw("text-2xs font-semibold")}>{billingDetail.label}</Text>
+                    <Text style={tw("text-2xs font-geistmono tracking-tight text-neutral-500")}>
+                      {billingDetail.value} %
+                    </Text>
+                  </View>
+                );
+              }
+
               return (
                 <View key={index} style={tw("flex flex-row items-center justify-between")}>
                   <Text style={tw("text-2xs font-semibold")}>{billingDetail.label}</Text>
-                  <Text style={tw("text-2xs font-geistmono tracking-tighter text-neutral-500")}>
+                  <Text style={tw("text-2xs font-geistmono tracking-tight text-neutral-500")}>
                     {formatCurrencyText(data.invoiceDetails.currency, billingDetail.value)}
                   </Text>
                 </View>
@@ -298,7 +309,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             ></View>
             <View style={tw("flex flex-row items-center justify-between")}>
               <Text style={tw("text-xs font-semibold")}>Total</Text>
-              <Text style={tw("text-lg font-semibold font-geistmono tracking-tighter")}>
+              <Text style={tw("text-lg font-semibold font-geistmono tracking-tight")}>
                 {formatCurrencyText(data.invoiceDetails.currency, total)}
               </Text>
             </View>

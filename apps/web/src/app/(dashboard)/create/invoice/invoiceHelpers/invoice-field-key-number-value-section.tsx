@@ -46,7 +46,7 @@ const InvoiceFieldKeyNumberValuesSection: React.FC<InvoiceFieldKeyNumberValuesSe
       </div>
       {fields.map((field, index) => (
         <div className="flex flex-col items-center gap-2 sm:flex-row" key={field.id}>
-          <div className="flex w-full flex-row gap-2 sm:w-fit">
+          <div className="flex w-full flex-row gap-2 sm:w-2/3">
             <FormInput
               name={`${name}.${index}.label`}
               reactform={reactform}
@@ -60,7 +60,7 @@ const InvoiceFieldKeyNumberValuesSection: React.FC<InvoiceFieldKeyNumberValuesSe
               <SelectItem value="percentage">Percentage</SelectItem>
             </FormSelect>
           </div>
-          <div className="flex w-full flex-row items-end gap-2 sm:w-fit">
+          <div className="flex w-full flex-row items-end gap-2 sm:w-1/3">
             <FormInput
               type="number"
               name={`${name}.${index}.value`}

@@ -67,17 +67,7 @@ export const createInvoiceSchema = z.object({
       name: z.string({ invalid_type_error: "Company name must be a string" }).min(1, {
         message: "Company name cannot be empty",
       }),
-      address: z.object(
-        {
-          label: z
-            .string({ invalid_type_error: "Address label must be a string" })
-            .min(1, { message: "Address label cannot be empty" }),
-          value: z.string({
-            invalid_type_error: "Address value must be a string",
-          }),
-        },
-        { invalid_type_error: "Company address must be an object" },
-      ),
+      address: z.string({ invalid_type_error: "Address must be a string" }),
       metadata: z.array(createInvoiceFieldKeyStringValuesSchema),
     },
     { invalid_type_error: "Company details must be an object" },
@@ -87,17 +77,7 @@ export const createInvoiceSchema = z.object({
       name: z
         .string({ invalid_type_error: "Client name must be a string" })
         .min(1, { message: "Client name cannot be empty" }),
-      address: z.object(
-        {
-          label: z
-            .string({ invalid_type_error: "Address label must be a string" })
-            .min(1, { message: "Address label cannot be empty" }),
-          value: z.string({
-            invalid_type_error: "Address value must be a string",
-          }),
-        },
-        { invalid_type_error: "Client address must be an object" },
-      ),
+      address: z.string({ invalid_type_error: "Address must be a string" }),
       metadata: z.array(createInvoiceFieldKeyStringValuesSchema),
     },
     { invalid_type_error: "Client details must be an object" },
@@ -117,17 +97,6 @@ export const createInvoiceSchema = z.object({
       serialNumber: z
         .string({ invalid_type_error: "Serial number must be a string" })
         .min(1, { message: "Serial number cannot be empty" }),
-      shipTo: z.object(
-        {
-          label: z
-            .string({ invalid_type_error: "Ship to label must be a string" })
-            .min(1, { message: "Ship to label cannot be empty" }),
-          value: z.string({
-            invalid_type_error: "Ship to value must be a string",
-          }),
-        },
-        { invalid_type_error: "Ship to must be an object" },
-      ),
       date: z.date({ invalid_type_error: "Date must be a valid date" }),
       dueDate: z.date({ invalid_type_error: "Due date must be a valid date" }),
       paymentTerms: z.string({
@@ -140,28 +109,8 @@ export const createInvoiceSchema = z.object({
   items: z.array(createInvoiceItemSchema),
   metadata: z.object(
     {
-      notes: z.object(
-        {
-          label: z
-            .string({ invalid_type_error: "Notes label must be a string" })
-            .min(1, { message: "Notes label cannot be empty" }),
-          value: z.string({
-            invalid_type_error: "Notes value must be a string",
-          }),
-        },
-        { invalid_type_error: "Notes must be an object" },
-      ),
-      terms: z.object(
-        {
-          label: z
-            .string({ invalid_type_error: "Terms label must be a string" })
-            .min(1, { message: "Terms label cannot be empty" }),
-          value: z.string({
-            invalid_type_error: "Terms value must be a string",
-          }),
-        },
-        { invalid_type_error: "Terms must be an object" },
-      ),
+      notes: z.string({ invalid_type_error: "Notes must be a string" }),
+      terms: z.string({ invalid_type_error: "Terms must be a string" }),
       paymentInformation: z.array(createInvoiceFieldKeyStringValuesSchema),
     },
     { invalid_type_error: "Metadata must be an object" },
@@ -173,18 +122,12 @@ export type ZodCreateInvoiceSchema = z.infer<typeof createInvoiceSchema>;
 export const createInvoiceSchemaDefaultValues: ZodCreateInvoiceSchema = {
   companyDetails: {
     name: "Invoicely Ltd",
-    address: {
-      label: "address",
-      value: "123 Main St, Anytown, USA",
-    },
+    address: "123 Main St, Anytown, USA",
     metadata: [],
   },
   clientDetails: {
     name: "John Doe",
-    address: {
-      label: "address",
-      value: "456 Second St, Anytown, USA",
-    },
+    address: "456 Second St, Anytown, USA",
     metadata: [],
   },
   invoiceDetails: {
@@ -195,10 +138,6 @@ export const createInvoiceSchemaDefaultValues: ZodCreateInvoiceSchema = {
     currency: "USD",
     prefix: "INV-",
     serialNumber: "0001",
-    shipTo: {
-      label: "ship to",
-      value: "456 Second St, Anytown, USA",
-    },
     date: new Date(), // now
     dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day from now
     paymentTerms: "",
@@ -206,14 +145,8 @@ export const createInvoiceSchemaDefaultValues: ZodCreateInvoiceSchema = {
   },
   items: [],
   metadata: {
-    notes: {
-      label: "notes",
-      value: "",
-    },
-    terms: {
-      label: "terms",
-      value: "",
-    },
+    notes: "",
+    terms: "",
     paymentInformation: [],
   },
 };

@@ -1,10 +1,10 @@
 "use client";
 
-import { ZodCreateInvoiceSchema, createInvoiceSchemaDefaultValues } from "@/zod-schemas/invoice/create-invoice";
 import InvoiceFieldKeyStringValuesSection from "./invoiceHelpers/invoice-field-key-string-value-section";
 import InvoiceFieldKeyNumberValuesSection from "./invoiceHelpers/invoice-field-key-number-value-section";
 import { InvoiceAccordionContent, InvoiceAccordionTrigger } from "./invoiceHelpers/invoice-accordions";
 import { FormSignatureInput } from "@/components/ui/form/form-signature-input";
+import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import InvoiceItemsSection from "./invoiceHelpers/invoice-items-section";
 import { FormColorPicker } from "@/components/ui/form/form-color-picker";
 import { FormImageInput } from "@/components/ui/form/form-image-input";
@@ -68,7 +68,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                 />
                 <FormTextarea
                   className="h-20"
-                  name="companyDetails.address.value"
+                  name="companyDetails.address"
                   label="Company Address"
                   reactform={form}
                   placeholder="123 Business St, City, Country"
@@ -87,7 +87,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                 <FormInput name="clientDetails.name" label="Client Name" reactform={form} placeholder="John Doe" />
                 <FormTextarea
                   className="h-20"
-                  name="clientDetails.address.value"
+                  name="clientDetails.address"
                   label="Client Address"
                   reactform={form}
                   placeholder="456 Client St, City, Country"
@@ -158,13 +158,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     description="Invoice serial number"
                   />
                 </FormRow>
-                <FormTextarea
-                  name="invoiceDetails.shipTo.value"
-                  label={createInvoiceSchemaDefaultValues.invoiceDetails.shipTo.label}
-                  reactform={form}
-                  placeholder="789 Shipping St, City, Country"
-                  description="If invoice includes shipping, add shipping address or email address."
-                />
                 <FormRow>
                   <FormDatePicker
                     name="invoiceDetails.date"
@@ -206,16 +199,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
               <InvoiceAccordionTrigger>Additional Information</InvoiceAccordionTrigger>
               <InvoiceAccordionContent>
                 <FormTextarea
-                  name="metadata.notes.value"
-                  label={createInvoiceSchemaDefaultValues.metadata.notes.label}
+                  name="metadata.notes"
+                  label="Notes"
                   reactform={form}
                   placeholder="Notes - any relevant information not already covered"
                   description="Additional notes for the invoice"
                   isOptional={true}
                 />
                 <FormTextarea
-                  name="metadata.terms.value"
-                  label={createInvoiceSchemaDefaultValues.metadata.terms.label}
+                  name="metadata.terms"
+                  label="Terms"
                   reactform={form}
                   placeholder="Terms & Conditions - late fees, payment methods, delivery terms, etc."
                   description="Terms and conditions for the invoice"
