@@ -1,7 +1,7 @@
 import type { DataTableFilterActions } from "../core/types";
 import { Button } from "@/components/ui/button";
+import { SlidersIcon } from "@/assets/icons";
 import { type Locale, t } from "../lib/i18n";
-import { FilterXIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
 
@@ -19,7 +19,7 @@ function __FilterActions({ hasFilters, actions, locale = "en" }: FilterActionsPr
       variant="destructive"
       onClick={actions?.removeAllFilters}
     >
-      <FilterXIcon />
+      <SlidersIcon />
       <span className="hidden md:block">{t("clear", locale)}</span>
     </Button>
   );

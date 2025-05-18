@@ -1,11 +1,11 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { createBlobUrl, revokeBlobUrl } from "@/lib/invoice/create-blob-url";
 import { generateInvoiceName } from "@/lib/invoice/generate-invoice-name";
+import { INVOICE_STATUS, INVOICE_TYPE } from "@/types/indexdb/invoice";
 import { createPdfToImage } from "@/lib/invoice/create-pdf-to-image";
 import { forceInsertInvoice } from "@/lib/indexdb-queries/invoice";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import { downloadFile } from "@/lib/invoice/download-file";
-import { INVOICE_STATUS } from "@/types/indexdb/invoice";
 import { tryCatch } from "@/lib/neverthrow/tryCatch";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
@@ -57,10 +57,11 @@ export class InvoiceDownloadManager {
   private async saveInvoiceToIndexedDB(): Promise<void> {
     const { success } = await tryCatch(
       forceInsertInvoice({
-        createdAt: new Date(),
-        data: this.isInvoiceDataInitialized(),
         id: uuidv4(),
+        type: INVOICE_TYPE.INDEX_DB,
         status: INVOICE_STATUS.PENDING,
+        data: this.isInvoiceDataInitialized(),
+        createdAt: new Date(),
         paidAt: null,
       }),
     );

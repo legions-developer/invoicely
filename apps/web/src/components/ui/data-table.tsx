@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -20,27 +21,40 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { DataTableFilter, useDataTableFilters } from "@/components/ui/data-table-filter";
 import { ArrowDownZaIcon, ArrowUpDownIcon, ArrowUpZaIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FileAlertIcon } from "@/assets/icons";
+import EmptySection from "./icon-placeholder";
 import { useMemo, useState } from "react";
+import { Skeleton } from "./skeleton";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tanstackColumns: (DisplayColumnDef<TData, any> | AccessorFnColumnDef<TData, TValue>)[];
+  columns: (DisplayColumnDef<TData, any> | AccessorFnColumnDef<TData, TValue>)[];
   data: TData[];
-  configColumns: ColumnConfig<TData, ColumnDataType, TValue, string>[];
+  columnConfig: ColumnConfig<TData, ColumnDataType, any, string>[];
+  isLoading?: boolean;
 }
 
-export function DataTable<TData, TValue>({ tanstackColumns, data, configColumns }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  columnConfig,
+  isLoading = false,
+}: DataTableProps<TData, TValue>) {
   const [filtersState, setFiltersState] = useState<FiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
-  const { columns, filters, actions, strategy } = useDataTableFilters({
+  const {
+    columns: TableFilterColumns,
+    filters,
+    actions,
+    strategy,
+  } = useDataTableFilters({
     strategy: "client",
     data: data,
-    columnsConfig: configColumns,
+    columnsConfig: columnConfig,
     filters: filtersState,
     onFiltersChange: setFiltersState,
   });
@@ -48,11 +62,11 @@ export function DataTable<TData, TValue>({ tanstackColumns, data, configColumns 
   const tstColumns = useMemo(
     () =>
       createTSTColumns({
-        columns: tanstackColumns, // own columns
-        configs: columns, // advanced columns by bazza-ui
+        columns: columns, // own columns
+        configs: TableFilterColumns, // advanced columns by bazza-ui
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [columns],
+    [TableFilterColumns],
   );
 
   const tstFilters = useMemo(() => createTSTFilters(filters), [filters]);
@@ -78,13 +92,13 @@ export function DataTable<TData, TValue>({ tanstackColumns, data, configColumns 
   return (
     <div className="flex flex-col gap-4">
       {/* Advance Filtering */}
-      <DataTableFilter filters={filters} columns={columns} actions={actions} strategy={strategy} />
+      <DataTableFilter filters={filters} columns={TableFilterColumns} actions={actions} strategy={strategy} />
       {/* Table Main */}
       <div className="max-w-[calc(100svw-2rem)] overflow-hidden rounded-md border md:max-w-full">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow className="bg-sidebar hover:!bg-sidebar" key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
@@ -96,7 +110,17 @@ export function DataTable<TData, TValue>({ tanstackColumns, data, configColumns 
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              Array.from({ length: 10 }).map((_, index) => (
+                <TableRow key={index}>
+                  {columns.map((column) => (
+                    <TableCell key={column.id}>
+                      <Skeleton className="h-5 w-full rounded" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
@@ -105,9 +129,13 @@ export function DataTable<TData, TValue>({ tanstackColumns, data, configColumns 
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="text-muted-foreground/70 h-24 text-center">
-                  No Data Found
+              <TableRow className="hover:bg-background">
+                <TableCell colSpan={columns.length} className="text-muted-foreground/70 h-[400px] text-center">
+                  <EmptySection
+                    icon={FileAlertIcon}
+                    title="No Data Found"
+                    description="No data found for the selected filters. Please try different filters or clear all filters to see all data."
+                  />
                 </TableCell>
               </TableRow>
             )}
@@ -182,6 +210,8 @@ export const FormatTableDateString = ({ date }: { date: string }) => {
   );
 };
 
-export const FormatTableDateObject = ({ date }: { date: Date }) => {
+export const FormatTableDateObject = ({ date }: { date: Date | null }) => {
+  if (!date) return null;
+
   return <div className="text-muted-foreground text-xs whitespace-nowrap">{format(date, "dd/MM/yyyy - hh:mm a")}</div>;
 };

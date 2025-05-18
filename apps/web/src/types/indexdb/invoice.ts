@@ -8,8 +8,14 @@ export enum INVOICE_STATUS {
   REFUNDED = "refunded",
 }
 
+export enum INVOICE_TYPE {
+  INDEX_DB = "index_db",
+  POSTGRES = "postgres",
+}
+
 export interface IDBInvoice {
   id: string;
+  type: INVOICE_TYPE;
   createdAt: Date;
   status: INVOICE_STATUS;
   paidAt: Date | null;

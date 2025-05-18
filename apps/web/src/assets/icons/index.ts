@@ -21,3 +21,5 @@ export { default as CircleXmarkIcon } from "./circle-x-mark";
 export { default as CircleCheckIcon } from "./circle-check";
 export { default as TriangleWarningIcon } from "./triangle-warning";
 export { default as LabelInfoIcon } from "./label-info";
+export { default as GearIcon } from "./gear";
+export { default as SlidersIcon } from "./sliders";

@@ -8,7 +8,7 @@ export function FilterSubject<TData, TType extends ColumnDataType>({ column }: F
   const hasIcon = !!column.icon;
   return (
     <span className="flex items-center gap-1 px-2 font-medium whitespace-nowrap select-none">
-      {hasIcon && <column.icon className="size-4 stroke-[2.25px]" />}
+      {hasIcon && <column.icon className="text-secondary-foreground/50 mr-0.5 size-3.5 stroke-[2.25px]" />}
       <span>{column.displayName}</span>
     </span>
   );

@@ -3,10 +3,11 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import type { Column, ColumnDataType, DataTableFilterActions, FilterStrategy, FiltersState } from "../core/types";
 import { isValidElement, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ArrowRightIcon, ChevronRightIcon, FilterIcon } from "lucide-react";
+import { ArrowRightIcon, ChevronRightIcon } from "lucide-react";
 import { FilterValueController } from "./filter-value";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { SlidersIcon } from "@/assets/icons";
 import { type Locale, t } from "../lib/i18n";
 import { getColumn } from "../lib/helpers";
 import { isAnyOf } from "../lib/array";
@@ -96,8 +97,8 @@ function __FilterSelector<TData>({ filters, columns, actions, strategy, locale =
       }}
     >
       <PopoverTrigger asChild>
-        <Button variant="outline" className={cn("h-7", hasFilters && "w-fit !px-2")}>
-          <FilterIcon className="size-4" />
+        <Button variant="secondary" className={cn("h-7", hasFilters && "w-fit !px-2")}>
+          <SlidersIcon className="size-4" />
           {!hasFilters && <span>{t("filter", locale)}</span>}
         </Button>
       </PopoverTrigger>
@@ -164,7 +165,7 @@ export function FilterableColumn<TData, TType extends ColumnDataType, TVal>({
     >
       <div className="flex w-full items-center justify-between">
         <div className="inline-flex items-center gap-1.5">
-          {<column.icon strokeWidth={2.25} className="size-4" />}
+          {<column.icon strokeWidth={2.25} className="mr-1 size-4" />}
           <span>{column.displayName}</span>
         </div>
         <ArrowRightIcon className="size-4 opacity-0 group-aria-selected:opacity-100" />
