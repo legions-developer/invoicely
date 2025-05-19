@@ -1,5 +1,6 @@
 import { pgTable, text, timestamp, uuid, pgEnum, jsonb } from "drizzle-orm/pg-core";
 import { Numeric } from "../custom/decimal";
+import { relations } from "drizzle-orm";
 
 interface InvoiceTheme {
   baseColor: string;
@@ -115,3 +116,75 @@ export const invoiceMetadataPaymentInformation = pgTable("invoice_metadata_payme
     .references(() => invoiceMetadata.id)
     .notNull(),
 });
+
+// Relations
+export const invoiceRelations = relations(invoices, ({ one }) => ({
+  invoiceFields: one(invoiceFields, {
+    fields: [invoices.id],
+    references: [invoiceFields.invoiceId],
+  }),
+}));
+
+export const invoiceFieldsRelations = relations(invoiceFields, ({ one, many }) => ({
+  companyDetails: one(invoiceCompanyDetails, {
+    fields: [invoiceFields.id],
+    references: [invoiceCompanyDetails.invoiceFieldId],
+  }),
+  clientDetails: one(invoiceClientDetails, {
+    fields: [invoiceFields.id],
+    references: [invoiceClientDetails.invoiceFieldId],
+  }),
+  invoiceDetails: one(invoiceDetails, {
+    fields: [invoiceFields.id],
+    references: [invoiceDetails.invoiceFieldId],
+  }),
+  metadata: one(invoiceMetadata, {
+    fields: [invoiceFields.id],
+    references: [invoiceMetadata.invoiceFieldId],
+  }),
+}));
+
+export const invoiceCompanyDetailsRelations = relations(invoiceCompanyDetails, ({ many }) => ({
+  metadata: many(invoiceCompanyDetailsMetadata),
+}));
+
+export const invoiceClientDetailsRelations = relations(invoiceClientDetails, ({ many }) => ({
+  metadata: many(invoiceClientDetailsMetadata),
+}));
+
+export const invoiceDetailsRelations = relations(invoiceDetails, ({ many }) => ({
+  billingDetails: many(invoiceDetailsBillingDetails),
+}));
+
+export const invoiceMetadataRelations = relations(invoiceMetadata, ({ many }) => ({
+  paymentInformation: many(invoiceMetadataPaymentInformation),
+}));
+
+// Reverse Relations
+export const invoiceCompanyDetailsMetadataRelations = relations(invoiceCompanyDetailsMetadata, ({ one }) => ({
+  companyDetails: one(invoiceCompanyDetails, {
+    fields: [invoiceCompanyDetailsMetadata.invoiceCompanyDetailsId],
+    references: [invoiceCompanyDetails.id],
+  }),
+}));
+
+export const invoiceClientDetailsMetadataRelations = relations(invoiceClientDetailsMetadata, ({ one }) => ({
+  clientDetails: one(invoiceClientDetails, {
+    fields: [invoiceClientDetailsMetadata.invoiceClientDetailsId],
+    references: [invoiceClientDetails.id],
+  }),
+}));
+
+export const invoiceDetailsBillingDetailsRelations = relations(invoiceDetailsBillingDetails, ({ one }) => ({
+  details: one(invoiceDetails, {
+    fields: [invoiceDetailsBillingDetails.invoiceDetailsId],
+    references: [invoiceDetails.id],
+  }),
+}));
+
+export const invoiceMetadataPaymentInformationRelations = relations(invoiceMetadataPaymentInformation, ({ one }) => ({
+  metadata: one(invoiceMetadata, {
+    fields: [invoiceMetadataPaymentInformation.invoiceMetadataId],
+    references: [invoiceMetadata.id],
+  }),
+}));
