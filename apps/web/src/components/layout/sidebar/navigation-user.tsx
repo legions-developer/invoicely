@@ -14,11 +14,16 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import OpenSourceBadge from "@/components/ui/open-source-badge";
+import { clientAuth, useSession } from "@/lib/client-auth";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 import type { ISidebarUser } from "@/types";
-import { toast } from "sonner";
 
 export function NavigationUser({ user }: { user: ISidebarUser | null }) {
+  const session = useSession();
+
+  console.log("SessionNavUser:", session);
+  const pathname = usePathname();
   // if user is null, return a login state
   if (user === null) {
     return (
@@ -30,24 +35,32 @@ export function NavigationUser({ user }: { user: ISidebarUser | null }) {
             <p className="text-muted-foreground text-xs">
               Login to your account to save your data and access your data anywhere
             </p>
-            <Button
-              onClick={() => {
-                toast.error("Error Occured", {
-                  description: "Please try again later! Login is not available yet.",
-                  action: {
-                    label: "Updates?",
-                    onClick: () => {
-                      window.open("https://github.com/legions-developer/invoicely", "_blank");
-                    },
-                  },
-                });
-              }}
-              className="mt-2 h-5 w-fit rounded-sm px-2 text-xs"
-              variant="default"
-              size="sm"
-            >
-              Login
-            </Button>
+            {!session?.data?.user ? (
+              <Button
+                onClick={() => {
+                  clientAuth.signIn.social({
+                    provider: "google",
+                    callbackURL: `${pathname}`,
+                  });
+                }}
+                className="mt-2 w-fit"
+                variant="default"
+                size="xs"
+              >
+                Login
+              </Button>
+            ) : (
+              <Button
+                className="mt-2 w-fit"
+                variant="destructive"
+                size="xs"
+                onClick={() => {
+                  clientAuth.signOut();
+                }}
+              >
+                Logout
+              </Button>
+            )}
           </div>
         </SidebarMenuItem>
       </SidebarMenu>

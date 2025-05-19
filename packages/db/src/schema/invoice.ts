@@ -176,7 +176,7 @@ export const invoiceClientDetailsMetadataRelations = relations(invoiceClientDeta
 }));
 
 export const invoiceDetailsBillingDetailsRelations = relations(invoiceDetailsBillingDetails, ({ one }) => ({
-  details: one(invoiceDetails, {
+  invoiceDetails: one(invoiceDetails, {
     fields: [invoiceDetailsBillingDetails.invoiceDetailsId],
     references: [invoiceDetails.id],
   }),
