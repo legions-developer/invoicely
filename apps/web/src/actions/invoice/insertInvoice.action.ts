@@ -1,7 +1,6 @@
 "use server";
 
 import { createInvoiceSchema, ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
-import { INVOICE_STATUS, INVOICE_TYPE } from "@/types/indexdb/invoice";
 import { db, schema } from "@invoicely/db";
 import { serverAuth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -56,8 +55,8 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
       .insert(schema.invoices)
       .values({
         id: uuidv4(),
-        type: INVOICE_TYPE.POSTGRES,
-        status: INVOICE_STATUS.PENDING,
+        type: "postgres",
+        status: "pending",
         createdAt: new Date(),
         updatedAt: new Date(),
       })
