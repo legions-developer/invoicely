@@ -2,7 +2,6 @@ import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { createBlobUrl, revokeBlobUrl } from "@/lib/invoice/create-blob-url";
 import { generateInvoiceName } from "@/lib/invoice/generate-invoice-name";
 import { insertInvoice } from "@/actions/invoice/insertInvoice.action";
-import { INVOICE_STATUS, INVOICE_TYPE } from "@/types/indexdb/invoice";
 import { createPdfToImage } from "@/lib/invoice/create-pdf-to-image";
 import { forceInsertInvoice } from "@/lib/indexdb-queries/invoice";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
@@ -51,12 +50,11 @@ export class InvoiceDownloadManager {
 
   // Download the PDF
   public async downloadPdf() {
-    await this.saveInvoiceToIndexedDB();
-    return;
     const url = createBlobUrl({ blob: this.isBlobInitialized() });
     downloadFile({ url, fileName: this.isInvoiceNameInitialized() });
     revokeBlobUrl({ url });
     // Save data to indexedDB
+    await this.saveInvoiceToIndexedDB();
   }
 
   private async saveInvoiceToIndexedDB(): Promise<void> {
@@ -82,8 +80,8 @@ export class InvoiceDownloadManager {
       const { success } = await tryCatch(
         forceInsertInvoice({
           id: uuidv4(),
-          type: INVOICE_TYPE.INDEX_DB,
-          status: INVOICE_STATUS.PENDING,
+          type: "index_db",
+          status: "pending",
           invoiceFields: this.isInvoiceDataInitialized(),
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -105,6 +103,7 @@ export class InvoiceDownloadManager {
     this.invoiceData = undefined;
     this.invoiceName = undefined;
     this.blob = undefined;
+    this.user = undefined;
   }
 
   //   Error Handling

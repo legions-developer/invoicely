@@ -56,6 +56,7 @@ export const createInvoiceSchema = z.object({
         .refine((val) => !val || val.startsWith("data:image") || val.startsWith("blob:") || val.startsWith("https"), {
           message: "Logo must be a valid image URL, blob URL or data URL",
         })
+        .nullable()
         .optional(),
       signatureBase64: z.string({ invalid_type_error: "Signature base64 must be a string" }).optional(),
       signature: z
@@ -63,6 +64,7 @@ export const createInvoiceSchema = z.object({
         .refine((val) => !val || val.startsWith("data:image") || val.startsWith("blob:") || val.startsWith("https"), {
           message: "Signature must be a valid image URL, blob URL or data URL",
         })
+        .nullable()
         .optional(),
       name: z.string({ invalid_type_error: "Company name must be a string" }).min(1, {
         message: "Company name cannot be empty",

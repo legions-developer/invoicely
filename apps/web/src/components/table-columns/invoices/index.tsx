@@ -1,17 +1,29 @@
 import { createColumnConfigHelper } from "@/components/ui/data-table-filter/core/filters";
 import { HeaderColumnButton, FormatTableDateObject } from "@/components/ui/data-table";
-import { IDBInvoice, INVOICE_STATUS } from "@/types/indexdb/invoice";
+import { INVOICE_STATUS, INVOICE_TYPE } from "@/types/indexdb/invoice";
 import { Badge, BadgeVariants } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
+import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
+import { schema } from "@invoicely/db";
 
-const columnHelper = createColumnHelper<IDBInvoice>();
-const columnConfigHelper = createColumnConfigHelper<IDBInvoice>();
+const columnHelper = createColumnHelper<Invoice>();
+const columnConfigHelper = createColumnConfigHelper<Invoice>();
 
 export const columns = [
+  columnHelper.accessor((row) => row.type, {
+    id: "type",
+    header: ({ column }) => <HeaderColumnButton column={column}>Type</HeaderColumnButton>,
+    cell: ({ row }) => (
+      <Badge variant={row.original.type === INVOICE_TYPE.INDEX_DB ? "default" : "secondary"}>
+        {row.original.type === INVOICE_TYPE.INDEX_DB ? "Local" : "Server"}
+      </Badge>
+    ),
+  }),
+
   columnHelper.accessor((row) => row.id, {
     id: "id",
     header: ({ column }) => <HeaderColumnButton column={column}>ID</HeaderColumnButton>,
@@ -96,7 +108,7 @@ export const columnConfig = [
     .build(),
 ];
 
-const getStatusBadgeVariant = (status: INVOICE_STATUS): BadgeVariants => {
+const getStatusBadgeVariant = (status: schema.InvoiceStatusType): BadgeVariants => {
   switch (status) {
     case INVOICE_STATUS.PENDING:
       return "yellow";

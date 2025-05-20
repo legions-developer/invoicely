@@ -12,6 +12,11 @@ export const invoiceStatusEnum = pgEnum("invoice_status", ["pending", "success",
 export const invoiceTypeEnum = pgEnum("invoice_type", ["index_db", "postgres"]);
 export const invoiceValueTypesEnum = pgEnum("invoice_value_types", ["fixed", "percentage"]);
 
+// export enum types
+export type InvoiceStatusType = (typeof invoiceStatusEnum.enumValues)[number];
+export type InvoiceTypeType = (typeof invoiceTypeEnum.enumValues)[number];
+export type InvoiceValueTypesType = (typeof invoiceValueTypesEnum.enumValues)[number];
+
 // Tables
 export const invoices = pgTable("invoices", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -74,7 +79,7 @@ export const invoiceDetails = pgTable("invoice_details", {
   serialNumber: text("serial_number").notNull(),
   date: timestamp("date").notNull(),
   dueDate: timestamp("due_date").notNull(),
-  paymentTerms: text("payment_terms"),
+  paymentTerms: text("payment_terms").notNull().default(""),
   invoiceFieldId: uuid("invoice_field_id")
     .references(() => invoiceFields.id)
     .notNull(),
@@ -82,7 +87,7 @@ export const invoiceDetails = pgTable("invoice_details", {
 
 export const invoiceDetailsBillingDetails = pgTable("invoice_details_billing_details", {
   id: uuid("id").primaryKey().defaultRandom(),
-  label: text("label"),
+  label: text("label").notNull(),
   type: invoiceValueTypesEnum("type").notNull(),
   value: Numeric("value", { precision: 10, scale: 2 }).notNull(),
   invoiceDetailsId: uuid("invoice_details_id")
@@ -95,7 +100,7 @@ export const invoiceItems = pgTable("invoice_items", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   quantity: integer("quantity").notNull(),
-  price: Numeric("price", { precision: 10, scale: 2 }).notNull(),
+  unitPrice: Numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
   invoiceFieldId: uuid("invoice_field_id")
     .references(() => invoiceFields.id)
     .notNull(),
@@ -112,8 +117,8 @@ export const invoiceMetadata = pgTable("invoice_metadata", {
 
 export const invoiceMetadataPaymentInformation = pgTable("invoice_metadata_payment_information", {
   id: uuid("id").primaryKey().defaultRandom(),
-  label: text("label"),
-  value: text("value"),
+  label: text("label").notNull(),
+  value: text("value").notNull(),
   invoiceMetadataId: uuid("invoice_metadata_id")
     .references(() => invoiceMetadata.id)
     .notNull(),
@@ -144,6 +149,7 @@ export const invoiceFieldsRelations = relations(invoiceFields, ({ one, many }) =
     fields: [invoiceFields.id],
     references: [invoiceMetadata.invoiceFieldId],
   }),
+  items: many(invoiceItems),
 }));
 
 export const invoiceCompanyDetailsRelations = relations(invoiceCompanyDetails, ({ many }) => ({
@@ -188,5 +194,12 @@ export const invoiceMetadataPaymentInformationRelations = relations(invoiceMetad
   metadata: one(invoiceMetadata, {
     fields: [invoiceMetadataPaymentInformation.invoiceMetadataId],
     references: [invoiceMetadata.id],
+  }),
+}));
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoiceField: one(invoiceFields, {
+    fields: [invoiceItems.invoiceFieldId],
+    references: [invoiceFields.id],
   }),
 }));

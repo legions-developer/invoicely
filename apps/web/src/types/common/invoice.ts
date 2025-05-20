@@ -1,7 +1,7 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { schema } from "@invoicely/db";
 
-export interface IDBInvoice {
+export interface Invoice {
   id: string;
   type: schema.InvoiceTypeType;
   createdAt: Date;

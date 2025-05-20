@@ -175,6 +175,7 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
       .values(
         invoice.invoiceDetails.billingDetails.map((billingDetail) => ({
           id: uuidv4(),
+          label: billingDetail.label,
           invoiceDetailsId: insertedInvoiceDetails.id,
           value: new Decimal(billingDetail.value),
           type: billingDetail.type,
@@ -195,7 +196,7 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
           description: item.description,
           name: item.name,
           quantity: item.quantity,
-          price: new Decimal(item.unitPrice),
+          unitPrice: new Decimal(item.unitPrice),
           invoiceFieldId: insertedInvoiceField.id,
         })),
       )
