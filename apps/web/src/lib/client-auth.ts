@@ -8,5 +8,5 @@ export const clientAuth = createAuthClient({
   plugins: [inferAdditionalFields<typeof serverAuth>()],
 });
 
-// For faster user :3
+// For faster use :3
 export const { getSession, useSession } = createAuthClient();

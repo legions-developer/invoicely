@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, pgEnum, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, pgEnum, jsonb, integer } from "drizzle-orm/pg-core";
 import { Numeric } from "../custom/decimal";
 import { relations } from "drizzle-orm";
 
@@ -33,6 +33,8 @@ export const invoiceCompanyDetails = pgTable("invoice_company_details", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   address: text("address").notNull(),
+  logo: text("logo"),
+  signature: text("signature"),
   invoiceFieldId: uuid("invoice_field_id")
     .references(() => invoiceFields.id)
     .notNull(),
@@ -92,7 +94,7 @@ export const invoiceItems = pgTable("invoice_items", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  quantity: Numeric("quantity", { precision: 10, scale: 2 }).notNull(),
+  quantity: integer("quantity").notNull(),
   price: Numeric("price", { precision: 10, scale: 2 }).notNull(),
   invoiceFieldId: uuid("invoice_field_id")
     .references(() => invoiceFields.id)

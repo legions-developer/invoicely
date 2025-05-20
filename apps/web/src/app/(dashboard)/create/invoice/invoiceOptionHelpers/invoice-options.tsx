@@ -12,14 +12,16 @@ import InvoiceErrorsModal from "./invoice-errors-modal";
 import InvoiceTabSwitch from "./invoice-tab-switch";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
+import { useUser } from "@/hooks/use-user";
 
 type InvoiceOptionsProps = "view-pdf" | "download-pdf" | "download-png";
 
 const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }) => {
   const formValues = form.getValues();
+  const user = useUser();
 
   const handleDropDownAction = async (action: InvoiceOptionsProps) => {
-    await InvoiceDownloadManagerInstance.initialize(formValues);
+    await InvoiceDownloadManagerInstance.initialize(formValues, user);
 
     switch (action) {
       case "view-pdf":

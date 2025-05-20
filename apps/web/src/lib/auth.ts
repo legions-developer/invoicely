@@ -20,7 +20,7 @@ export const serverAuth = betterAuth({
         type: "boolean",
         required: false,
         defaultValue: false,
-        fieldName: "allowed_saving_data",
+        fieldName: "allowedSavingData",
       },
     },
   },
