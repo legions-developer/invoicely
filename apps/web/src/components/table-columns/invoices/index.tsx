@@ -1,6 +1,5 @@
 import { createColumnConfigHelper } from "@/components/ui/data-table-filter/core/filters";
 import { HeaderColumnButton, FormatTableDateObject } from "@/components/ui/data-table";
-import { INVOICE_STATUS, INVOICE_TYPE } from "@/types/indexdb/invoice";
 import { Badge, BadgeVariants } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
@@ -18,8 +17,8 @@ export const columns = [
     id: "type",
     header: ({ column }) => <HeaderColumnButton column={column}>Type</HeaderColumnButton>,
     cell: ({ row }) => (
-      <Badge variant={row.original.type === INVOICE_TYPE.INDEX_DB ? "default" : "secondary"}>
-        {row.original.type === INVOICE_TYPE.INDEX_DB ? "Local" : "Server"}
+      <Badge variant={row.original.type === "index_db" ? "default" : "secondary"}>
+        {row.original.type === "index_db" ? "Local" : "Server"}
       </Badge>
     ),
   }),
@@ -110,15 +109,15 @@ export const columnConfig = [
 
 const getStatusBadgeVariant = (status: schema.InvoiceStatusType): BadgeVariants => {
   switch (status) {
-    case INVOICE_STATUS.PENDING:
+    case "pending":
       return "yellow";
-    case INVOICE_STATUS.SUCCESS:
+    case "success":
       return "green";
-    case INVOICE_STATUS.ERROR:
+    case "error":
       return "destructive";
-    case INVOICE_STATUS.EXPIRED:
+    case "expired":
       return "gray";
-    case INVOICE_STATUS.REFUNDED:
+    case "refunded":
       return "purple";
     default:
       return "gray";
