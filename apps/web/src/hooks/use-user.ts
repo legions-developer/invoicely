@@ -3,5 +3,10 @@ import type { AuthUser } from "@/types/auth";
 
 export const useUser = () => {
   const { data: session } = useSession();
-  return session?.user as AuthUser | undefined;
+
+  if (!session) {
+    return;
+  }
+
+  return session.user as AuthUser;
 };
