@@ -27,10 +27,14 @@ const badgeVariants = cva(
         default: "px-2 py-0.5 text-xs",
         xs: "px-1 text-[10px] py-0.5",
       },
+      icon: {
+        true: "flex items-center gap-1.5",
+      },
     },
     defaultVariants: {
       variant: "default",
       size: "default",
+      icon: false,
     },
   },
 );
@@ -41,12 +45,13 @@ function Badge({
   className,
   variant,
   asChild = false,
+  icon = false,
   size,
   ...props
-}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean; icon?: boolean }) {
   const Comp = asChild ? Slot : "span";
 
-  return <Comp data-slot="badge" className={cn(badgeVariants({ variant, size }), className)} {...props} />;
+  return <Comp data-slot="badge" className={cn(badgeVariants({ variant, size, icon }), className)} {...props} />;
 }
 
 export { Badge, badgeVariants };

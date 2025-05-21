@@ -1,6 +1,7 @@
 import { createColumnConfigHelper } from "@/components/ui/data-table-filter/core/filters";
 import { HeaderColumnButton, FormatTableDateObject } from "@/components/ui/data-table";
 import { Badge, BadgeVariants } from "@/components/ui/badge";
+import { DatabaseIcon, HardDriveIcon } from "@/assets/icons";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
@@ -17,7 +18,8 @@ export const columns = [
     id: "type",
     header: ({ column }) => <HeaderColumnButton column={column}>Storage</HeaderColumnButton>,
     cell: ({ row }) => (
-      <Badge variant={row.original.type === "index_db" ? "default" : "rose"}>
+      <Badge variant={row.original.type === "index_db" ? "default" : "rose"} icon>
+        {row.original.type === "index_db" ? <HardDriveIcon /> : <DatabaseIcon />}
         {row.original.type === "index_db" ? "Local" : "Server"}
       </Badge>
     ),

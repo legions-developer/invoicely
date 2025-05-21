@@ -23,3 +23,6 @@ export { default as TriangleWarningIcon } from "./triangle-warning";
 export { default as LabelInfoIcon } from "./label-info";
 export { default as GearIcon } from "./gear";
 export { default as SlidersIcon } from "./sliders";
+export { default as ServerIcon } from "./server";
+export { default as HardDriveIcon } from "./hardrive";
+export { default as DatabaseIcon } from "./database";
