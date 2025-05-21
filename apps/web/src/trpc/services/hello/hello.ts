@@ -1,8 +1,8 @@
-import { baseProcedure } from "@/trpc/init";
+import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import Decimal from "decimal.js";
 import { z } from "zod";
 
-export const hellotest = baseProcedure
+export const hellotest = authorizedProcedure
   .input(
     z.object({
       text: z.string(),

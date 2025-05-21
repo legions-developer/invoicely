@@ -1,25 +1,11 @@
 import type * as trpcFetch from "@trpc/server/adapters/fetch";
 import { superjsonTransformer } from "./transformer";
 import { initTRPC } from "@trpc/server";
-import { parse } from "cookie";
 import { cache } from "react";
 
-export const createTRPCContext = cache(async ({ req }: trpcFetch.FetchCreateContextFnOptions) => {
-  const cookie = req.headers.get("cookie");
-
-  if (!cookie) {
-    return {
-      betterAuthSession: undefined,
-    };
-  }
-
-  const cookies = parse(cookie);
-
-  const betterAuthSession = cookies["better-auth.session_token"];
-
-  return {
-    betterAuthSession,
-  };
+// Add any context you need here ~ Legion
+export const createTRPCContext = cache(async ({}: trpcFetch.FetchCreateContextFnOptions) => {
+  return {};
 });
 // Avoid exporting the entire t-object
 // since it's not very descriptive.
