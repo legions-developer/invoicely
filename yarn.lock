@@ -3662,6 +3662,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.76.0":
+  version: 5.76.0
+  resolution: "@tanstack/query-core@npm:5.76.0"
+  checksum: 10c0/970cc783838bf7e30acbad476c72e4bb3b302c15525152cfcf5ffef8b185537e780b608e3f77793cb355b49cc98a9de597d978d400df44dbd550cba78742d67c
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.76.1":
+  version: 5.76.1
+  resolution: "@tanstack/react-query@npm:5.76.1"
+  dependencies:
+    "@tanstack/query-core": "npm:5.76.0"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10c0/35757f185ccd577e0763b18c2e29db621b40fb85419507d43a2a136fd47d8a4410f219fa9697142f7199577cc42c23dd117021cc8c072545eca133d5114148d9
+  languageName: node
+  linkType: hard
+
 "@tanstack/react-table@npm:^8.21.3":
   version: 8.21.3
   resolution: "@tanstack/react-table@npm:8.21.3"
@@ -3759,6 +3777,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@trpc/react-query@npm:^11.1.2":
+  version: 11.1.2
+  resolution: "@trpc/react-query@npm:11.1.2"
+  peerDependencies:
+    "@tanstack/react-query": ^5.67.1
+    "@trpc/client": 11.1.2
+    "@trpc/server": 11.1.2
+    react: ">=18.2.0"
+    react-dom: ">=18.2.0"
+    typescript: ">=5.7.2"
+  checksum: 10c0/e2af724717800b6ae570e28c8615ed3ec5906e3f965d3ad8ac923d75f81e06a1fca3ee19c7ab3804624ea702ed0a1dd92f3d28ee114da677c88e148aabda0415
+  languageName: node
+  linkType: hard
+
 "@trpc/react@npm:^9.27.4":
   version: 9.27.4
   resolution: "@trpc/react@npm:9.27.4"
@@ -3780,6 +3812,20 @@ __metadata:
   peerDependencies:
     typescript: ">=5.7.2"
   checksum: 10c0/aacd2e58623adcb74f1cf792d7c02d32c204c300fc755d27f725c24dd1d74983194b5df2037328e4c4ac5a832c45b43989bc73c3fd2fb7e5b94b7ee33d767093
+  languageName: node
+  linkType: hard
+
+"@trpc/tanstack-react-query@npm:^11.1.2":
+  version: 11.1.2
+  resolution: "@trpc/tanstack-react-query@npm:11.1.2"
+  peerDependencies:
+    "@tanstack/react-query": ^5.67.1
+    "@trpc/client": 11.1.2
+    "@trpc/server": 11.1.2
+    react: ">=18.2.0"
+    react-dom: ">=18.2.0"
+    typescript: ">=5.7.2"
+  checksum: 10c0/2bd06b36510cd627b1a6aecfc59e4057b1dd1c455cafc21751c15ce8e723e972e58ee79f04bd8f639243171e9eeed63f86eb23cc9f57e90e28f42695606e3a0f
   languageName: node
   linkType: hard
 
@@ -5585,6 +5631,15 @@ __metadata:
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 10c0/9596e8ccdbf1a3a88ae02cf5ee80c1c50959423e1022e4e60b91dd87c622af1da309253d8abdb258fb5e3eacb4f08e579dc58b4897b8087574eee0fd35dfa5d2
+  languageName: node
+  linkType: hard
+
+"copy-anything@npm:^3.0.2":
+  version: 3.0.5
+  resolution: "copy-anything@npm:3.0.5"
+  dependencies:
+    is-what: "npm:^4.1.8"
+  checksum: 10c0/01eadd500c7e1db71d32d95a3bfaaedcb839ef891c741f6305ab0461398056133de08f2d1bf4c392b364e7bdb7ce498513896e137a7a183ac2516b065c28a4fe
   languageName: node
   linkType: hard
 
@@ -8790,6 +8845,13 @@ __metadata:
     call-bound: "npm:^1.0.3"
     get-intrinsic: "npm:^1.2.6"
   checksum: 10c0/6491eba08acb8dc9532da23cb226b7d0192ede0b88f16199e592e4769db0a077119c1f5d2283d1e0d16d739115f70046e887e477eb0e66cd90e1bb29f28ba647
+  languageName: node
+  linkType: hard
+
+"is-what@npm:^4.1.8":
+  version: 4.1.16
+  resolution: "is-what@npm:4.1.16"
+  checksum: 10c0/611f1947776826dcf85b57cfb7bd3b3ea6f4b94a9c2f551d4a53f653cf0cb9d1e6518846648256d46ee6c91d114b6d09d2ac8a07306f7430c5900f87466aae5b
   languageName: node
   linkType: hard
 
@@ -13504,6 +13566,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"superjson@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "superjson@npm:2.2.2"
+  dependencies:
+    copy-anything: "npm:^3.0.2"
+  checksum: 10c0/aa49ebe6653e963020bc6a1ed416d267dfda84cfcc3cbd3beffd75b72e44eb9df7327215f3e3e77528f6e19ad8895b16a4964fdcd56d1799d14350db8c92afbc
+  languageName: node
+  linkType: hard
+
 "supports-color@npm:^5.3.0":
   version: 5.5.0
   resolution: "supports-color@npm:5.5.0"
@@ -14634,11 +14705,14 @@ __metadata:
     "@radix-ui/react-tooltip": "npm:^1.2.4"
     "@react-pdf/renderer": "npm:^4.3.0"
     "@tailwindcss/postcss": "npm:^4"
+    "@tanstack/react-query": "npm:^5.76.1"
     "@tanstack/react-table": "npm:^8.21.3"
     "@trpc/client": "npm:^11.1.2"
     "@trpc/next": "npm:^11.1.2"
     "@trpc/react": "npm:^9.27.4"
+    "@trpc/react-query": "npm:^11.1.2"
     "@trpc/server": "npm:^11.1.2"
+    "@trpc/tanstack-react-query": "npm:^11.1.2"
     "@types/lodash": "npm:^4"
     "@types/node": "npm:^20"
     "@types/number-to-words": "npm:^1"
@@ -14679,6 +14753,7 @@ __metadata:
     rehype-autolink-headings: "npm:^7.1.0"
     rehype-slug: "npm:^6.0.0"
     sonner: "npm:^2.0.3"
+    superjson: "npm:^2.2.2"
     tailwind-merge: "npm:^3.2.0"
     tailwindcss: "npm:^4"
     tw-animate-css: "npm:^1.2.8"
