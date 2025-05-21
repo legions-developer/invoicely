@@ -6,7 +6,7 @@ import { createPdfToImage } from "@/lib/invoice/create-pdf-to-image";
 import { forceInsertInvoice } from "@/lib/indexdb-queries/invoice";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import { downloadFile } from "@/lib/invoice/download-file";
-import { tryCatch } from "@/lib/neverthrow/tryCatch";
+import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
 import type { AuthUser } from "@/types/auth";
 import { toast } from "sonner";
 
@@ -67,7 +67,7 @@ export class InvoiceDownloadManager {
         });
       }
     } else {
-      const { success } = await tryCatch(forceInsertInvoice(this.isInvoiceDataInitialized()));
+      const { success } = await asyncTryCatch(forceInsertInvoice(this.isInvoiceDataInitialized()));
       if (!success) {
         toast.error("IndexDB Error", {
           description: "Error saving invoice to indexedDB",

@@ -4,7 +4,10 @@ interface TryCatchOptions {
   errorMessage?: string;
 }
 
-export async function tryCatch<T>(promise: Promise<T>, options?: TryCatchOptions): Promise<CustomResult<T, Error>> {
+export async function asyncTryCatch<T>(
+  promise: Promise<T>,
+  options?: TryCatchOptions,
+): Promise<CustomResult<T, Error>> {
   try {
     const data = await promise;
     return { success: true, data };

@@ -1,4 +1,4 @@
-import { tryCatch } from "@/lib/neverthrow/tryCatch";
+import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
 import { useState, useEffect } from "react";
 
 type UseIDBQueryResult<T> = {
@@ -16,7 +16,7 @@ export function useIDBQuery<T>(queryFn: () => Promise<T>): UseIDBQueryResult<T> 
     const fetchData = async () => {
       setIsLoading(true);
 
-      const { success, data, error } = await tryCatch(queryFn(), {
+      const { success, data, error } = await asyncTryCatch(queryFn(), {
         errorMessage: "[USE-IDB-QUERY ERROR]: An error occurred while fetching data",
       });
 
