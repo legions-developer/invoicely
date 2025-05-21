@@ -26,3 +26,7 @@ export { default as SlidersIcon } from "./sliders";
 export { default as ServerIcon } from "./server";
 export { default as HardDriveIcon } from "./hardrive";
 export { default as DatabaseIcon } from "./database";
+export { default as IdBadgeIcon } from "./id-badge";
+export { default as CalendarCheckIcon } from "./calendar-check";
+export { default as SortNumDescendingIcon } from "./sort-num-desc";
+export { default as PriorityMediumIcon } from "./priority-medium";

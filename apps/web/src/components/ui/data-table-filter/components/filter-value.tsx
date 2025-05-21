@@ -363,24 +363,24 @@ const OptionItem = memo(function OptionItem({ option, onToggle }: OptionItemProp
 
   return (
     <CommandItem key={value} onSelect={handleSelect} className="group flex items-center justify-between gap-1.5">
-      <div className="flex items-center gap-1.5">
+      <div className="flex w-full items-center gap-1.5">
         <Checkbox
           checked={selected}
-          className="dark:border-ring mr-1 opacity-0 group-data-[selected=true]:opacity-100 data-[state=checked]:opacity-100"
+          className="mr-1 opacity-20 group-data-[selected=true]:opacity-100 data-[state=checked]:opacity-100"
         />
         {Icon && (isValidElement(Icon) ? Icon : <Icon className="text-primary size-4" />)}
-        <span>
-          {label}
-          <sup
+        <div className="flex w-full flex-row justify-between">
+          <span>{label}</span>
+          <span
             className={cn(
               count == null && "hidden",
-              "text-muted-foreground ml-0.5 tracking-tight tabular-nums",
+              "text-muted-foreground/40 ml-0.5 text-[10px] tracking-tight tabular-nums",
               count === 0 && "slashed-zero",
             )}
           >
-            {typeof count === "number" ? (count < 100 ? count : "100+") : ""}
-          </sup>
-        </span>
+            x{typeof count === "number" ? (count < 100 ? count : "100+") : ""}
+          </span>
+        </div>
       </div>
     </CommandItem>
   );
@@ -440,7 +440,7 @@ export function FilterValueOptionController<TData>({
             <OptionItem key={option.value} option={option} onToggle={handleToggle} />
           ))}
         </CommandGroup>
-        <CommandSeparator />
+        {selectedOptions.length > 0 && <CommandSeparator />}
         <CommandGroup className={cn(unselectedOptions.length === 0 && "hidden")}>
           {unselectedOptions.map((option) => (
             <OptionItem key={option.value} option={option} onToggle={handleToggle} />
@@ -508,7 +508,7 @@ export function FilterValueMultiOptionController<TData>({
             <OptionItem key={option.value} option={option} onToggle={handleToggle} />
           ))}
         </CommandGroup>
-        <CommandSeparator />
+        {selectedOptions.length > 0 && <CommandSeparator />}
         <CommandGroup className={cn(unselectedOptions.length === 0 && "hidden")}>
           {unselectedOptions.map((option) => (
             <OptionItem key={option.value} option={option} onToggle={handleToggle} />
