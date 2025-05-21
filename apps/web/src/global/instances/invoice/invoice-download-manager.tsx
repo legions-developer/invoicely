@@ -8,7 +8,6 @@ import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import { downloadFile } from "@/lib/invoice/download-file";
 import { tryCatch } from "@/lib/neverthrow/tryCatch";
 import type { AuthUser } from "@/types/auth";
-import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
 
 export class InvoiceDownloadManager {
@@ -62,34 +61,13 @@ export class InvoiceDownloadManager {
     // If user have allowed saving data in db then save data to db
     if (this.user && this.user.allowedSavingData) {
       const insertingInvoicePromise = await insertInvoice(this.isInvoiceDataInitialized());
-
-      console.log("response", insertingInvoicePromise);
-
-      if (insertingInvoicePromise.success) {
-        toast.success("Invoice saved to database", {
-          description: "Invoice saved to database",
-        });
-      } else {
+      if (!insertingInvoicePromise.success) {
         toast.error("Database Error", {
-          description: `Error saving invoice to database: \n ${insertingInvoicePromise.message}`,
+          description: `Error saving invoice to database`,
         });
       }
     } else {
-      toast.info("Caution", {
-        description: "User has not allowed saving data in db",
-      });
-      const { success } = await tryCatch(
-        forceInsertInvoice({
-          id: uuidv4(),
-          type: "index_db",
-          status: "pending",
-          invoiceFields: this.isInvoiceDataInitialized(),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          paidAt: null,
-        }),
-      );
-
+      const { success } = await tryCatch(forceInsertInvoice(this.isInvoiceDataInitialized()));
       if (!success) {
         toast.error("IndexDB Error", {
           description: "Error saving invoice to indexedDB",
