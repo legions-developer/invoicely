@@ -1,5 +1,5 @@
+import { superjsonTransformer } from "./transformer";
 import { initTRPC } from "@trpc/server";
-import superjson from "superjson";
 import { cache } from "react";
 
 export const createTRPCContext = cache(async () => {
@@ -16,7 +16,7 @@ const t = initTRPC.create({
   /**
    * @see https://trpc.io/docs/server/data-transformers
    */
-  transformer: superjson,
+  transformer: superjsonTransformer,
 });
 // Base router and procedure helpers
 export const createTRPCRouter = t.router;

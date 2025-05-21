@@ -45,6 +45,7 @@
     "cmdk": "^1.1.1",
     "currency-symbol-map": "^5.1.0",
     "date-fns": "^4.1.0",
+    "devalue": "^5.1.1",
     "fumadocs-ui": "^15.2.15",
     "idb": "^8.0.3",
     "jotai": "^2.12.3",

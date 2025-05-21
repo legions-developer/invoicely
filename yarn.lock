@@ -5968,6 +5968,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"devalue@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "devalue@npm:5.1.1"
+  checksum: 10c0/f6717a856fd54216959abd341cb189e47a9b37d72d8419e055ae77567ff4ed0fb683b1ffb6a71067f645adae5991bffabe6468a3e2385937bff49273e71c1f51
+  languageName: node
+  linkType: hard
+
 "devlop@npm:^1.0.0, devlop@npm:^1.1.0":
   version: 1.1.0
   resolution: "devlop@npm:1.1.0"
@@ -14724,6 +14731,7 @@ __metadata:
     cmdk: "npm:^1.1.1"
     currency-symbol-map: "npm:^5.1.0"
     date-fns: "npm:^4.1.0"
+    devalue: "npm:^5.1.1"
     eslint: "npm:^9"
     eslint-config-next: "npm:15.3.1"
     fumadocs-ui: "npm:^15.2.15"
