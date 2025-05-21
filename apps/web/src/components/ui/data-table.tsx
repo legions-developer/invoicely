@@ -115,7 +115,7 @@ export function DataTable<TData, TValue>({
                 <TableRow key={index}>
                   {columns.map((column) => (
                     <TableCell key={column.id}>
-                      <Skeleton className="h-5 w-full rounded" />
+                      <Skeleton className="h-4.5 w-full rounded-sm" />
                     </TableCell>
                   ))}
                 </TableRow>
