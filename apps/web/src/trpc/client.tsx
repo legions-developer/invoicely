@@ -8,6 +8,7 @@ import { makeQueryClient } from "./query-client";
 import type { AppRouter } from "./routers/_app";
 import { httpBatchLink } from "@trpc/client";
 import { useState } from "react";
+
 export const trpc = createTRPCReact<AppRouter>();
 
 let clientQueryClientSingleton: QueryClient;

@@ -12,5 +12,6 @@ export const hellotest = baseProcedure
     return {
       greeting: `hello ${input.text} sir, from hello.ts`,
       decimal: new Decimal(100),
+      date: new Date(),
     };
   });

@@ -8,8 +8,6 @@ const Page = () => {
     text: "Gurbinder",
   });
 
-  console.log("helloResult", helloResult.data);
-
   return (
     <div className="p-4">
       <div className="mb-4">

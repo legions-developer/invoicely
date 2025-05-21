@@ -42,6 +42,8 @@
   },
   "dependencies": {
     "@t3-oss/env-nextjs": "^0.13.4",
+    "@trpc/react-query": "^11.1.2",
+    "cookie": "^1.0.2",
     "decimal.js": "^10.5.0",
     "drizzle-kit": "^0.31.1"
   }
