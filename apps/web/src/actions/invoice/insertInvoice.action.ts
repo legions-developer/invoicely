@@ -101,20 +101,15 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
     }
 
     // Inserting company details metadata in db
-    const [insertedCompanyDetailsMetadata] = await db
-      .insert(schema.invoiceCompanyDetailsMetadata)
-      .values(
+    if (invoice.companyDetails.metadata.length > 0) {
+      await db.insert(schema.invoiceCompanyDetailsMetadata).values(
         invoice.companyDetails.metadata.map((metadata) => ({
           id: uuidv4(),
           label: metadata.label,
           value: metadata.value,
           invoiceCompanyDetailsId: insertedCompanyDetails.id,
         })),
-      )
-      .returning();
-
-    if (!insertedCompanyDetailsMetadata) {
-      throw new Error("Error inserting company details metadata");
+      );
     }
 
     // Inserting client details in db
@@ -133,20 +128,15 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
     }
 
     // Inserting client details metadata in db
-    const [insertedClientDetailsMetadata] = await db
-      .insert(schema.invoiceClientDetailsMetadata)
-      .values(
+    if (invoice.clientDetails.metadata.length > 0) {
+      await db.insert(schema.invoiceClientDetailsMetadata).values(
         invoice.clientDetails.metadata.map((metadata) => ({
           id: uuidv4(),
           label: metadata.label,
           value: metadata.value,
           invoiceClientDetailsId: insertedClientDetails.id,
         })),
-      )
-      .returning();
-
-    if (!insertedClientDetailsMetadata) {
-      throw new Error("Error inserting client details metadata");
+      );
     }
 
     // Inserting invoice details in db
@@ -170,9 +160,8 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
     }
 
     // Inserting invoice billing information in db
-    const [insertedInvoiceBillingInformation] = await db
-      .insert(schema.invoiceDetailsBillingDetails)
-      .values(
+    if (invoice.invoiceDetails.billingDetails.length > 0) {
+      await db.insert(schema.invoiceDetailsBillingDetails).values(
         invoice.invoiceDetails.billingDetails.map((billingDetail) => ({
           id: uuidv4(),
           label: billingDetail.label,
@@ -180,17 +169,12 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
           value: new Decimal(billingDetail.value),
           type: billingDetail.type,
         })),
-      )
-      .returning();
-
-    if (!insertedInvoiceBillingInformation) {
-      throw new Error("Error inserting invoice billing information");
+      );
     }
 
     // Inserting invoice items in db
-    const [insertedInvoiceItems] = await db
-      .insert(schema.invoiceItems)
-      .values(
+    if (invoice.items.length > 0) {
+      await db.insert(schema.invoiceItems).values(
         invoice.items.map((item) => ({
           id: uuidv4(),
           description: item.description,
@@ -199,11 +183,7 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
           unitPrice: new Decimal(item.unitPrice),
           invoiceFieldId: insertedInvoiceField.id,
         })),
-      )
-      .returning();
-
-    if (!insertedInvoiceItems) {
-      throw new Error("Error inserting invoice items");
+      );
     }
 
     // Inserting invoice metadata in db
@@ -222,20 +202,15 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
     }
 
     // Inserting invoice metadata payment information in db
-    const [insertedInvoiceMetadataPaymentInformation] = await db
-      .insert(schema.invoiceMetadataPaymentInformation)
-      .values(
+    if (invoice.metadata.paymentInformation.length > 0) {
+      await db.insert(schema.invoiceMetadataPaymentInformation).values(
         invoice.metadata.paymentInformation.map((paymentInformation) => ({
           id: uuidv4(),
           label: paymentInformation.label,
           value: paymentInformation.value,
           invoiceMetadataId: insertedInvoiceMetadata.id,
         })),
-      )
-      .returning();
-
-    if (!insertedInvoiceMetadataPaymentInformation) {
-      throw new Error("Error inserting invoice metadata payment information");
+      );
     }
 
     return {
@@ -245,7 +220,7 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
 
-    console.log("message", message);
+    console.log("message", error);
     return {
       success: false,
       message: message,

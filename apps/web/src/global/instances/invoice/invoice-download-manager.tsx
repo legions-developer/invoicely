@@ -50,9 +50,10 @@ export class InvoiceDownloadManager {
 
   // Download the PDF
   public async downloadPdf() {
-    const url = createBlobUrl({ blob: this.isBlobInitialized() });
-    downloadFile({ url, fileName: this.isInvoiceNameInitialized() });
-    revokeBlobUrl({ url });
+    // const url = createBlobUrl({ blob: this.isBlobInitialized() });
+    // downloadFile({ url, fileName: this.isInvoiceNameInitialized() });
+    // revokeBlobUrl({ url });
+
     // Save data to indexedDB
     await this.saveInvoiceToIndexedDB();
   }
@@ -70,7 +71,7 @@ export class InvoiceDownloadManager {
         });
       } else {
         toast.error("Database Error", {
-          description: "Error saving invoice to database",
+          description: `Error saving invoice to database: \n ${insertingInvoicePromise.message}`,
         });
       }
     } else {

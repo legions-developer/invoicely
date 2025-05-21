@@ -8,10 +8,14 @@ import { trpc } from "@/trpc/client";
 import React from "react";
 
 const Page = () => {
-  const { data: trpcData } = trpc.invoice.list.useQuery();
-  const { data, isLoading } = useIDBQuery(getAllInvoices);
+  const trpcData = trpc.invoice.list.useQuery();
+  const idbData = useIDBQuery(getAllInvoices);
 
-  console.log("trpcData", trpcData);
+  const isLoading = trpcData.isLoading || idbData.isLoading;
+
+  // Combine and ensure data is an array
+  const data = [...(trpcData.data ?? []), ...(idbData.data ?? [])];
+
   return (
     <div className="dash-page p-4">
       <DataTable isLoading={isLoading} data={data} columns={columns} columnConfig={columnConfig} />

@@ -15,18 +15,20 @@ const columnConfigHelper = createColumnConfigHelper<Invoice>();
 export const columns = [
   columnHelper.accessor((row) => row.type, {
     id: "type",
-    header: ({ column }) => <HeaderColumnButton column={column}>Type</HeaderColumnButton>,
+    header: ({ column }) => <HeaderColumnButton column={column}>Storage</HeaderColumnButton>,
     cell: ({ row }) => (
-      <Badge variant={row.original.type === "index_db" ? "default" : "secondary"}>
+      <Badge variant={row.original.type === "index_db" ? "default" : "rose"}>
         {row.original.type === "index_db" ? "Local" : "Server"}
       </Badge>
     ),
+    enableSorting: false,
   }),
 
   columnHelper.accessor((row) => row.id, {
     id: "id",
     header: ({ column }) => <HeaderColumnButton column={column}>ID</HeaderColumnButton>,
     cell: ({ row }) => <div className="text-muted-foreground text-xs">{row.original.id}</div>,
+    enableSorting: false,
   }),
 
   columnHelper.accessor(
@@ -37,6 +39,7 @@ export const columns = [
       cell: ({ row }) => (
         <div className="text-xs">{`${row.original.invoiceFields.invoiceDetails.prefix}${row.original.invoiceFields.invoiceDetails.serialNumber}`}</div>
       ),
+      enableSorting: false,
     },
   ),
 
@@ -62,6 +65,7 @@ export const columns = [
         {row.original.status}
       </Badge>
     ),
+    enableSorting: false,
   }),
 
   columnHelper.accessor((row) => row.createdAt, {
@@ -87,6 +91,7 @@ export const columns = [
         </Button>
       </div>
     ),
+    enableSorting: false,
   }),
 ];
 

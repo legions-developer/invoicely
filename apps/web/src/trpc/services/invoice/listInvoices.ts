@@ -7,8 +7,25 @@ export const listInvoices = authorizedProcedure.query(async ({ ctx }) => {
   try {
     const invoices = await listInvoicesQuery(ctx.auth.user.id);
 
-    return invoices;
+    return invoices.map((invoice) => ({
+      ...invoice,
+      invoiceFields: {
+        ...invoice.invoiceFields,
+        items: invoice.invoiceFields.items.map((item) => ({
+          ...item,
+          unitPrice: item.unitPrice.toNumber(),
+        })),
+        invoiceDetails: {
+          ...invoice.invoiceFields.invoiceDetails,
+          billingDetails: invoice.invoiceFields.invoiceDetails.billingDetails.map((billingDetail) => ({
+            ...billingDetail,
+            value: billingDetail.value.toNumber(),
+          })),
+        },
+      },
+    }));
   } catch (e) {
+    console.log("Error fetching invoices", e);
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "Error fetching invoices",

@@ -169,13 +169,17 @@ export function DataTable<TData, TValue>({
 export function HeaderColumnButton<TData>({
   column,
   children,
-  disableChevron = false,
+  disableChevron = true,
 }: {
   column: Column<TData, unknown>;
   children: React.ReactNode;
   disableChevron?: boolean;
 }) {
   const isSorted = column.getIsSorted();
+
+  // Disable chevron if sorting is not enabled
+  disableChevron = !column.getCanSort();
+
   return (
     <button
       className={cn(
@@ -185,7 +189,7 @@ export function HeaderColumnButton<TData>({
       onClick={() => column.toggleSorting(isSorted === "asc")}
     >
       {children}
-      <div className={cn(disableChevron && "hidden", "hidden sm:inline-block")}>
+      <div className={cn(disableChevron && "!hidden", "text-secondary-foreground/50 hidden sm:inline-block")}>
         {isSorted === false && <ArrowUpDownIcon size={12} />}
         {isSorted === "asc" && <ArrowUpZaIcon size={12} />}
         {isSorted === "desc" && <ArrowDownZaIcon size={12} />}
