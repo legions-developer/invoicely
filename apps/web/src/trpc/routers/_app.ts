@@ -1,8 +1,8 @@
+import { invoiceRouter } from "@/trpc/services/invoice";
 import { createTRPCRouter } from "../init";
 
-import { helloRouter } from "./helloRouter";
 export const appRouter = createTRPCRouter({
-  hello: helloRouter,
+  invoice: invoiceRouter,
 });
 // export type definition of API
 export type AppRouter = typeof appRouter;

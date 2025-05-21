@@ -59,6 +59,7 @@ export const insertInvoice = async (invoice: ZodCreateInvoiceSchema): Promise<Su
         status: "pending",
         createdAt: new Date(),
         updatedAt: new Date(),
+        userId: user.id,
       })
       .returning({
         id: schema.invoices.id,

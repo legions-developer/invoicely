@@ -1,6 +1,7 @@
 import { pgTable, text, timestamp, uuid, pgEnum, jsonb, integer } from "drizzle-orm/pg-core";
 import { Numeric } from "../custom/decimal";
 import { relations } from "drizzle-orm";
+import { users } from "./user";
 
 interface InvoiceTheme {
   baseColor: string;
@@ -25,6 +26,9 @@ export const invoices = pgTable("invoices", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   paidAt: timestamp("paid_at"),
+  userId: uuid("user_id")
+    .references(() => users.id)
+    .notNull(),
 });
 
 export const invoiceFields = pgTable("invoice_fields", {
