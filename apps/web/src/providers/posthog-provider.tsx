@@ -23,6 +23,10 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  if (!env.NEXT_PUBLIC_POSTHOG_KEY || !env.NEXT_PUBLIC_POSTHOG_HOST) {
+    return <>{children}</>;
+  }
+
   return (
     <PHProvider client={posthog}>
       <SuspendedPostHogPageView />
