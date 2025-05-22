@@ -10,6 +10,7 @@ import InvoiceOptions from "./invoiceOptionHelpers/invoice-options";
 import { ImperativePanelHandle } from "react-resizable-panels";
 import { invoiceTabAtom } from "@/global/atoms/invoice-atom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Invoice } from "@/types/common/invoice";
 import { useIsMobile } from "@/hooks/use-mobile";
 import React, { useEffect, useRef } from "react";
 import { PdfWorkerProvider } from "@/providers";
@@ -19,7 +20,11 @@ import InvoiceForm from "./invoice-form";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
 
-const Page = () => {
+interface InvoicePageProps {
+  defaultInvoice?: Invoice["invoiceFields"];
+}
+
+const InvoicePage = ({ defaultInvoice }: InvoicePageProps) => {
   const invoiceFormPanelRef = useRef<ImperativePanelHandle>(null);
   const invoicePreviewPanelRef = useRef<ImperativePanelHandle>(null);
   const [invoiceTab, setInvoiceTab] = useAtom(invoiceTabAtom);
@@ -28,7 +33,7 @@ const Page = () => {
   // Form
   const form = useForm<ZodCreateInvoiceSchema>({
     resolver: zodResolver(createInvoiceSchema),
-    defaultValues: createInvoiceSchemaDefaultValues,
+    defaultValues: defaultInvoice || createInvoiceSchemaDefaultValues,
   });
 
   // Collapse or expand the panels based on the invoiceTab value
@@ -95,4 +100,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default InvoicePage;

@@ -32,6 +32,7 @@ import UpdateStatusModal from "./updateStatusModal";
 import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const columnHelper = createColumnHelper<Invoice>();
 const columnConfigHelper = createColumnConfigHelper<Invoice>();
@@ -138,10 +139,12 @@ export const columns = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <UpdateStatusModal invoiceId={id} type={type} />
-              <DropdownMenuItem>
-                <FilePenIcon />
-                <span>Edit</span>
-              </DropdownMenuItem>
+              <Link href={`/edit/${type}/${id}`}>
+                <DropdownMenuItem>
+                  <FilePenIcon />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+              </Link>
               <DeleteInvoiceModal invoiceId={id} type={type} />
             </DropdownMenuContent>
           </DropdownMenu>

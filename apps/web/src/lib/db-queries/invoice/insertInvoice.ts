@@ -3,12 +3,12 @@ import { db, schema } from "@invoicely/db";
 import { v4 as uuidv4 } from "uuid";
 import Decimal from "decimal.js";
 
-export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId: string) => {
+export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId: string, id?: string) => {
   // Inserting invoice in db
   const [insertedInvoice] = await db
     .insert(schema.invoices)
     .values({
-      id: uuidv4(),
+      id: id ?? uuidv4(),
       type: "postgres",
       status: "pending",
       createdAt: new Date(),
@@ -173,4 +173,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
       })),
     );
   }
+
+  // after successfully inserting return the invoice id
+  return insertedInvoice.id;
 };

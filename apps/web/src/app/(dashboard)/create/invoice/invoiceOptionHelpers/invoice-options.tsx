@@ -6,35 +6,50 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { EyeScannerIcon, FileDownloadIcon, ImageSparkleIcon, InboxArrowDownIcon } from "@/assets/icons";
 import { InvoiceDownloadManagerInstance } from "@/global/instances/invoice/invoice-download-manager";
+import { EditInvoicePageSchema } from "@/zod-schemas/invoice/edit-invoice-page";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { PostHogAnalytics } from "@/components/ui/posthog-analytics";
 import { saveInvoiceToDatabase } from "@/lib/invoice/save-invoice";
+import { InvoiceTypeType } from "@invoicely/db/schema/invoice";
+import { editInvoice } from "@/lib/invoice/edit-invoice";
 import InvoiceErrorsModal from "./invoice-errors-modal";
 import InvoiceTabSwitch from "./invoice-tab-switch";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
+import { useParams } from "next/navigation";
 import { useUser } from "@/hooks/use-user";
+import { AuthUser } from "@/types/auth";
 
-type InvoiceOptionsProps = "view-pdf" | "download-pdf" | "download-png";
+type InvoiceOptionsProps = "view-pdf" | "download-pdf" | "download-png" | "save-invoice-to-database";
 
 const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }) => {
+  const params = useParams() satisfies { type?: string; id?: string };
   const formValues = form.getValues();
   const user = useUser();
 
   const handleDropDownAction = async (action: InvoiceOptionsProps) => {
     await InvoiceDownloadManagerInstance.initialize(formValues);
 
+    const { data } = EditInvoicePageSchema.safeParse({
+      type: params.type,
+      id: params.id,
+    });
+
     switch (action) {
+      case "save-invoice-to-database":
+        SaveInvoiceToDatabase({ formValues, user, type: data?.type, id: data?.id });
+        break;
       case "view-pdf":
         InvoiceDownloadManagerInstance.previewPdf();
+        // dont save the invoice to database because we are not redirecting user to edit page
         break;
       case "download-pdf":
         InvoiceDownloadManagerInstance.downloadPdf();
-        saveInvoiceToDatabase(formValues, user);
+        SaveInvoiceToDatabase({ formValues, user, type: data?.type, id: data?.id });
         break;
       case "download-png":
         InvoiceDownloadManagerInstance.downloadPng();
-        saveInvoiceToDatabase(formValues, user);
+        SaveInvoiceToDatabase({ formValues, user, type: data?.type, id: data?.id });
         break;
       default:
         break;
@@ -55,6 +70,12 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <PostHogAnalytics analytics={{ name: "save-invoice-action", group: "create-invoice-page" }}>
+              <DropdownMenuItem onClick={() => handleDropDownAction("save-invoice-to-database")}>
+                <InboxArrowDownIcon />
+                <span>Save Invoice</span>
+              </DropdownMenuItem>
+            </PostHogAnalytics>
             <PostHogAnalytics analytics={{ name: "view-invoice-action", group: "create-invoice-page" }}>
               <DropdownMenuItem onClick={() => handleDropDownAction("view-pdf")}>
                 <EyeScannerIcon />
@@ -81,3 +102,22 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
 };
 
 export default InvoiceOptions;
+
+const SaveInvoiceToDatabase = ({
+  formValues,
+  user,
+  type,
+  id,
+}: {
+  formValues: ZodCreateInvoiceSchema;
+  user: AuthUser | undefined;
+  type?: InvoiceTypeType;
+  id?: string;
+}) => {
+  if (id && type) {
+    // Edit the old invoice
+    editInvoice(formValues, user, type, id);
+  } else {
+    saveInvoiceToDatabase(formValues, user);
+  }
+};

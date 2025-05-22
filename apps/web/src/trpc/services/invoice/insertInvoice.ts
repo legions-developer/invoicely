@@ -7,6 +7,7 @@ import { TRPCError } from "@trpc/server";
 interface MutationResponse {
   success: boolean;
   message: string;
+  invoiceId?: string;
 }
 
 export const insertInvoice = authorizedProcedure
@@ -20,11 +21,12 @@ export const insertInvoice = authorizedProcedure
       };
     }
     try {
-      await insertInvoiceQuery(input, ctx.auth.user.id);
+      const invoiceId = await insertInvoiceQuery(input, ctx.auth.user.id);
 
       return {
         success: true,
         message: "Invoice saved successfully",
+        invoiceId,
       };
     } catch (error) {
       throw new TRPCError({
