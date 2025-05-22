@@ -12,11 +12,15 @@ function PostHogAnalytics({ className, analytics, onClick, as: Component = "div"
 
   const handleClick = React.useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      // Track analytics event if analytics name is provided
+      // Track analytics event if analytics name is provided and posthog is available
       if (analytics?.name && posthog) {
-        posthog.capture(analytics.name, {
-          elementGroup: analytics.group,
-        });
+        try {
+          posthog.capture(analytics.name, {
+            elementGroup: analytics.group,
+          });
+        } catch (error) {
+          console.warn('Failed to capture analytics event:', error);
+        }
       }
 
       // Call the original onClick handler if provided
