@@ -79,8 +79,11 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
     // Create a debounced version of the processing function
     const debouncedProcessFormValue = debounce(processFormValue, 1000);
 
-    const subscription = form.watch((value) => {
-      // Ensure the watched value is cast correctly, matching the original logic
+    const subscription = form.watch((value, { name, type }) => {
+      if (!name || name.includes("ui.") || type === "blur") {
+        return;
+      }
+      
       debouncedProcessFormValue(value as ZodCreateInvoiceSchema);
     });
 
@@ -97,7 +100,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   useEffect(() => {
     setPdfError(null);
 
-    (async () => {
+    const generatePdf = async () => {
       try {
         const blob = await createPdfBlob({ invoiceData: data });
         const newUrl = createBlobUrl({ blob });
@@ -114,7 +117,9 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
           revokeBlobUrl({ url: generatedPdfUrl });
         }
       }
-    })();
+    };
+
+    generatePdf();
 
     // Cleanup on component unmount or when data changes again (before new generation)
     return () => {
@@ -149,4 +154,4 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   );
 };
 
-export default InvoicePreview;
+export default React.memo(InvoicePreview);
