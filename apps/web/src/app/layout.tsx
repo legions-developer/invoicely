@@ -18,7 +18,6 @@ import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants";
 import { TOAST_ICONS, TOAST_OPTIONS } from "@/constants/toast";
 import { TRPCProvider } from "@/trpc/client";
 import { ThemeProvider } from "next-themes";
-import { env } from "@invoicely/utilities";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -77,9 +76,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Using ENV to get the TRPC_BASE_URL
-  const trpcUrl = `${env.TRPC_BASE_URL}/api/trpc`;
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -94,7 +90,7 @@ export default function RootLayout({
           "antialiased",
         )}
       >
-        <TRPCProvider url={trpcUrl}>
+        <TRPCProvider>
           <OpenPanelProvider>
             <OneDollarStatsProvider>
               <PostHogProvider>

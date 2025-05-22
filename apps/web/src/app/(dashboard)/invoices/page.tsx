@@ -14,7 +14,7 @@ const Page = () => {
   const isLoading = trpcData.isLoading || idbData.isLoading;
 
   // Combine and ensure data is an array
-  const data = [...(trpcData.data ?? []), ...(idbData.data ?? [])];
+  const data = [...(trpcData.data?.data ?? []), ...(idbData.data ?? [])];
 
   return (
     <div className="dash-page p-4">

@@ -145,8 +145,8 @@ export function DataTable<TData, TValue>({
       {/* Pagination */}
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="text-muted-foreground text-xs">
-          Page <span className="text-white">{table.getState().pagination.pageIndex + 1}</span> of{" "}
-          <span className="text-white">{table.getPageCount()}</span> Page
+          Page <span className="text-secondary-foreground">{table.getState().pagination.pageIndex + 1}</span> of{" "}
+          <span className="text-secondary-foreground">{table.getPageCount()}</span> Page
         </div>
         <div className="flex items-center justify-end space-x-2">
           <Button

@@ -8,6 +8,7 @@ import { EyeScannerIcon, FileDownloadIcon, ImageSparkleIcon, InboxArrowDownIcon 
 import { InvoiceDownloadManagerInstance } from "@/global/instances/invoice/invoice-download-manager";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { PostHogAnalytics } from "@/components/ui/posthog-analytics";
+import { saveInvoiceToDatabase } from "@/lib/invoice/save-invoice";
 import InvoiceErrorsModal from "./invoice-errors-modal";
 import InvoiceTabSwitch from "./invoice-tab-switch";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,7 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   const user = useUser();
 
   const handleDropDownAction = async (action: InvoiceOptionsProps) => {
-    await InvoiceDownloadManagerInstance.initialize(formValues, user);
+    await InvoiceDownloadManagerInstance.initialize(formValues);
 
     switch (action) {
       case "view-pdf":
@@ -29,9 +30,11 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
         break;
       case "download-pdf":
         InvoiceDownloadManagerInstance.downloadPdf();
+        saveInvoiceToDatabase(formValues, user);
         break;
       case "download-png":
         InvoiceDownloadManagerInstance.downloadPng();
+        saveInvoiceToDatabase(formValues, user);
         break;
       default:
         break;
