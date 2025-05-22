@@ -54,11 +54,16 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
   );
 };
 
-const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }) => {
+interface InvoicePreviewProps {
+  formValues: ZodCreateInvoiceSchema;
+  subscribeToFormChanges: (callback: (data: ZodCreateInvoiceSchema) => void) => { unsubscribe: () => void };
+}
+
+const InvoicePreview = ({ formValues, subscribeToFormChanges }: InvoicePreviewProps) => {
   const isClient = useMounted();
   const [resizeRef, container] = useResizeObserver();
   const setInvoiceError = useSetAtom(invoiceErrorAtom);
-  const [data, setData] = useState(form.getValues());
+  const [data, setData] = useState(formValues);
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [generatedPdfUrl, setGeneratedPdfUrl] = useState<string | null>(null);
 
@@ -79,12 +84,8 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
     // Create a debounced version of the processing function
     const debouncedProcessFormValue = debounce(processFormValue, 1000);
 
-    const subscription = form.watch((value, { name, type }) => {
-      if (!name || name.includes("ui.") || type === "blur") {
-        return;
-      }
-      
-      debouncedProcessFormValue(value as ZodCreateInvoiceSchema);
+    const subscription = subscribeToFormChanges((value) => {
+      debouncedProcessFormValue(value);
     });
 
     return () => {
@@ -94,7 +95,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form]);
+  }, [subscribeToFormChanges]);
 
   // Effect to generate PDF when data changes
   useEffect(() => {

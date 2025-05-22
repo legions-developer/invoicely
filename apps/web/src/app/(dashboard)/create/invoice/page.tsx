@@ -18,6 +18,27 @@ import { useForm } from "react-hook-form";
 import InvoiceForm from "./invoice-form";
 import { cn } from "@/lib/utils";
 import { useAtom } from "jotai";
+import { UseFormReturn } from "react-hook-form";
+
+const InvoicePreviewWrapper = React.memo(
+  ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }) => {
+    const formValues = React.useMemo(() => {
+      return form.getValues();
+    }, [form]);
+
+    const subscribeToFormChanges = React.useCallback(
+      (callback: (data: ZodCreateInvoiceSchema) => void) => {
+        return form.watch((value, { name, type }) => {
+          if (!name || name.includes("ui.") || type === "blur") return;
+          callback(value as ZodCreateInvoiceSchema);
+        });
+      },
+      [form]
+    );
+
+    return <InvoicePreview formValues={formValues} subscribeToFormChanges={subscribeToFormChanges} />;
+  }
+);
 
 const Page = () => {
   const invoiceFormPanelRef = useRef<ImperativePanelHandle>(null);
@@ -87,7 +108,7 @@ const Page = () => {
           ref={invoicePreviewPanelRef}
         >
           <PdfWorkerProvider>
-            <InvoicePreview form={form} />
+            <InvoicePreviewWrapper form={form} />
           </PdfWorkerProvider>
         </ResizablePanel>
       </ResizablePanelGroup>
