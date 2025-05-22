@@ -2,8 +2,13 @@ import {
   BoxIcon,
   CalendarCheckIcon,
   DatabaseIcon,
+  FileAlertIcon,
+  FileBanIcon,
+  FileCheckIcon,
   FilePenIcon,
+  FileRefreshIcon,
   HardDriveIcon,
+  HourglassStartIcon,
   IdBadgeIcon,
   PriorityMediumIcon,
   SortNumDescendingIcon,
@@ -95,7 +100,8 @@ export const columns = [
     id: "status",
     header: ({ column }) => <HeaderColumnButton column={column}>Status</HeaderColumnButton>,
     cell: ({ row }) => (
-      <Badge className="capitalize" variant={getStatusBadgeVariant(row.original.status)}>
+      <Badge className="capitalize" variant={getStatusBadgeVariant(row.original.status)} icon>
+        {getStatusIcon(row.original.status)}
         {row.original.status}
       </Badge>
     ),
@@ -225,5 +231,22 @@ const getStatusBadgeVariant = (status: InvoiceStatusType): BadgeVariants => {
       return "purple";
     default:
       return "gray";
+  }
+};
+
+const getStatusIcon = (status: InvoiceStatusType) => {
+  switch (status) {
+    case "pending":
+      return <HourglassStartIcon />;
+    case "success":
+      return <FileCheckIcon />;
+    case "error":
+      return <FileBanIcon />;
+    case "expired":
+      return <FileAlertIcon />;
+    case "refunded":
+      return <FileRefreshIcon />;
+    default:
+      return <HourglassStartIcon />;
   }
 };
