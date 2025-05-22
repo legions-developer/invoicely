@@ -23,14 +23,12 @@ import {
 } from "@/assets/icons";
 import { updateInvoiceStatus } from "@/lib/indexdb-queries/updateInvoiceStatus";
 import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { invoiceStatusEnum } from "@invoicely/db/schema/invoice";
 import { FormButton } from "@/components/ui/form/form-button";
 import { FormSelect } from "@/components/ui/form/form-select";
-import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
-import { trpcProxyClient, useTRPC } from "@/trpc/client";
-import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectItem } from "@/components/ui/select";
 import { Form } from "@/components/ui/form/form";
@@ -38,6 +36,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import { useTRPC } from "@/trpc/client";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -55,9 +54,44 @@ const invoiceStatusSchema = z.object({
 type InvoiceStatusSchema = z.infer<typeof invoiceStatusSchema>;
 
 const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
+  const [open, setOpen] = useState(false);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
+
+  // Postgres Mutation
+  const updateServerInvoiceStatusMutation = useMutation(
+    trpc.invoice.updateStatus.mutationOptions({
+      onSuccess: () => {
+        toast.success("Status updated successfully!", {
+          description: "The status of the invoice has been updated successfully.",
+        });
+        queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
+      },
+      onError: (error) => {
+        toast.error("Failed to update status!", {
+          description: parseCatchError(error),
+        });
+      },
+    }),
+  );
+
+  // IDB Mutation
+  const updateIDBInvoiceStatusMutation = useMutation({
+    mutationFn: async (data: InvoiceStatusSchema) => {
+      await updateInvoiceStatus(data.id, data.status);
+    },
+    onSuccess: () => {
+      toast.success("Status updated successfully!", {
+        description: "The status of the invoice has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
+    },
+    onError: (error) => {
+      toast.error("Failed to update status!", {
+        description: parseCatchError(error),
+      });
+    },
+  });
 
   const form = useForm<InvoiceStatusSchema>({
     resolver: zodResolver(invoiceStatusSchema),
@@ -70,39 +104,16 @@ const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
   const onSubmit = async (data: InvoiceStatusSchema) => {
     if (type === "postgres") {
       // Updating the status of the invoice in the database
-      const updatedInvoice = await trpcProxyClient.invoice.updateStatus.mutate({
+      await updateServerInvoiceStatusMutation.mutateAsync({
         id: invoiceId,
         status: data.status,
       });
-
-      if (updatedInvoice.success) {
-        toast.success("Status updated successfully!", {
-          description: updatedInvoice.message,
-        });
-
-        // Refetch the invoices
-        queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
-      } else {
-        toast.error("Failed to update status!", {
-          description: updatedInvoice.message,
-        });
-      }
     } else {
       // Updating status of invoice in local idb
-      const { success, error } = await asyncTryCatch(updateInvoiceStatus(invoiceId, data.status));
-
-      if (success) {
-        toast.success("Status updated successfully!", {
-          description: "The status of the invoice has been updated successfully.",
-        });
-
-        // Refetch the IDB invoices
-        queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
-      } else {
-        toast.error("Failed to update status!", {
-          description: parseCatchError(error),
-        });
-      }
+      await updateIDBInvoiceStatusMutation.mutateAsync({
+        id: invoiceId,
+        status: data.status,
+      });
     }
 
     // Close the modal

@@ -12,7 +12,6 @@ import {
   IdBadgeIcon,
   PriorityMediumIcon,
   SortNumDescendingIcon,
-  TrashIcon,
 } from "@/assets/icons";
 import {
   DropdownMenu,
@@ -28,6 +27,7 @@ import { Badge, BadgeVariants } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
+import DeleteInvoiceModal from "./deleteInvoiceModal";
 import UpdateStatusModal from "./updateStatusModal";
 import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
@@ -142,10 +142,7 @@ export const columns = [
                 <FilePenIcon />
                 <span>Edit</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <TrashIcon />
-                <span>Delete</span>
-              </DropdownMenuItem>
+              <DeleteInvoiceModal invoiceId={id} type={type} />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
