@@ -1,21 +1,30 @@
 import {
   CalendarCheckIcon,
   DatabaseIcon,
+  FilePenIcon,
   HardDriveIcon,
   IdBadgeIcon,
   PriorityMediumIcon,
   SortNumDescendingIcon,
+  TrashIcon,
 } from "@/assets/icons";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { createColumnConfigHelper } from "@/components/ui/data-table-filter/core/filters";
 import { HeaderColumnButton, FormatTableDateObject } from "@/components/ui/data-table";
+import type { InvoiceStatusType } from "@invoicely/db/schema/invoice";
 import { Badge, BadgeVariants } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
+import UpdateStatusModal from "./updateStatusModal";
 import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
-import { schema } from "@invoicely/db";
 
 const columnHelper = createColumnHelper<Invoice>();
 const columnConfigHelper = createColumnConfigHelper<Invoice>();
@@ -56,7 +65,7 @@ export const columns = [
     id: "total",
     header: ({ column }) => <HeaderColumnButton column={column}>Total</HeaderColumnButton>,
     cell: ({ row }) => (
-      <div className="text-xs">{`${getSymbolFromCurrency(row.original.invoiceFields.invoiceDetails.currency)} ${getTotalValue(row.original.invoiceFields)}`}</div>
+      <div className="text-xs">{`${getSymbolFromCurrency(row.original.invoiceFields.invoiceDetails.currency)}${getTotalValue(row.original.invoiceFields)}`}</div>
     ),
   }),
 
@@ -86,25 +95,57 @@ export const columns = [
   columnHelper.accessor((row) => row.paidAt, {
     id: "paidAt",
     header: ({ column }) => <HeaderColumnButton column={column}>Paid At</HeaderColumnButton>,
-    cell: ({ row }) => <FormatTableDateObject date={row.original.paidAt} />,
+    cell: ({ row }) =>
+      row.original.paidAt ? <FormatTableDateObject date={row.original.paidAt} /> : <Badge variant="gray">Unpaid</Badge>,
   }),
 
   // Actions
   columnHelper.accessor(() => "actions", {
     id: "actions",
     header: ({ column }) => <HeaderColumnButton column={column}>Actions</HeaderColumnButton>,
-    cell: ({}) => (
-      <div className="flex flex-row items-center gap-2">
-        <Button variant="secondary" size="xs">
-          View
-        </Button>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const { id, type } = row.original;
+
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="xs">
+                View
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <UpdateStatusModal invoiceId={id} type={type} />
+              <DropdownMenuItem>
+                <FilePenIcon />
+                <span>Edit</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <TrashIcon />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
     enableSorting: false,
   }),
 ];
 
 export const columnConfig = [
+  // Storage
+  columnConfigHelper
+    .option()
+    .id("type")
+    .displayName("Storage")
+    .accessor((row) => row.type)
+    .icon(DatabaseIcon)
+    .options([
+      { label: "", value: "index_db", icon: <Badge variant="default">Local</Badge> },
+      { label: "", value: "postgres", icon: <Badge variant="rose">Server</Badge> },
+    ])
+    .build(),
   // Id
   columnConfigHelper
     .text()
@@ -154,7 +195,7 @@ export const columnConfig = [
     .build(),
 ];
 
-const getStatusBadgeVariant = (status: schema.InvoiceStatusType): BadgeVariants => {
+const getStatusBadgeVariant = (status: InvoiceStatusType): BadgeVariants => {
   switch (status) {
     case "pending":
       return "yellow";

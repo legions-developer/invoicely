@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   columnConfig: ColumnConfig<TData, ColumnDataType, any, string>[];
   isLoading?: boolean;
+  defaultSorting?: SortingState;
 }
 
 export function DataTable<TData, TValue>({
@@ -40,9 +41,10 @@ export function DataTable<TData, TValue>({
   data,
   columnConfig,
   isLoading = false,
+  defaultSorting = [],
 }: DataTableProps<TData, TValue>) {
   const [filtersState, setFiltersState] = useState<FiltersState>([]);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>(defaultSorting);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 

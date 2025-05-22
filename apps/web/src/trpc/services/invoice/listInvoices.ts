@@ -1,21 +1,13 @@
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { listInvoicesQuery } from "@/lib/db-queries/invoice/listInvoices";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
-import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
+import { TRPCError } from "@trpc/server";
 
 export const listInvoices = authorizedProcedure.query(async ({ ctx }) => {
-  const { success, data, error } = await asyncTryCatch(listInvoicesQuery(ctx.auth.user.id));
+  try {
+    const invoices = await listInvoicesQuery(ctx.auth.user.id);
 
-  if (!success) {
-    return {
-      success: false,
-      message: parseCatchError(error),
-    };
-  }
-
-  return {
-    success: true,
-    data: data.map((invoice) => ({
+    return invoices.map((invoice) => ({
       ...invoice,
       invoiceFields: {
         ...invoice.invoiceFields,
@@ -31,6 +23,12 @@ export const listInvoices = authorizedProcedure.query(async ({ ctx }) => {
           })),
         },
       },
-    })),
-  };
+    }));
+  } catch (error) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to fetch invoices",
+      cause: parseCatchError(error),
+    });
+  }
 });

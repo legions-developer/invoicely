@@ -1,12 +1,12 @@
+import type { InvoiceTypeType, InvoiceStatusType } from "@invoicely/db/schema/invoice";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
-import { schema } from "@invoicely/db";
 
 export interface IDBInvoice {
   id: string;
-  type: schema.InvoiceTypeType;
+  type: InvoiceTypeType;
   createdAt: Date;
   updatedAt: Date;
-  status: schema.InvoiceStatusType;
+  status: InvoiceStatusType;
   paidAt: Date | null;
   invoiceFields: ZodCreateInvoiceSchema;
 }

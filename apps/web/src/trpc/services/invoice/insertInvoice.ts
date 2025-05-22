@@ -2,7 +2,7 @@ import { insertInvoiceQuery } from "@/lib/db-queries/invoice/insertInvoice";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { createInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
-import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
+import { TRPCError } from "@trpc/server";
 
 interface MutationResponse {
   success: boolean;
@@ -19,18 +19,18 @@ export const insertInvoice = authorizedProcedure
         message: "User has not enabled data saving in their preferences",
       };
     }
+    try {
+      await insertInvoiceQuery(input, ctx.auth.user.id);
 
-    const { success, error } = await asyncTryCatch(insertInvoiceQuery(input, ctx.auth.user.id));
-
-    if (!success) {
       return {
-        success: false,
-        message: parseCatchError(error),
+        success: true,
+        message: "Invoice saved successfully",
       };
+    } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to insert invoice",
+        cause: parseCatchError(error),
+      });
     }
-
-    return {
-      success: true,
-      message: "Invoice saved successfully",
-    };
   });

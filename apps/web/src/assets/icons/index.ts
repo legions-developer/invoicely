@@ -30,3 +30,8 @@ export { default as IdBadgeIcon } from "./id-badge";
 export { default as CalendarCheckIcon } from "./calendar-check";
 export { default as SortNumDescendingIcon } from "./sort-num-desc";
 export { default as PriorityMediumIcon } from "./priority-medium";
+export { default as FilePenIcon } from "./file-pen";
+export { default as HourglassStartIcon } from "./hourglass-start";
+export { default as FileCheckIcon } from "./file-check";
+export { default as FileBanIcon } from "./file-ban";
+export { default as FileRefreshIcon } from "./file-refresh";
