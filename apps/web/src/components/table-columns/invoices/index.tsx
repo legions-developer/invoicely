@@ -1,4 +1,5 @@
 import {
+  BoxIcon,
   CalendarCheckIcon,
   DatabaseIcon,
   FilePenIcon,
@@ -14,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { createColumnConfigHelper } from "@/components/ui/data-table-filter/core/filters";
 import { HeaderColumnButton, FormatTableDateObject } from "@/components/ui/data-table";
 import type { InvoiceStatusType } from "@invoicely/db/schema/invoice";
@@ -72,7 +74,21 @@ export const columns = [
   columnHelper.accessor((row) => row.invoiceFields.items.length, {
     id: "items",
     header: ({ column }) => <HeaderColumnButton column={column}>Items</HeaderColumnButton>,
-    cell: ({ row }) => <div className="text-xs">{row.original.invoiceFields.items.length} Items</div>,
+    cell: ({ row }) => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Badge variant="gray" icon>
+              <BoxIcon />
+              <span>{row.original.invoiceFields.items.length}</span>
+            </Badge>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.original.invoiceFields.items.length} items in this invoice</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
   }),
 
   columnHelper.accessor((row) => row.status, {
