@@ -11,7 +11,7 @@ export const TOAST_OPTIONS = {
     warning: "!text-orange-500",
     title: "text-xs font-medium mb-0.5",
     toast:
-      "group toast !bg-background !p-3 !rounded-xl border !border-border/70 flex flex-row gap-2 !items-start w-full shadow-md",
+      "group toast !bg-background !p-4 !rounded-xl border !border-border/70 flex flex-row gap-2 !items-start w-full shadow-md",
     description: "!text-secondary-foreground/50 text-xs",
     actionButton:
       "bg-black text-white dark:text-[currentColor] dark:bg-[currentColor]/10 hover:dark:bg-[currentColor]/20 min-w-max px-2 py-0.5 !text-[11px] h-fit !rounded-sm cursor-pointer duration-200",

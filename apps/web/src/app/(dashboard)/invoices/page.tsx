@@ -4,14 +4,20 @@ import { Alert, AlertButtonGroup, AlertDescription, AlertTitle } from "@/compone
 import { columnConfig, columns } from "@/components/table-columns/invoices";
 import { getAllInvoices } from "@/lib/indexdb-queries/invoice";
 import { DataTable } from "@/components/ui/data-table";
-import { useIDBQuery } from "@/hooks/use-idb-query";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/trpc/client";
+import { useTRPC } from "@/trpc/client";
 import React from "react";
 
 const Page = () => {
-  const trpcData = trpc.invoice.list.useQuery();
-  const idbData = useIDBQuery(getAllInvoices);
+  const trpc = useTRPC();
+  // Fetching Invoices from the Postgres (Server)
+  const trpcData = useQuery(trpc.invoice.list.queryOptions());
+  // Fetching Invoices from the IndexedDB (Local)
+  const idbData = useQuery({
+    queryKey: ["idb-invoices"],
+    queryFn: getAllInvoices,
+  });
 
   const isLoading = trpcData.isLoading || idbData.isLoading;
 

@@ -29,11 +29,12 @@ import { invoiceStatusEnum } from "@invoicely/db/schema/invoice";
 import { FormButton } from "@/components/ui/form/form-button";
 import { FormSelect } from "@/components/ui/form/form-select";
 import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
+import { trpcProxyClient, useTRPC } from "@/trpc/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectItem } from "@/components/ui/select";
 import { Form } from "@/components/ui/form/form";
 import { Button } from "@/components/ui/button";
-import { trpcProxyClient } from "@/trpc/client";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -54,6 +55,8 @@ const invoiceStatusSchema = z.object({
 type InvoiceStatusSchema = z.infer<typeof invoiceStatusSchema>;
 
 const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
 
   const form = useForm<InvoiceStatusSchema>({
@@ -76,6 +79,9 @@ const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
         toast.success("Status updated successfully!", {
           description: updatedInvoice.message,
         });
+
+        // Refetch the invoices
+        queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
       } else {
         toast.error("Failed to update status!", {
           description: updatedInvoice.message,
@@ -89,6 +95,9 @@ const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
         toast.success("Status updated successfully!", {
           description: "The status of the invoice has been updated successfully.",
         });
+
+        // Refetch the IDB invoices
+        queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
       } else {
         toast.error("Failed to update status!", {
           description: parseCatchError(error),
