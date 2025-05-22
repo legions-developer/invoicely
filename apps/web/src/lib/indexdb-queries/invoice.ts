@@ -17,7 +17,7 @@ export const forceInsertInvoice = async (invoice: ZodCreateInvoiceSchema): Promi
 
   await db.put(IDB_SCHEMA_INVOICES, {
     id: id,
-    type: "index_db",
+    type: "local",
     status: "pending",
     invoiceFields: invoice,
     createdAt: new Date(),

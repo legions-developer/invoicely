@@ -9,7 +9,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     .insert(schema.invoices)
     .values({
       id: id ?? uuidv4(),
-      type: "postgres",
+      type: "server",
       status: "pending",
       createdAt: new Date(),
       updatedAt: new Date(),

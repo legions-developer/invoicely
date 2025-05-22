@@ -91,7 +91,7 @@ const DeleteInvoiceModal = ({ invoiceId, type }: DeleteInvoiceModalProps) => {
   });
 
   const onSubmit = async () => {
-    if (type === "postgres") {
+    if (type === "server") {
       await deleteServerInvoiceMutation.mutateAsync({
         id: invoiceId,
       });

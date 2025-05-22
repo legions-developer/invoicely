@@ -12,7 +12,7 @@ export const editInvoice = async (
   type: InvoiceTypeType,
   id: string,
 ) => {
-  if (user && user.allowedSavingData && type === "postgres") {
+  if (user && user.allowedSavingData && type === "server") {
     const insertedInvoice = await trpcProxyClient.invoice.edit.mutate({
       id,
       invoice,

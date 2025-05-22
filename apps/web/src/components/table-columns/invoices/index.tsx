@@ -42,9 +42,9 @@ export const columns = [
     id: "type",
     header: ({ column }) => <HeaderColumnButton column={column}>Storage</HeaderColumnButton>,
     cell: ({ row }) => (
-      <Badge variant={row.original.type === "index_db" ? "default" : "rose"} icon>
-        {row.original.type === "index_db" ? <HardDriveIcon /> : <DatabaseIcon />}
-        {row.original.type === "index_db" ? "Local" : "Server"}
+      <Badge variant={row.original.type === "local" ? "default" : "rose"} icon>
+        {row.original.type === "local" ? <HardDriveIcon /> : <DatabaseIcon />}
+        {row.original.type === "local" ? "Local" : "Server"}
       </Badge>
     ),
     enableSorting: false,
@@ -164,8 +164,8 @@ export const columnConfig = [
     .accessor((row) => row.type)
     .icon(DatabaseIcon)
     .options([
-      { label: "", value: "index_db", icon: <Badge variant="default">Local</Badge> },
-      { label: "", value: "postgres", icon: <Badge variant="rose">Server</Badge> },
+      { label: "", value: "local", icon: <Badge variant="default">Local</Badge> },
+      { label: "", value: "server", icon: <Badge variant="rose">Server</Badge> },
     ])
     .build(),
   // Id

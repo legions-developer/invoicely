@@ -10,7 +10,7 @@ interface InvoiceTheme {
 
 // Enums
 export const invoiceStatusEnum = pgEnum("invoice_status", ["pending", "success", "error", "expired", "refunded"]);
-export const invoiceTypeEnum = pgEnum("invoice_type", ["index_db", "postgres"]);
+export const invoiceTypeEnum = pgEnum("invoice_type", ["local", "server"]);
 export const invoiceValueTypesEnum = pgEnum("invoice_value_types", ["fixed", "percentage"]);
 
 // export enum types
@@ -21,7 +21,7 @@ export type InvoiceValueTypesType = (typeof invoiceValueTypesEnum.enumValues)[nu
 // Tables
 export const invoices = pgTable("invoices", {
   id: uuid("id").primaryKey().defaultRandom(),
-  type: invoiceTypeEnum("type").notNull().default("postgres"),
+  type: invoiceTypeEnum("type").notNull().default("server"),
   status: invoiceStatusEnum("status").notNull().default("pending"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),

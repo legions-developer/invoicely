@@ -1,7 +1,7 @@
 "use client";
 
 import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
-import InvoicePage from "@/app/(dashboard)/create/invoice/page";
+import InvoicePage from "@/app/(dashboard)/create/invoice/invoice";
 import { getInvoiceById } from "@/lib/indexdb-queries/invoice";
 import PDFLoading from "@/components/layout/pdf/pdf-loading";
 import React, { useEffect, useState } from "react";
@@ -22,11 +22,11 @@ const EditInvoice = ({ type, id }: EditInvoiceProps) => {
       setIsLoading(true);
       let fetchedInvoice: Invoice | undefined;
 
-      if (type === "index_db") {
-        // Fetching invoice from indexedDB
+      if (type === "local") {
+        // Fetching invoice from localdb
         fetchedInvoice = await getInvoiceById(id);
       } else {
-        // Fetching invoice from postgres
+        // Fetching invoice from server
         fetchedInvoice = await trpcProxyClient.invoice.get.query({
           id: id,
         });

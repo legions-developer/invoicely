@@ -19,7 +19,7 @@ export const saveInvoiceToDatabase = async (invoice: ZodCreateInvoiceSchema, use
       });
 
       // we will redirect user to its invoice Edit
-      redirect(`/edit/postgres/${insertedInvoice.invoiceId}`);
+      redirect(`/edit/server/${insertedInvoice.invoiceId}`);
     }
   } else {
     const { success, data } = await asyncTryCatch(forceInsertInvoice(invoice));
@@ -34,7 +34,7 @@ export const saveInvoiceToDatabase = async (invoice: ZodCreateInvoiceSchema, use
       });
 
       // we will redirect user to its invoice Edit
-      redirect(`/edit/index_db/${data}`);
+      redirect(`/edit/local/${data}`);
     }
   }
 };

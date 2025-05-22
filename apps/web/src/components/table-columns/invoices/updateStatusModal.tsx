@@ -102,7 +102,7 @@ const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
   });
 
   const onSubmit = async (data: InvoiceStatusSchema) => {
-    if (type === "postgres") {
+    if (type === "server") {
       // Updating the status of the invoice in the database
       await updateServerInvoiceStatusMutation.mutateAsync({
         id: invoiceId,
