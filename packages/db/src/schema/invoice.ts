@@ -27,14 +27,14 @@ export const invoices = pgTable("invoices", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
   paidAt: timestamp("paid_at"),
   userId: uuid("user_id")
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
 });
 
 export const invoiceFields = pgTable("invoice_fields", {
   id: uuid("id").primaryKey().defaultRandom(),
   invoiceId: uuid("invoice_id")
-    .references(() => invoices.id)
+    .references(() => invoices.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -45,7 +45,7 @@ export const invoiceCompanyDetails = pgTable("invoice_company_details", {
   logo: text("logo"),
   signature: text("signature"),
   invoiceFieldId: uuid("invoice_field_id")
-    .references(() => invoiceFields.id)
+    .references(() => invoiceFields.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -54,7 +54,7 @@ export const invoiceCompanyDetailsMetadata = pgTable("invoice_company_details_me
   label: text("label").notNull(),
   value: text("value").notNull(),
   invoiceCompanyDetailsId: uuid("invoice_company_details_id")
-    .references(() => invoiceCompanyDetails.id)
+    .references(() => invoiceCompanyDetails.id, { onDelete: "cascade" })
     .notNull(),
 });
 export const invoiceClientDetails = pgTable("invoice_client_details", {
@@ -62,7 +62,7 @@ export const invoiceClientDetails = pgTable("invoice_client_details", {
   name: text("name").notNull(),
   address: text("address").notNull(),
   invoiceFieldId: uuid("invoice_field_id")
-    .references(() => invoiceFields.id)
+    .references(() => invoiceFields.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -71,7 +71,7 @@ export const invoiceClientDetailsMetadata = pgTable("invoice_client_details_meta
   label: text("label").notNull(),
   value: text("value").notNull(),
   invoiceClientDetailsId: uuid("invoice_client_details_id")
-    .references(() => invoiceClientDetails.id)
+    .references(() => invoiceClientDetails.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -85,7 +85,7 @@ export const invoiceDetails = pgTable("invoice_details", {
   dueDate: timestamp("due_date").notNull(),
   paymentTerms: text("payment_terms").notNull().default(""),
   invoiceFieldId: uuid("invoice_field_id")
-    .references(() => invoiceFields.id)
+    .references(() => invoiceFields.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -95,7 +95,7 @@ export const invoiceDetailsBillingDetails = pgTable("invoice_details_billing_det
   type: invoiceValueTypesEnum("type").notNull(),
   value: Numeric("value", { precision: 10, scale: 2 }).notNull(),
   invoiceDetailsId: uuid("invoice_details_id")
-    .references(() => invoiceDetails.id)
+    .references(() => invoiceDetails.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -106,7 +106,7 @@ export const invoiceItems = pgTable("invoice_items", {
   quantity: integer("quantity").notNull(),
   unitPrice: Numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
   invoiceFieldId: uuid("invoice_field_id")
-    .references(() => invoiceFields.id)
+    .references(() => invoiceFields.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -115,7 +115,7 @@ export const invoiceMetadata = pgTable("invoice_metadata", {
   notes: text("notes").notNull(),
   terms: text("terms").notNull(),
   invoiceFieldId: uuid("invoice_field_id")
-    .references(() => invoiceFields.id)
+    .references(() => invoiceFields.id, { onDelete: "cascade" })
     .notNull(),
 });
 
@@ -124,7 +124,7 @@ export const invoiceMetadataPaymentInformation = pgTable("invoice_metadata_payme
   label: text("label").notNull(),
   value: text("value").notNull(),
   invoiceMetadataId: uuid("invoice_metadata_id")
-    .references(() => invoiceMetadata.id)
+    .references(() => invoiceMetadata.id, { onDelete: "cascade" })
     .notNull(),
 });
 
