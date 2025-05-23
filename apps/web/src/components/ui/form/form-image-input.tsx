@@ -28,6 +28,7 @@ interface FormImageInputProps<
   reactform: UseFormReturn<TFieldValues>;
   sublabel?: string | undefined;
   isOptional?: boolean;
+  maxSizeMB?: number;
 }
 
 export const FormImageInput = <
@@ -36,6 +37,7 @@ export const FormImageInput = <
 >({
   className,
   isOptional = false,
+  maxSizeMB = 5,
   ...props
 }: FormImageInputProps<TFieldValues, TName>) => {
   return (
@@ -77,6 +79,7 @@ export const FormImageInput = <
                   // remove the file from the field
                   field.onChange("");
                 }}
+                maxSizeMB={maxSizeMB}
                 {...props}
                 {...field}
               />

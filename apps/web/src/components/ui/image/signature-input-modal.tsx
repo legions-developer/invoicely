@@ -17,10 +17,10 @@ import { CreatePngFromBase64 } from "@/lib/invoice/create-png-from-base64";
 import { ImageSparkleIcon, SignatureIcon } from "@/assets/icons";
 import { createBlobUrl } from "@/lib/invoice/create-blob-url";
 import { useFileUpload } from "@/hooks/use-file-upload";
+import { AlertCircleIcon, XIcon } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { XIcon } from "lucide-react";
 import { Button } from "../button";
 import { toast } from "sonner";
 
@@ -32,6 +32,7 @@ interface SignatureInputModalProps {
   onBase64Change?: (base64: string | undefined) => void;
   onFileRemove?: () => void;
   isDarkMode?: boolean;
+  maxSizeMB?: number;
 }
 
 export default function SignatureInputModal({
@@ -42,16 +43,17 @@ export default function SignatureInputModal({
   onBase64Change,
   onFileRemove,
   isDarkMode = false,
+  maxSizeMB = 5,
 }: SignatureInputModalProps) {
   const [type, setType] = useState<"signature" | "upload" | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const signaturePadRef = useRef<SignatureCanvas>(null);
   const [isSignatureEmpty, setIsSignatureEmpty] = useState<boolean>(true);
 
-  const maxSize = 5 * 1024 * 1024; // 5MB default
+  const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 
   const [
-    { files, isDragging },
+    { files, isDragging, errors },
     { handleDragEnter, handleDragLeave, handleDragOver, handleDrop, openFileDialog, removeFile, getInputProps },
   ] = useFileUpload({
     accept: "image/png, image/jpeg, image/jpg",
@@ -188,7 +190,14 @@ export default function SignatureInputModal({
                   <ImageSparkleIcon className="size-4" />
                 </div>
                 <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">Upload Signature</p>
-                <p className="text-muted-foreground text-[10px]">Max size: 5MB (PNG, JPG)</p>
+                {errors.length > 0 ? (
+                  <div className="flex items-center gap-1 text-[10px] text-red-500" role="alert">
+                    <AlertCircleIcon className="size-3 shrink-0" />
+                    <span>{errors[0]}</span>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-[10px]">Max size: 5MB (PNG, JPG)</p>
+                )}
               </div>
             </div>
           )}

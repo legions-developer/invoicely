@@ -29,6 +29,7 @@ interface FormSignatureInputProps<
   sublabel?: string | undefined;
   isOptional?: boolean;
   isDarkMode?: boolean;
+  maxSizeMB?: number;
 }
 
 export const FormSignatureInput = <
@@ -37,6 +38,7 @@ export const FormSignatureInput = <
 >({
   className,
   isOptional = false,
+  maxSizeMB,
   ...props
 }: FormSignatureInputProps<TFieldValues, TName>) => {
   return (
@@ -79,6 +81,7 @@ export const FormSignatureInput = <
                   // reset field value
                   field.onChange("");
                 }}
+                maxSizeMB={maxSizeMB}
                 {...props}
                 {...field}
               />

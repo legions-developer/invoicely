@@ -83,7 +83,14 @@ export default function ImageInput({
                 <ImageSparkleIcon className="size-4" />
               </div>
               <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">{title}</p>
-              <p className="text-muted-foreground text-[10px]">Max size: {maxSizeMB}MB (PNG, JPG)</p>
+              {errors.length > 0 ? (
+                <div className="flex items-center gap-1 text-[10px] text-red-500" role="alert">
+                  <AlertCircleIcon className="size-3 shrink-0" />
+                  <span>{errors[0]}</span>
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-[10px]">Max size: {maxSizeMB}MB (PNG, JPG)</p>
+              )}
             </div>
           )}
         </div>
@@ -105,13 +112,6 @@ export default function ImageInput({
           </div>
         )}
       </div>
-
-      {errors.length > 0 && (
-        <div className="text-destructive flex items-center gap-1 text-xs" role="alert">
-          <AlertCircleIcon className="size-3 shrink-0" />
-          <span>{errors[0]}</span>
-        </div>
-      )}
     </div>
   );
 }

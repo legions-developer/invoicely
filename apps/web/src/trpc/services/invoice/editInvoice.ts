@@ -1,3 +1,4 @@
+import { getFileSizeFromBase64 } from "@/lib/invoice/get-file-size-from-base64";
 import { deleteInvoiceQuery } from "@/lib/db-queries/invoice/deleteInvoice";
 import { insertInvoiceQuery } from "@/lib/db-queries/invoice/insertInvoice";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
@@ -14,6 +15,21 @@ const EditInvoiceSchema = z.object({
 
 export const editInvoice = authorizedProcedure.input(EditInvoiceSchema).mutation(async ({ input, ctx }) => {
   const { id, invoice } = input;
+
+  //   if signature or logo is too large then return error ~ 250kb
+  if (getFileSizeFromBase64(invoice.companyDetails.signatureBase64) > 250000) {
+    return {
+      success: false,
+      message: "Signature is too large",
+    };
+  }
+
+  if (getFileSizeFromBase64(invoice.companyDetails.logoBase64) > 250000) {
+    return {
+      success: false,
+      message: "Logo is too large",
+    };
+  }
 
   try {
     const oldInvoice = await getInvoiceQuery(id, ctx.auth.user.id);

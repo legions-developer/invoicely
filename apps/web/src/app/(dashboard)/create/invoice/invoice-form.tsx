@@ -48,6 +48,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     onBase64Change={(base64) => {
                       form.setValue("companyDetails.logoBase64", base64);
                     }}
+                    maxSizeMB={0.25}
                   />
                   <FormSignatureInput
                     isDarkMode={form.watch("invoiceDetails.theme.mode") === "dark"}
@@ -57,6 +58,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     onBase64Change={(base64) => {
                       form.setValue("companyDetails.signatureBase64", base64);
                     }}
+                    maxSizeMB={0.25}
                   />
                 </div>
                 <FormInput

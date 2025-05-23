@@ -46,6 +46,8 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
       name: invoice.companyDetails.name,
       address: invoice.companyDetails.address,
       invoiceFieldId: insertedInvoiceField.id,
+      logo: invoice.companyDetails.logo,
+      signature: invoice.companyDetails.signature,
     })
     .returning({
       id: schema.invoiceCompanyDetails.id,

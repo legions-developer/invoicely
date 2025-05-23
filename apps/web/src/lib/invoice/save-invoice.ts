@@ -11,7 +11,7 @@ export const saveInvoiceToDatabase = async (invoice: ZodCreateInvoiceSchema, use
 
     if (!insertedInvoice.success) {
       toast.error("Database Error", {
-        description: `Error saving invoice to database`,
+        description: `Error saving invoice to database: ${insertedInvoice.message}`,
       });
     } else {
       toast.success("Invoice saved successfully", {
