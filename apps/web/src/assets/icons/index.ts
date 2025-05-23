@@ -35,3 +35,4 @@ export { default as HourglassStartIcon } from "./hourglass-start";
 export { default as FileCheckIcon } from "./file-check";
 export { default as FileBanIcon } from "./file-ban";
 export { default as FileRefreshIcon } from "./file-refresh";
+export { default as FingerprintIcon } from "./fingerprint";

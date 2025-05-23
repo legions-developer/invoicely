@@ -9,4 +9,4 @@ export const clientAuth = createAuthClient({
 });
 
 // For faster use :3
-export const { getSession, useSession } = createAuthClient();
+export const { getSession, useSession } = clientAuth;

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavigationItem } from "@/components/layout/sidebar/navigation-item";
 import { NavigationUser } from "@/components/layout/sidebar/navigation-user";
+import OpenSourceBadge from "@/components/ui/open-source-badge";
 import LogoIcon from "@/components/assets/logo-icon";
 import { SIDEBAR_ITEMS } from "@/constants";
 
@@ -37,7 +38,8 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavigationUser user={null} />
+        <OpenSourceBadge group="sidebar" />
+        <NavigationUser />
       </SidebarFooter>
     </Sidebar>
   );

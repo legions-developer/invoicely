@@ -1,5 +1,4 @@
 import { useSession } from "@/lib/client-auth";
-import type { AuthUser } from "@/types/auth";
 
 export const useUser = () => {
   const { data: session } = useSession();
@@ -8,5 +7,5 @@ export const useUser = () => {
     return;
   }
 
-  return session.user as AuthUser;
+  return session.user;
 };
