@@ -53,16 +53,20 @@ export const editInvoice = authorizedProcedure.input(EditInvoiceSchema).mutation
     //   now as we found old invoice , we will delete it from the database ( yea im pro :3)
     await deleteInvoiceQuery(id, ctx.auth.user.id);
 
-    // Handle images upload
     // Upload images to cloudflare r2 and get the urls using the S3 client
     // if signature is already uploaded then don't upload it again
     if (invoice.companyDetails.signatureBase64 && !invoice.companyDetails.signature?.includes("https://")) {
-      invoice.companyDetails.signature = await uploadImage(S3, invoice.companyDetails.signatureBase64, "signatures");
+      invoice.companyDetails.signature = await uploadImage(
+        S3,
+        invoice.companyDetails.signatureBase64,
+        ctx.auth.user.id,
+        "signature",
+      );
     }
 
     // if logo is already uploaded then don't upload it again
     if (invoice.companyDetails.logoBase64 && !invoice.companyDetails.logo?.includes("https://")) {
-      invoice.companyDetails.logo = await uploadImage(S3, invoice.companyDetails.logoBase64, "logos");
+      invoice.companyDetails.logo = await uploadImage(S3, invoice.companyDetails.logoBase64, ctx.auth.user.id, "logo");
     }
 
     //   now we will insert the new invoice with same id

@@ -4,9 +4,9 @@ import { getImageMimeType } from "@/lib/invoice/get-image-mime";
 import { env } from "@invoicely/utilities";
 import { v4 as uuidv4 } from "uuid";
 
-type FolderName = "signatures" | "logos";
+type ImageType = "signature" | "logo";
 
-export const uploadImage = async (s3: S3Client, base64: string, folderName: FolderName) => {
+export const uploadImage = async (s3: S3Client, base64: string, userId: string, imageType: ImageType) => {
   const imageBuffer = createBufferFromBase64(base64);
   const contentType = getImageMimeType(base64);
 
@@ -14,7 +14,7 @@ export const uploadImage = async (s3: S3Client, base64: string, folderName: Fold
     return null;
   }
 
-  const imageKey = `${folderName}/${uuidv4()}`;
+  const imageKey = `${userId}/${imageType}-${uuidv4()}`;
 
   const imageUploadResult = await s3.send(
     new PutObjectCommand({

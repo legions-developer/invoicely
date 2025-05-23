@@ -38,6 +38,8 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
         onLoadError={(error) => {
           console.error("[ERROR]: Error loading PDF:", error);
           setError(error);
+
+          // retry converting the pdf to blob
         }}
         className="max-h-full"
       >
@@ -102,12 +104,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
         const blob = await createPdfBlob({ invoiceData: data });
         const newUrl = createBlobUrl({ blob });
 
-        setGeneratedPdfUrl((prevUrl) => {
-          if (prevUrl) {
-            revokeBlobUrl({ url: prevUrl });
-          }
-          return newUrl;
-        });
+        setGeneratedPdfUrl(newUrl);
       } catch (err) {
         setPdfError(parseCatchError(err, "Failed to generate PDF content"));
         if (generatedPdfUrl) {

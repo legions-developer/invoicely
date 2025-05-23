@@ -52,11 +52,16 @@ export const insertInvoice = authorizedProcedure
     try {
       // Upload images to cloudflare r2 and get the urls using the S3 client
       if (input.companyDetails.signatureBase64) {
-        input.companyDetails.signature = await uploadImage(S3, input.companyDetails.signatureBase64, "signatures");
+        input.companyDetails.signature = await uploadImage(
+          S3,
+          input.companyDetails.signatureBase64,
+          ctx.auth.user.id,
+          "signature",
+        );
       }
 
       if (input.companyDetails.logoBase64) {
-        input.companyDetails.logo = await uploadImage(S3, input.companyDetails.logoBase64, "logos");
+        input.companyDetails.logo = await uploadImage(S3, input.companyDetails.logoBase64, ctx.auth.user.id, "logo");
       }
 
       const invoiceId = await insertInvoiceQuery(input, ctx.auth.user.id);
