@@ -14,37 +14,44 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CreatePngFromBase64 } from "@/lib/invoice/create-png-from-base64";
+import { AlertCircleIcon, LoaderCircleIcon, XIcon } from "lucide-react";
 import { ImageSparkleIcon, SignatureIcon } from "@/assets/icons";
 import { createBlobUrl } from "@/lib/invoice/create-blob-url";
 import { useFileUpload } from "@/hooks/use-file-upload";
-import { AlertCircleIcon, XIcon } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { MiniSwitch } from "../switch";
 import { motion } from "motion/react";
 import { Button } from "../button";
+import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface SignatureInputModalProps {
   title?: string;
   className?: string;
-  onSignatureChange?: (signature: string) => void;
   defaultUrl?: string;
-  onBase64Change?: (base64: string | undefined) => void;
-  onFileRemove?: () => void;
   isDarkMode?: boolean;
   maxSizeMB?: number;
+  allowPreview?: boolean;
+  isLoading?: boolean;
+  onBase64Change?: (base64: string | undefined) => void;
+  onFileRemove?: () => void;
+  onSignatureChange?: (signature: string) => void;
 }
 
 export default function SignatureInputModal({
   title = "Click here to draw your signature",
   //   className,
-  onSignatureChange,
   defaultUrl,
-  onBase64Change,
-  onFileRemove,
   isDarkMode = false,
   maxSizeMB = 5,
+  allowPreview = true,
+  isLoading = false,
+  onSignatureChange,
+  onBase64Change,
+  onFileRemove,
 }: SignatureInputModalProps) {
+  const [darkMode, setDarkMode] = useState<boolean>(isDarkMode);
   const [type, setType] = useState<"signature" | "upload" | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const signaturePadRef = useRef<SignatureCanvas>(null);
@@ -58,28 +65,28 @@ export default function SignatureInputModal({
   ] = useFileUpload({
     accept: "image/png, image/jpeg, image/jpg",
     maxSize,
+    onFilesAdded: (files) => {
+      // if no file is added, return
+      if (!files[0]) return;
+
+      // if signature change is not provided, return
+      if (onSignatureChange) {
+        onSignatureChange(files[0].preview || "");
+      }
+
+      // if base64 change is not provided, return
+      if (onBase64Change) {
+        // converting the file to base64
+        const reader = new FileReader();
+        reader.onload = () => {
+          onBase64Change(reader.result as string);
+        };
+        reader.readAsDataURL(files[0].file as File);
+      }
+    },
   });
 
   const previewUrl = defaultUrl || "";
-
-  // For signature upload via file input
-  useEffect(() => {
-    if (type !== "upload") return;
-
-    if (onSignatureChange) {
-      onSignatureChange(files[0]?.preview || "");
-    }
-
-    if (onBase64Change && files[0]) {
-      // converting the file to base64
-      const reader = new FileReader();
-      reader.onload = () => {
-        onBase64Change(reader.result as string);
-      };
-      reader.readAsDataURL(files[0].file as File);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [previewUrl, files, onSignatureChange, onBase64Change]);
 
   // Handle Clear signature
   const handleClear = () => {
@@ -144,9 +151,14 @@ export default function SignatureInputModal({
       <div className="relative">
         {/* Drop area */}
         <div className="border-input relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:ring-[3px] sm:min-h-52">
-          {previewUrl ? (
+          {previewUrl && allowPreview && !isLoading ? (
             <div className="absolute inset-0">
               <img src={previewUrl} alt="user signature" className="size-full object-cover" />
+            </div>
+          ) : isLoading ? (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <LoaderCircleIcon size={20} className={cn("animate-spin")} />
+              <span className="text-muted-foreground text-xs">Uploading...</span>
             </div>
           ) : (
             <div className="flex h-full w-full flex-col">
@@ -160,7 +172,7 @@ export default function SignatureInputModal({
                 className="hover:bg-accent/50 flex h-full flex-col items-center justify-center border-b border-dashed text-center"
               >
                 <div
-                  className="bg-muted mb-2 flex size-8 shrink-0 items-center justify-center rounded-full sm:size-11"
+                  className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
                   aria-hidden="true"
                 >
                   <SignatureIcon className="size-4 rotate-12" />
@@ -184,7 +196,7 @@ export default function SignatureInputModal({
               >
                 <input {...getInputProps()} className="sr-only" aria-label="Upload file" />
                 <div
-                  className="bg-muted mb-2 flex size-8 shrink-0 items-center justify-center rounded-full sm:size-11"
+                  className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
                   aria-hidden="true"
                 >
                   <ImageSparkleIcon className="size-4" />
@@ -202,7 +214,7 @@ export default function SignatureInputModal({
             </div>
           )}
         </div>
-        {previewUrl && (
+        {previewUrl && allowPreview && !isLoading && (
           <div className="absolute top-4 right-4">
             <button
               type="button"
@@ -255,16 +267,20 @@ export default function SignatureInputModal({
                 </motion.div>
               )}
               <SignatureCanvas
-                key={`signature-canvas-${isDarkMode}`}
+                key={`signature-canvas-${darkMode}`}
                 ref={signaturePadRef}
                 onBegin={() => setIsSignatureEmpty(false)}
-                penColor={isDarkMode ? "white" : "black"}
-                backgroundColor={isDarkMode ? "#181818" : "#ffffff"}
+                penColor={darkMode ? "white" : "black"}
+                backgroundColor={darkMode ? "#181818" : "#ffffff"}
                 canvasProps={{ width: 330, height: 330, className: "signature-canvas" }}
               />
             </div>
           </DialogContentContainer>
           <DialogFooter>
+            <div className="flex w-full items-center gap-2">
+              <MiniSwitch checked={darkMode} onCheckedChange={setDarkMode} />
+              <span className="text-muted-foreground text-xs">Dark Mode</span>
+            </div>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>

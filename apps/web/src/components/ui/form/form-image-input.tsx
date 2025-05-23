@@ -67,6 +67,7 @@ export const FormImageInput = <
                   Boolean(error) && "focus-visible:ring-destructive !border-destructive ring-transparent duration-200",
                 )}
                 onFileUpload={(file) => {
+                  console.log("file", file);
                   field.onChange(file);
                 }}
                 defaultUrl={field.value}

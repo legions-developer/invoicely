@@ -1,24 +1,19 @@
-import { ReceiptIcon, VersionsIcon } from "@/assets/icons";
+import { FolderFeatherIcon, ReceiptIcon, VersionsIcon } from "@/assets/icons";
 import type { ISidebar } from "@/types";
 import { LINKS } from "./links";
 
 export const SIDEBAR_ITEMS: ISidebar = {
   Navigation: [
-    // {
-    //   name: "Dashboard",
-    //   url: LINKS.DASHBOARD,
-    //   icon: <SquareWandSparkleIcon />,
-    // },
     {
       name: "Invoices",
       url: LINKS.INVOICES,
       icon: <VersionsIcon />,
     },
-    // {
-    //   name: "Analytics",
-    //   url: LINKS.ANALYTICS,
-    //   icon: <GaugeIcon />,
-    // },
+    {
+      name: "Manage Assets",
+      url: LINKS.ASSETS,
+      icon: <FolderFeatherIcon />,
+    },
   ],
   Create: [
     {

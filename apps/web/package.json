@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/s3-request-presigner": "^3.817.0",
     "@hookform/resolvers": "^5.0.1",
     "@invoicely/utilities": "workspace:*",
     "@mantine/hooks": "^8.0.1",

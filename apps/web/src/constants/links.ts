@@ -9,6 +9,7 @@ export const LINKS = {
   INVOICES: "/invoices",
   ANALYTICS: "/analytics",
   BLOGS: "/blogs",
+  ASSETS: "/assets",
   CREATE: {
     INVOICE: "/create/invoice",
   },

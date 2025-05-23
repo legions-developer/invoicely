@@ -31,6 +31,7 @@ const nextConfig: NextConfig = {
   skipTrailingSlashRedirect: true,
   serverExternalPackages: ["@react-pdf/renderer", "jotai-devtools"],
   productionBrowserSourceMaps: true,
+  devIndicators: false,
 };
 
 export default withContentCollections(nextConfig);

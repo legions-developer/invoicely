@@ -1,0 +1,54 @@
+import { getFileSizeFromBase64 } from "@/lib/invoice/get-file-size-from-base64";
+import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
+import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
+import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
+import { uploadImage } from "@/lib/cloudflare/r2/uploadImage";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+const fileSizes = {
+  logo: 400000, // 400kb
+  signature: 150000, // 150kb
+};
+
+export const uploadImageFile = authorizedProcedure
+  .use(awsS3Middleware)
+  .input(
+    z.object({
+      type: z.enum(["logo", "signature"]),
+      base64: z.string(),
+    }),
+  )
+  .mutation(async ({ ctx, input }) => {
+    const userId = ctx.auth.user.id;
+
+    try {
+      const size = getFileSizeFromBase64(input.base64);
+
+      if (size > fileSizes[input.type]) {
+        throw new TRPCError({
+          code: "PAYLOAD_TOO_LARGE",
+          message: `Image is too large. ${input.type} can only be below ${Math.round(fileSizes[input.type] / 1000)} KB`,
+        });
+      }
+
+      const image = await uploadImage(ctx.s3, input.base64, userId, input.type);
+
+      if (!image) {
+        throw new TRPCError({
+          code: "SERVICE_UNAVAILABLE",
+          message: "Failed to upload image",
+        });
+      }
+
+      return {
+        image: image,
+      };
+    } catch (error) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: parseCatchError(error) || "Failed to fetch images",
+        cause: parseCatchError(error),
+      });
+    }
+  });

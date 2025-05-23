@@ -37,3 +37,4 @@ export { default as FileBanIcon } from "./file-ban";
 export { default as FileRefreshIcon } from "./file-refresh";
 export { default as FingerprintIcon } from "./fingerprint";
 export { default as VersionsIcon } from "./versions";
+export { default as FolderFeatherIcon } from "./folder-feather";
