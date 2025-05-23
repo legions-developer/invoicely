@@ -9,13 +9,14 @@ export function getFileSizeFromBase64(base64?: string): number {
   }
 
   // Remove the data URL prefix if present
-  const base64Data = base64.includes("base64,") ? base64.split("base64,")[1] : base64;
 
+  const base64Data = base64.includes("base64,") ? base64.split("base64,")[1] : base64;
+  const cleanBase64Data = base64Data.replace(/\s/g, ""); // remove all whitespace
   // Calculate the size in bytes
   // Formula: (base64Length * 3) / 4 - (padding characters)
-  const padding = base64Data.endsWith("==") ? 2 : base64Data.endsWith("=") ? 1 : 0;
+  const padding = cleanBase64Data.endsWith("==") ? 2 : cleanBase64Data.endsWith("=") ? 1 : 0;
   const sizeInBytes = (base64Data.length * 3) / 4 - padding;
 
-  // Convert to human-readable format
+  // return size in bytes
   return sizeInBytes;
 }
