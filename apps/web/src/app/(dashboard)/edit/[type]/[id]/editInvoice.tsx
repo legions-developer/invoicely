@@ -33,7 +33,19 @@ const EditInvoice = ({ type, id }: EditInvoiceProps) => {
       }
 
       if (fetchedInvoice) {
-        setInvoice(fetchedInvoice);
+        if (type === "local") {
+          // we need to convert image url and sig url to local base64
+          const invoiceFields = fetchedInvoice.invoiceFields;
+          const imageBase64 = invoiceFields.companyDetails.logoBase64;
+          const sigBase64 = invoiceFields.companyDetails.signatureBase64;
+
+          invoiceFields.companyDetails.logo = imageBase64;
+          invoiceFields.companyDetails.signature = sigBase64;
+
+          setInvoice(fetchedInvoice);
+        } else {
+          setInvoice(fetchedInvoice);
+        }
         setIsLoading(false);
       } else {
         throw new Error("Invoice not found! Please try again later.");
