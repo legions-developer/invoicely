@@ -1,4 +1,4 @@
-import { ReceiptIcon } from "@/assets/icons";
+import { ReceiptIcon, VersionsIcon } from "@/assets/icons";
 import type { ISidebar } from "@/types";
 import { LINKS } from "./links";
 
@@ -12,7 +12,7 @@ export const SIDEBAR_ITEMS: ISidebar = {
     {
       name: "Invoices",
       url: LINKS.INVOICES,
-      icon: <ReceiptIcon />,
+      icon: <VersionsIcon />,
     },
     // {
     //   name: "Analytics",

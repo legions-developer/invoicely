@@ -13,7 +13,7 @@ const OpenSourceBadge = ({ group = "landing-page" }: { group?: string }) => {
       }}
     >
       <Link href={LINKS.SOCIALS.GITHUB} target="_blank">
-        <div className="bg-muted-foreground/5 hover:bg-primary/10 hover:text-primary mb-2 flex flex-row items-center gap-2 rounded-md px-2 py-1 duration-200">
+        <div className="bg-muted-foreground/10 hover:bg-primary/10 hover:text-primary mb-2 flex flex-row items-center gap-2 rounded-md px-2 py-1 duration-200">
           <GithubIcon height={16} width={16} />
           <div className="urbanist text-xs">Proudly Open Source</div>
         </div>

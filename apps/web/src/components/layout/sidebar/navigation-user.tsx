@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, InfoIcon, LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -18,10 +18,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clientAuth, useSession } from "@/lib/client-auth";
 import LogoIcon from "@/components/assets/logo-icon";
+import { Skeleton } from "@/components/ui/skeleton";
+import { MiniSwitch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -29,6 +32,10 @@ import Image from "next/image";
 
 export function NavigationUser() {
   const session = useSession();
+
+  if (session.isPending) {
+    return <Skeleton className="h-[142px] w-full" />;
+  }
 
   // if user is null, return a login state
   if (!session.data) {
@@ -49,6 +56,9 @@ export function NavigationUser() {
 
   return (
     <SidebarMenu>
+      <SidebarMenuItem>
+        <AllowDataSync defaultChecked={session.data.user.allowedSavingData ?? false} />
+      </SidebarMenuItem>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -114,18 +124,15 @@ export function NavigationUser() {
 const LoginButtonModal = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleLogin = () => {
-    setIsLoading(true);
-    clientAuth.signIn
-      .social({
-        provider: "google",
-        callbackURL: pathname,
-      })
-      .then(() => {
-        setIsLoading(false);
-      });
+    setIsDisabled(true);
+
+    clientAuth.signIn.social({
+      provider: "google",
+      callbackURL: pathname,
+    });
   };
 
   return (
@@ -144,7 +151,7 @@ const LoginButtonModal = () => {
               Login with your google account to continue
             </DialogDescription>
           </div>
-          <button disabled={isLoading} className="mt-2 cursor-pointer" onClick={handleLogin}>
+          <button disabled={isDisabled} className="mt-2 cursor-pointer" onClick={handleLogin}>
             <Image
               className="dark:hidden"
               src="/social/google-login-btn-light.svg"
@@ -163,5 +170,46 @@ const LoginButtonModal = () => {
         </DialogContentContainer>
       </DialogContent>
     </Dialog>
+  );
+};
+
+const AllowDataSync = ({ defaultChecked }: { defaultChecked: boolean }) => {
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [isChecked, setIsChecked] = useState(defaultChecked);
+
+  const handleChange = (checked: boolean) => {
+    setIsDisabled(true);
+
+    clientAuth.updateUser({
+      allowedSavingData: checked,
+      fetchOptions: {
+        onSuccess: () => {
+          setIsChecked(checked);
+          setIsDisabled(false);
+        },
+      },
+    });
+  };
+
+  return (
+    <div className="bg-muted-foreground/10 mb-2 flex w-full flex-row items-center justify-between rounded-md p-2">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className="flex flex-row items-center justify-between gap-1.5 text-xs">
+              Allow Data Sync <InfoIcon className="text-muted-foreground size-3" />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent align="start" sideOffset={6}>
+            <p>
+              Allow data sync to your account. <br />
+              This will allow us to save your data on
+              <br /> our servers.
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <MiniSwitch disabled={isDisabled} defaultChecked={isChecked} onCheckedChange={handleChange} />
+    </div>
   );
 };
