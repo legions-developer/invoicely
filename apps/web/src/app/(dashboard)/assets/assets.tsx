@@ -1,15 +1,21 @@
 "use client";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ImageSparkleIcon, SignatureIcon, TrashIcon } from "@/assets/icons";
 import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
-import { ImageSparkleIcon, SignatureIcon } from "@/assets/icons";
+import { deleteImageFromIDB } from "@/lib/indexdb-queries/deleteImage";
+import { getAllImages } from "@/lib/indexdb-queries/getAllImages";
 import EmptySection from "@/components/ui/icon-placeholder";
 import UploadSignatureAsset from "./upload-signature.asset";
+import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
 import { R2_PUBLIC_URL } from "@/constants/strings";
 import UploadLogoAsset from "./upload-logo-asset";
-import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
+import { AuthUser } from "@/types/auth";
 import Image from "next/image";
+import { toast } from "sonner";
 import React from "react";
 
 const typeOfImages = [
@@ -29,10 +35,41 @@ const typeOfImages = [
   },
 ];
 
-const AssetsPage = () => {
+const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
-  const images = useQuery(trpc.cloudflare.listImages.queryOptions());
+  const images = useQuery({
+    ...trpc.cloudflare.listImages.queryOptions(),
+    enabled: !!user,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+  });
+
+  const imagesFromIndexedDB = useQuery({
+    queryKey: ["idb-images"],
+    queryFn: getAllImages,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+  });
+
+  //   Delete image mutation
+  const deleteImageMutation = useMutation({
+    ...trpc.cloudflare.deleteImageFile.mutationOptions(),
+    onSuccess: () => {
+      toast.success("Success!", {
+        description: "Image deleted successfully",
+      });
+      queryClient.invalidateQueries({ queryKey: trpc.cloudflare.listImages.queryKey() });
+    },
+    onError: (error) => {
+      toast.error("Error Occurred!", {
+        description: `Failed to delete image: ${error.message}`,
+      });
+    },
+  });
 
   if (images.isLoading) {
     return (
@@ -42,13 +79,33 @@ const AssetsPage = () => {
     );
   }
 
-  if (images.isError || !images.data) {
+  if (images.isError) {
     return (
       <div className="flex h-full items-center justify-center text-red-500">
         <EmptySection title="Error Occured!" description={`Error while fetching assets! ${images.failureReason}`} />
       </div>
     );
   }
+
+  const handleDeleteImage = async (imageId: string, type: "server" | "local") => {
+    if (user && type === "server") {
+      // Delete image from  server
+      deleteImageMutation.mutate({ key: imageId });
+    } else {
+      const { success } = await asyncTryCatch(deleteImageFromIDB(imageId));
+
+      if (!success) {
+        toast.error("Error Occurred!", {
+          description: "Failed to delete image",
+        });
+      } else {
+        toast.success("Success!", {
+          description: "Image deleted successfully",
+        });
+        queryClient.invalidateQueries({ queryKey: ["idb-images"] });
+      }
+    }
+  };
 
   return (
     <div>
@@ -66,26 +123,74 @@ const AssetsPage = () => {
               </div>
             </AccordionTrigger>
             <AccordionContent>
+              {user && (
+                <>
+                  <div>
+                    <div className="instrument-serif text-xl font-bold">Server {type.title}</div>
+                    <p className="text-muted-foreground text-xs">
+                      Manage the {type.key}s that are stored on the server.
+                    </p>
+                  </div>
+                  {/* List Images */}
+                  <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-5">
+                    {type.key === "logo" && <UploadLogoAsset />}
+                    {type.key === "signature" && <UploadSignatureAsset />}
+                    {getImagesWithKey(images.data?.images ?? [], type.key).map((image) => (
+                      <div key={image.Key} className="bg-border/30 relative rounded-md">
+                        <Button
+                          disabled={deleteImageMutation.isPending}
+                          variant="ghost"
+                          size="xs"
+                          className="absolute top-2 right-2 !px-0.5 text-red-500 hover:!bg-red-500 hover:!text-white"
+                          onClick={() => handleDeleteImage(image.Key ?? "", "server")}
+                        >
+                          <TrashIcon />
+                        </Button>
+                        <Image
+                          src={`${R2_PUBLIC_URL}/${image.Key}`}
+                          alt={image.Key ?? "Image"}
+                          width={200}
+                          height={200}
+                          className="aspect-square w-full rounded-md object-cover"
+                          unoptimized
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
               <div>
-                <div className="instrument-serif text-xl font-bold">Manage {type.title}</div>
-                <p className="text-muted-foreground text-xs">{type.description}</p>
+                <div className="instrument-serif text-xl font-bold">Local {type.title}</div>
+                <p className="text-muted-foreground text-xs">Manage the {type.key}s that are stored on your device.</p>
               </div>
               {/* List Images */}
               <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-5">
                 {type.key === "logo" && <UploadLogoAsset />}
                 {type.key === "signature" && <UploadSignatureAsset />}
-                {getImagesWithKey(images.data.images, type.key).map((image) => (
-                  <div key={image.Key} className="bg-border/30 relative rounded-md">
-                    <Image
-                      src={`${R2_PUBLIC_URL}/${image.Key}`}
-                      alt={image.Key ?? "Image"}
-                      width={200}
-                      height={200}
-                      className="aspect-square w-full rounded-md object-cover"
-                      unoptimized
-                    />
-                  </div>
-                ))}
+                {imagesFromIndexedDB.data?.map((image) => {
+                  if (image.type === type.key) {
+                    return (
+                      <div key={image.id} className="bg-border/30 relative rounded-md">
+                        <Button
+                          variant="ghost"
+                          size="xs"
+                          className="absolute top-2 right-2 !px-0.5 text-red-500 hover:!bg-red-500 hover:!text-white"
+                          onClick={() => handleDeleteImage(image.id, "local")}
+                        >
+                          <TrashIcon />
+                        </Button>
+                        <Image
+                          src={image.base64}
+                          alt={image.id}
+                          width={200}
+                          height={200}
+                          className="aspect-square w-full rounded-md object-cover"
+                          unoptimized
+                        />
+                      </div>
+                    );
+                  }
+                })}
               </div>
             </AccordionContent>
           </AccordionItem>

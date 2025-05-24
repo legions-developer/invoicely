@@ -22,6 +22,13 @@ export const uploadImageFile = authorizedProcedure
   .mutation(async ({ ctx, input }) => {
     const userId = ctx.auth.user.id;
 
+    if (!ctx.auth.user.allowedSavingData) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You are not allowed to save data",
+      });
+    }
+
     try {
       const size = getFileSizeFromBase64(input.base64);
 

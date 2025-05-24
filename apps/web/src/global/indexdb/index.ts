@@ -1,4 +1,4 @@
-import { IDB_NAME, IDB_VERSION, IDB_SCHEMA_INVOICES } from "@/constants/indexed-db";
+import { IDB_NAME, IDB_VERSION, IDB_SCHEMA_INVOICES, IDB_IMAGES } from "@/constants/indexed-db";
 import { IndexedDBSchema } from "@/types/indexdb";
 import { openDB } from "idb";
 
@@ -12,6 +12,13 @@ export const initIndexedDB = async () => {
         const invoicesStore = db.createObjectStore(IDB_SCHEMA_INVOICES, { keyPath: "id" });
         // Create index for invoices so dont allow duplicates
         invoicesStore.createIndex("id", "id", { unique: true });
+      }
+
+      // Create images object store
+      if (!db.objectStoreNames.contains(IDB_IMAGES)) {
+        const imagesStore = db.createObjectStore(IDB_IMAGES, { keyPath: "id" });
+        // Create index for images so dont allow duplicates
+        imagesStore.createIndex("id", "id", { unique: true });
       }
     },
   });

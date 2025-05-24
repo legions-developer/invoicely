@@ -108,7 +108,7 @@ export default function ImageInput({
                   <span>{errors[0]}</span>
                 </div>
               ) : (
-                <p className="text-muted-foreground text-[10px]">Max size: {maxSizeMB}MB (PNG, JPG)</p>
+                <p className="text-muted-foreground text-[10px]">Max size: {maxSizeMB * 1000}Kb (PNG, JPG)</p>
               )}
             </div>
           )}

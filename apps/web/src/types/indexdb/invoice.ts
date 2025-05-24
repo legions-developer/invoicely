@@ -10,3 +10,10 @@ export interface IDBInvoice {
   paidAt: Date | null;
   invoiceFields: ZodCreateInvoiceSchema;
 }
+
+export interface IDBImage {
+  id: string;
+  type: "logo" | "signature";
+  createdAt: Date;
+  base64: string;
+}
