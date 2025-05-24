@@ -114,8 +114,8 @@ export const InvoiceImageSelectorSheet = ({
                 <Alert variant="destructive">
                   <AlertTitle>Caution</AlertTitle>
                   <AlertDescription>
-                    {type} will not be saved in your invoice. if you want to keep {type} uploaded in invoice then you
-                    should upload it to the server & select it from the server.
+                    Don&apos;t select local {type} if you are using server invoice storage. {type} will not be saved in
+                    your invoice.
                   </AlertDescription>
                 </Alert>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
