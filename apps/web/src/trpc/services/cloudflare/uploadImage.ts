@@ -1,4 +1,5 @@
 import { getFileSizeFromBase64 } from "@/lib/invoice/get-file-size-from-base64";
+import { getUserImagesCount } from "@/lib/cloudflare/r2/getUserImagesCount";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
@@ -30,6 +31,15 @@ export const uploadImageFile = authorizedProcedure
     }
 
     try {
+      const userImagesCount = await getUserImagesCount(ctx.s3, userId);
+
+      if (userImagesCount >= 25) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You have reached the maximum number of images in your account! Try deleting some images.",
+        });
+      }
+
       const size = getFileSizeFromBase64(input.base64);
 
       if (size > fileSizes[input.type]) {
