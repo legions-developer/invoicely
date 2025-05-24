@@ -101,7 +101,7 @@ export default function RootLayout({
                       <ReactScanProvider />
                       <Toaster
                         richColors
-                        position="top-right"
+                        position="top-center"
                         toastOptions={TOAST_OPTIONS}
                         icons={TOAST_ICONS}
                         visibleToasts={4}
