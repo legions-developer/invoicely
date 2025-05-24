@@ -39,10 +39,10 @@ const EditInvoice = ({ type, id }: EditInvoiceProps) => {
           const imageBase64 = invoiceFields.companyDetails.logoBase64;
           const sigBase64 = invoiceFields.companyDetails.signatureBase64;
 
-          if (!invoiceFields.companyDetails.logo?.includes("https://")) {
+          if (!invoiceFields.companyDetails.logo?.startsWith("https://")) {
             invoiceFields.companyDetails.logo = imageBase64;
           }
-          if (!invoiceFields.companyDetails.signature?.includes("https://")) {
+          if (!invoiceFields.companyDetails.signature?.startsWith("https://")) {
             invoiceFields.companyDetails.signature = sigBase64;
           }
 
