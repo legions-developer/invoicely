@@ -41,7 +41,7 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
 
           // retry converting the pdf to blob
         }}
-        className="scroll-bar-hidden dark:bg-background flex h-full max-h-full w-full items-center justify-center overflow-y-scroll py-[18px]"
+        className="scroll-bar-hidden dark:bg-background flex h-full max-h-full w-full items-center justify-center overflow-y-scroll py-[18px] sm:items-start"
       >
         {!error && (
           <Page
