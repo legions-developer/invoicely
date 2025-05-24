@@ -22,7 +22,7 @@ interface FormImageInputProps<
 > {
   className?: string;
   name: TName;
-  onBase64Change?: (base64: string) => void;
+  onBase64Change?: (base64: string | undefined) => void;
   label?: string | undefined;
   description?: string | undefined;
   reactform: UseFormReturn<TFieldValues>;
