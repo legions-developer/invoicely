@@ -17,18 +17,12 @@ const InvoicesPage = ({ user }: { user: AuthUser | undefined }) => {
   const trpcData = useQuery({
     ...trpc.invoice.list.queryOptions(),
     enabled: !!user, // Only fetch if user is logged in
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
   });
 
   // Fetching Invoices from the LocalDB
   const idbData = useQuery({
     queryKey: ["idb-invoices"],
     queryFn: getAllInvoices,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
   });
 
   const isLoading = trpcData.isLoading || idbData.isLoading;

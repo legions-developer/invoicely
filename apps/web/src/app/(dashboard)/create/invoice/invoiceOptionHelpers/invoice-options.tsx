@@ -13,16 +13,20 @@ import { saveInvoiceToDatabase } from "@/lib/invoice/save-invoice";
 import { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import { editInvoice } from "@/lib/invoice/edit-invoice";
 import InvoiceErrorsModal from "./invoice-errors-modal";
+import { useQueryClient } from "@tanstack/react-query";
 import InvoiceTabSwitch from "./invoice-tab-switch";
 import { Button } from "@/components/ui/button";
 import { UseFormReturn } from "react-hook-form";
 import { useParams } from "next/navigation";
 import { useUser } from "@/hooks/use-user";
+import { useTRPC } from "@/trpc/client";
 import { AuthUser } from "@/types/auth";
 
 type InvoiceOptionsProps = "view-pdf" | "download-pdf" | "download-png" | "save-invoice-to-database";
 
 const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }) => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const params = useParams() satisfies { type?: string; id?: string };
   const formValues = form.getValues();
   const user = useUser();
@@ -38,6 +42,10 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
     switch (action) {
       case "save-invoice-to-database":
         SaveInvoiceToDatabase({ formValues, user, type: data?.type, id: data?.id });
+        queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
+        if (user) {
+          queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
+        }
         break;
       case "view-pdf":
         InvoiceDownloadManagerInstance.previewPdf();
@@ -46,10 +54,18 @@ const InvoiceOptions = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       case "download-pdf":
         InvoiceDownloadManagerInstance.downloadPdf();
         SaveInvoiceToDatabase({ formValues, user, type: data?.type, id: data?.id });
+        queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
+        if (user) {
+          queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
+        }
         break;
       case "download-png":
         InvoiceDownloadManagerInstance.downloadPng();
         SaveInvoiceToDatabase({ formValues, user, type: data?.type, id: data?.id });
+        queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
+        if (user) {
+          queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
+        }
         break;
       default:
         break;

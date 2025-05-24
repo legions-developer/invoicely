@@ -130,7 +130,7 @@ export const columns = [
       const { id, type } = row.original;
 
       return (
-        <div className="flex flex-row items-center gap-2">
+        <div key={id} className="flex flex-row items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="xs">
