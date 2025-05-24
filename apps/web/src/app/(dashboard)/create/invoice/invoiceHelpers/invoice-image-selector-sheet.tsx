@@ -9,6 +9,7 @@ import { R2_PUBLIC_URL } from "@/constants/strings";
 import { IDBImage } from "@/types/indexdb/invoice";
 import type { _Object } from "@aws-sdk/client-s3";
 import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,6 +33,7 @@ export const InvoiceImageSelectorSheet = ({
   onUrlChange,
   onBase64Change,
 }: InvoiceImageSelectorSheetProps) => {
+  const params = useParams();
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const handleImageSelect = (image: string, type: "server" | "local") => {
@@ -100,7 +102,8 @@ export const InvoiceImageSelectorSheet = ({
                 </div>
               </div>
             )}
-            {idbImages.length > 0 && (
+            {/* Dont display local images if the invoice type is server */}
+            {idbImages.length > 0 && params?.type !== "server" && (
               <div className="flex flex-col gap-4">
                 <div>
                   <div className="instrument-serif text-xl font-bold">Local {type}</div>

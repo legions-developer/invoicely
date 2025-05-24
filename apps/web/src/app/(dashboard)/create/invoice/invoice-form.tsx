@@ -45,6 +45,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
     enabled: !!session?.user,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
+    retry: false,
   });
 
   return (
