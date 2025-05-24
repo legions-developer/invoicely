@@ -7,7 +7,7 @@ import { useTRPC } from "@/trpc/client";
 import { toast } from "sonner";
 import React from "react";
 
-const UploadSignatureAsset = () => {
+const UploadSignatureAsset = ({ disableIcon = false }: { disableIcon?: boolean }) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
@@ -53,7 +53,14 @@ const UploadSignatureAsset = () => {
     }
   };
 
-  return <SignatureInputModal isLoading={uploadImage.isPending} onBase64Change={handleBase64Change} maxSizeMB={0.15} />;
+  return (
+    <SignatureInputModal
+      isLoading={uploadImage.isPending}
+      onBase64Change={handleBase64Change}
+      maxSizeMB={0.15}
+      disableIcon={disableIcon}
+    />
+  );
 };
 
 export default UploadSignatureAsset;

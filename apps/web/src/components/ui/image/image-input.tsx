@@ -15,6 +15,7 @@ interface ImageInputProps {
   defaultUrl?: string;
   allowPreview?: boolean;
   isLoading?: boolean;
+  disableIcon?: boolean;
   onFileUpload?: (file: string) => void;
   onBase64Change?: (base64: string | undefined) => void;
   onFileRemove?: (file: string) => void;
@@ -28,6 +29,7 @@ export default function ImageInput({
   defaultUrl,
   allowPreview = true,
   isLoading = false,
+  disableIcon = false,
   onFileUpload,
   onBase64Change,
   onFileRemove,
@@ -81,7 +83,7 @@ export default function ImageInput({
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           data-dragging={isDragging || undefined}
-          className="border-input hover:bg-accent/50 data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 s relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed p-4 transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:ring-[3px] sm:min-h-52"
+          className="border-input hover:bg-accent/50 data-[dragging=true]:bg-accent/50 relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed p-4 transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none"
         >
           <input {...getInputProps()} className="sr-only" aria-label="Upload file" />
           {previewUrl && allowPreview && !isLoading ? (
@@ -95,16 +97,18 @@ export default function ImageInput({
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
-              <div
-                className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
-                aria-hidden="true"
-              >
-                <ImageSparkleIcon className="size-4" />
-              </div>
+              {!disableIcon && (
+                <div
+                  className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
+                  aria-hidden="true"
+                >
+                  <ImageSparkleIcon className="size-4" />
+                </div>
+              )}
               <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">{title}</p>
               {errors.length > 0 ? (
                 <div className="flex items-center gap-1 text-[10px] text-red-500" role="alert">
-                  <AlertCircleIcon className="size-3 shrink-0" />
+                  {!disableIcon && <AlertCircleIcon className="size-3 shrink-0" />}
                   <span>{errors[0]}</span>
                 </div>
               ) : (

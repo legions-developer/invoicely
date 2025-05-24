@@ -1,8 +1,10 @@
 "use client";
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import UploadSignatureAsset from "@/app/(dashboard)/assets/upload-signature.asset";
 import { createBlobFromBase64 } from "@/lib/invoice/create-blob-from-base64";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import UploadLogoAsset from "@/app/(dashboard)/assets/upload-logo-asset";
 import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
 import EmptySection from "@/components/ui/icon-placeholder";
 import { R2_PUBLIC_URL } from "@/constants/strings";
@@ -53,7 +55,7 @@ export const InvoiceImageSelectorSheet = ({
   return (
     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
       <SheetTrigger>{children}</SheetTrigger>
-      <SheetContent className="w-[90%] !max-w-lg">
+      <SheetContent className="scroll-bar-hidden w-[90%] !max-w-lg overflow-y-scroll">
         <SheetHeader className="hidden flex-col gap-0">
           <SheetTitle>Select {type}</SheetTitle>
           <SheetDescription>Select an image from your assets</SheetDescription>
@@ -83,6 +85,8 @@ export const InvoiceImageSelectorSheet = ({
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {type === "logo" && <UploadLogoAsset disableIcon />}
+                  {type === "signature" && <UploadSignatureAsset disableIcon />}
                   {getImagesWithKey(serverImages, type).map((image) => (
                     <div
                       key={image.Key}
@@ -119,6 +123,8 @@ export const InvoiceImageSelectorSheet = ({
                   </AlertDescription>
                 </Alert>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {type === "logo" && <UploadLogoAsset disableIcon />}
+                  {type === "signature" && <UploadSignatureAsset disableIcon />}
                   {idbImages.map((image) => {
                     if (image.type !== type) return null;
 

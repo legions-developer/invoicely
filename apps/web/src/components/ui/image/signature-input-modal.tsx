@@ -34,6 +34,7 @@ interface SignatureInputModalProps {
   maxSizeMB?: number;
   allowPreview?: boolean;
   isLoading?: boolean;
+  disableIcon?: boolean;
   onBase64Change?: (base64: string | undefined) => void;
   onFileRemove?: () => void;
   onSignatureChange?: (signature: string) => void;
@@ -47,6 +48,7 @@ export default function SignatureInputModal({
   maxSizeMB = 5,
   allowPreview = true,
   isLoading = false,
+  disableIcon = false,
   onSignatureChange,
   onBase64Change,
   onFileRemove,
@@ -150,7 +152,7 @@ export default function SignatureInputModal({
     <>
       <div className="relative">
         {/* Drop area */}
-        <div className="border-input relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none has-[input:focus]:ring-[3px] sm:min-h-52">
+        <div className="border-input relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none">
           {previewUrl && allowPreview && !isLoading ? (
             <div className="absolute inset-0">
               <img src={previewUrl} alt="user signature" className="size-full object-cover" />
@@ -171,12 +173,14 @@ export default function SignatureInputModal({
                 }}
                 className="hover:bg-accent/50 flex h-full flex-col items-center justify-center border-b border-dashed text-center"
               >
-                <div
-                  className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
-                  aria-hidden="true"
-                >
-                  <SignatureIcon className="size-4 rotate-12" />
-                </div>
+                {!disableIcon && (
+                  <div
+                    className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
+                    aria-hidden="true"
+                  >
+                    <SignatureIcon className="size-4 rotate-12" />
+                  </div>
+                )}
                 <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">{title}</p>
                 <p className="text-muted-foreground text-[10px]">Canvas size: 330x330px</p>
               </div>
@@ -192,19 +196,21 @@ export default function SignatureInputModal({
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 data-dragging={isDragging || undefined}
-                className="hover:bg-accent/50 data-[dragging=true]:bg-accent/50 has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 flex h-full flex-col items-center justify-center text-center"
+                className="hover:bg-accent/50 data-[dragging=true]:bg-accent/50 flex h-full flex-col items-center justify-center text-center"
               >
                 <input {...getInputProps()} className="sr-only" aria-label="Upload file" />
-                <div
-                  className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
-                  aria-hidden="true"
-                >
-                  <ImageSparkleIcon className="size-4" />
-                </div>
+                {!disableIcon && (
+                  <div
+                    className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
+                    aria-hidden="true"
+                  >
+                    <ImageSparkleIcon className="size-4" />
+                  </div>
+                )}
                 <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">Upload Signature</p>
                 {errors.length > 0 ? (
                   <div className="flex items-center gap-1 text-[10px] text-red-500" role="alert">
-                    <AlertCircleIcon className="size-3 shrink-0" />
+                    {!disableIcon && <AlertCircleIcon className="size-3 shrink-0" />}
                     <span>{errors[0]}</span>
                   </div>
                 ) : (

@@ -9,7 +9,7 @@ import { useTRPC } from "@/trpc/client";
 import { toast } from "sonner";
 import React from "react";
 
-const UploadLogoAsset = () => {
+const UploadLogoAsset = ({ disableIcon = false }: { disableIcon?: boolean }) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
@@ -61,6 +61,7 @@ const UploadLogoAsset = () => {
       allowPreview={false}
       onBase64Change={handleBase64Change}
       maxSizeMB={0.4}
+      disableIcon={disableIcon}
     />
   );
 };

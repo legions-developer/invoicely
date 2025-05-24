@@ -34,7 +34,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
   const { data: session } = useSession();
   // fetching images from indexedDB
   const idbImages = useQuery({
-    queryKey: ["get-all-idb-images"],
+    queryKey: ["idb-images"],
     queryFn: () => getAllImages(),
     refetchOnMount: true,
     refetchOnWindowFocus: true,
