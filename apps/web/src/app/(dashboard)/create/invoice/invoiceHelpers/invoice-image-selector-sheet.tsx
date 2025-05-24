@@ -2,6 +2,7 @@
 
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { createBlobFromBase64 } from "@/lib/invoice/create-blob-from-base64";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
 import EmptySection from "@/components/ui/icon-placeholder";
 import { R2_PUBLIC_URL } from "@/constants/strings";
@@ -107,6 +108,13 @@ export const InvoiceImageSelectorSheet = ({
                     Click to select the {type}s that are stored on your device.
                   </p>
                 </div>
+                <Alert variant="destructive">
+                  <AlertTitle>Caution</AlertTitle>
+                  <AlertDescription>
+                    {type} will not be saved in your invoice. if you want to keep {type} uploaded in invoice then you
+                    should upload it to the server & select it from the server.
+                  </AlertDescription>
+                </Alert>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                   {idbImages.map((image) => {
                     if (image.type !== type) return null;
