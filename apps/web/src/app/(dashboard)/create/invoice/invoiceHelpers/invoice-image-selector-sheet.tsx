@@ -10,11 +10,9 @@ import EmptySection from "@/components/ui/icon-placeholder";
 import { R2_PUBLIC_URL } from "@/constants/strings";
 import { IDBImage } from "@/types/indexdb/invoice";
 import type { _Object } from "@aws-sdk/client-s3";
-import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 interface InvoiceImageSelectorSheetProps {
   children: React.ReactNode;
@@ -60,54 +58,43 @@ export const InvoiceImageSelectorSheet = ({
           <SheetTitle>Select {type}</SheetTitle>
           <SheetDescription>Select an image from your assets</SheetDescription>
         </SheetHeader>
-        {serverImages.length === 0 && idbImages.length === 0 && !isLoading && (
-          <div className="flex h-full w-full flex-col items-center justify-center">
-            <EmptySection title="No images found" description="Please upload an image to get started." />
-            <Link href="/assets">
-              <Button size="xs" className="mt-4">
-                Upload Image
-              </Button>
-            </Link>
-          </div>
-        )}
+
         {isLoading ? (
           <div className="flex h-full w-full items-center justify-center">
             <EmptySection title="Loading..." description="Please wait while we load the images." />
           </div>
         ) : (
           <div className="flex flex-col gap-4 p-4">
-            {serverImages.length > 0 && (
-              <div className="flex flex-col gap-4">
-                <div>
-                  <div className="instrument-serif text-xl font-bold">Server {type}</div>
-                  <p className="text-muted-foreground text-xs">
-                    Click to select the {type}s that are stored on your device.
-                  </p>
-                </div>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                  {type === "logo" && <UploadLogoAsset disableIcon />}
-                  {type === "signature" && <UploadSignatureAsset disableIcon />}
-                  {getImagesWithKey(serverImages, type).map((image) => (
-                    <div
-                      key={image.Key}
-                      className="bg-border/30 relative cursor-pointer rounded-md"
-                      onClick={() => handleImageSelect(image.Key ?? "", "server")}
-                    >
-                      <Image
-                        src={`${R2_PUBLIC_URL}/${image.Key}`}
-                        alt={image.Key ?? "Image"}
-                        width={200}
-                        height={200}
-                        className="aspect-square w-full rounded-md border object-cover"
-                        unoptimized
-                      />
-                    </div>
-                  ))}
-                </div>
+            <div className="flex flex-col gap-4">
+              <div>
+                <div className="instrument-serif text-xl font-bold">Server {type}</div>
+                <p className="text-muted-foreground text-xs">
+                  Click to select the {type}s that are stored on your device.
+                </p>
               </div>
-            )}
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                {type === "logo" && <UploadLogoAsset disableIcon type="server" />}
+                {type === "signature" && <UploadSignatureAsset disableIcon type="server" />}
+                {getImagesWithKey(serverImages, type).map((image) => (
+                  <div
+                    key={image.Key}
+                    className="bg-border/30 relative cursor-pointer rounded-md"
+                    onClick={() => handleImageSelect(image.Key ?? "", "server")}
+                  >
+                    <Image
+                      src={`${R2_PUBLIC_URL}/${image.Key}`}
+                      alt={image.Key ?? "Image"}
+                      width={200}
+                      height={200}
+                      className="aspect-square w-full rounded-md border object-cover"
+                      unoptimized
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
             {/* Dont display local images if the invoice type is server */}
-            {idbImages.length > 0 && params?.type !== "server" && (
+            {params?.type !== "server" && (
               <div className="flex flex-col gap-4">
                 <div>
                   <div className="instrument-serif text-xl font-bold">Local {type}</div>
@@ -123,8 +110,8 @@ export const InvoiceImageSelectorSheet = ({
                   </AlertDescription>
                 </Alert>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                  {type === "logo" && <UploadLogoAsset disableIcon />}
-                  {type === "signature" && <UploadSignatureAsset disableIcon />}
+                  {type === "logo" && <UploadLogoAsset disableIcon type="local" />}
+                  {type === "signature" && <UploadSignatureAsset disableIcon type="local" />}
                   {idbImages.map((image) => {
                     if (image.type !== type) return null;
 

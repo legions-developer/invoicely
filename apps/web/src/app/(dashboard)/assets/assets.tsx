@@ -133,8 +133,8 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
                   </div>
                   {/* List Images */}
                   <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-5">
-                    {type.key === "logo" && <UploadLogoAsset />}
-                    {type.key === "signature" && <UploadSignatureAsset />}
+                    {type.key === "logo" && <UploadLogoAsset type="server" />}
+                    {type.key === "signature" && <UploadSignatureAsset type="server" />}
                     {getImagesWithKey(images.data?.images ?? [], type.key).map((image) => (
                       <div key={image.Key} className="bg-border/30 relative rounded-md">
                         <Button
@@ -165,8 +165,8 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
               </div>
               {/* List Images */}
               <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-5">
-                {type.key === "logo" && <UploadLogoAsset />}
-                {type.key === "signature" && <UploadSignatureAsset />}
+                {type.key === "logo" && <UploadLogoAsset type="local" />}
+                {type.key === "signature" && <UploadSignatureAsset type="local" />}
                 {imagesFromIndexedDB.data?.map((image) => {
                   if (image.type === type.key) {
                     return (
