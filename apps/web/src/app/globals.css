@@ -166,7 +166,7 @@ button {
 }
 
 .dash-layout-page-content-height {
-  @apply h-[calc(100svh-48px-18px)];
+  @apply h-[calc(100svh-50px)] md:h-[calc(100svh-48px-18px)];
 }
 
 .scroll-bar-hidden::-webkit-scrollbar {

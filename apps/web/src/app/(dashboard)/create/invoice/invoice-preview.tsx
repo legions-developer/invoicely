@@ -31,7 +31,7 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
   }
 
   return (
-    <div className="flex h-full w-full items-center justify-center p-4">
+    <div className="flex h-full w-full items-center justify-center">
       <Document
         file={url}
         loading={null}
@@ -41,7 +41,7 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
 
           // retry converting the pdf to blob
         }}
-        className="max-h-full"
+        className="scroll-bar-hidden dark:bg-background flex h-full max-h-full w-full items-center justify-center overflow-y-scroll py-[18px]"
       >
         {!error && (
           <Page
