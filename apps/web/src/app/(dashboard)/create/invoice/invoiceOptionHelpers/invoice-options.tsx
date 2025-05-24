@@ -118,6 +118,6 @@ const SaveInvoiceToDatabase = ({
     // Edit the old invoice
     editInvoice(formValues, user, type, id);
   } else {
-    saveInvoiceToDatabase(formValues, user);
+    saveInvoiceToDatabase(formValues, user, type);
   }
 };

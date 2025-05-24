@@ -1,11 +1,16 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import { forceInsertInvoice } from "../indexdb-queries/invoice";
 import { asyncTryCatch } from "../neverthrow/tryCatch";
 import { trpcProxyClient } from "@/trpc/client";
 import { redirect } from "next/navigation";
 import { AuthUser } from "@/types/auth";
 import { toast } from "sonner";
-export const saveInvoiceToDatabase = async (invoice: ZodCreateInvoiceSchema, user: AuthUser | undefined) => {
+export const saveInvoiceToDatabase = async (
+  invoice: ZodCreateInvoiceSchema,
+  user: AuthUser | undefined,
+  type: InvoiceTypeType | undefined,
+) => {
   if (user && user.allowedSavingData) {
     const insertedInvoice = await trpcProxyClient.invoice.insert.mutate(invoice);
 
@@ -22,6 +27,13 @@ export const saveInvoiceToDatabase = async (invoice: ZodCreateInvoiceSchema, use
       redirect(`/edit/server/${insertedInvoice.invoiceId}`);
     }
   } else {
+    if (type === "server") {
+      toast.error("Error Occured", {
+        description: "Failed to save invoice to server! Please allow saving data in your account settings.",
+      });
+      return;
+    }
+
     const { success, data } = await asyncTryCatch(forceInsertInvoice(invoice));
 
     if (!success || !data) {

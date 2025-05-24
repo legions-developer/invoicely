@@ -12,7 +12,7 @@ export const editInvoice = async (
   type: InvoiceTypeType,
   id: string,
 ) => {
-  if (user && user.allowedSavingData && type === "server") {
+  if (user && user.allowedSavingData) {
     const insertedInvoice = await trpcProxyClient.invoice.edit.mutate({
       id,
       invoice,
@@ -28,6 +28,13 @@ export const editInvoice = async (
       });
     }
   } else {
+    if (type === "server") {
+      toast.error("Error Occured", {
+        description: "Failed to save invoice to server! Please allow saving data in your account settings.",
+      });
+      return;
+    }
+
     const { success } = await asyncTryCatch(updateInvoice(id, invoice));
 
     if (!success) {
