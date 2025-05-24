@@ -3,7 +3,7 @@ import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { invoiceStatusEnum } from "@invoicely/db/schema/invoice";
 import { db, schema } from "@invoicely/db";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 const updateInvoiceStatusSchema = z.object({
@@ -42,7 +42,7 @@ export const updateInvoiceStatus = authorizedProcedure
           status: input.status,
           paidAt: input.status === "success" ? new Date() : null,
         })
-        .where(eq(schema.invoices.id, input.id));
+        .where(and(eq(schema.invoices.id, input.id), eq(schema.invoices.userId, ctx.auth.user.id)));
 
       return {
         success: true,
