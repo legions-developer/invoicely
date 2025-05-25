@@ -18,6 +18,7 @@ export const deleteInvoice = authorizedProcedure
   .mutation<MutationResponse>(async ({ ctx, input }) => {
     try {
       await deleteInvoiceQuery(input.id, ctx.auth.user.id);
+
       return {
         success: true,
         message: "Invoice deleted successfully.",
@@ -25,8 +26,7 @@ export const deleteInvoice = authorizedProcedure
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to delete invoice.",
-        cause: parseCatchError(error),
+        message: parseCatchError(error),
       });
     }
   });

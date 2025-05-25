@@ -27,8 +27,7 @@ export const listInvoices = authorizedProcedure.query(async ({ ctx }) => {
   } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to fetch invoices",
-      cause: parseCatchError(error),
+      message: parseCatchError(error),
     });
   }
 });

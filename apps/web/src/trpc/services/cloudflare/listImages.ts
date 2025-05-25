@@ -11,14 +11,15 @@ export const listImages = authorizedProcedure.use(awsS3Middleware).query(async (
     const images = await getUserImages(ctx.s3, userId);
 
     return {
+      success: true,
+      message: "Images fetched successfully",
       images: images,
       count: images.length,
     };
   } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: parseCatchError(error) || "Failed to fetch images",
-      cause: parseCatchError(error),
+      message: parseCatchError(error),
     });
   }
 });

@@ -33,11 +33,14 @@ export const deleteImageFile = authorizedProcedure
           message: "Failed to delete image",
         });
       }
+      return {
+        success: true,
+        message: "Image deleted successfully",
+      };
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: parseCatchError(error) || "Failed to fetch images",
-        cause: parseCatchError(error),
+        message: parseCatchError(error),
       });
     }
   });

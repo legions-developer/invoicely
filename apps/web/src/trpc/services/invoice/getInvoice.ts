@@ -39,8 +39,7 @@ export const getInvoice = authorizedProcedure.input(getInvoiceSchema).query(asyn
   } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to get invoice",
-      cause: parseCatchError(error),
+      message: parseCatchError(error),
     });
   }
 });

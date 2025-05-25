@@ -59,13 +59,14 @@ export const uploadImageFile = authorizedProcedure
       }
 
       return {
+        success: true,
+        message: "Image uploaded successfully",
         image: image,
       };
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: parseCatchError(error) || "Failed to fetch images",
-        cause: parseCatchError(error),
+        message: parseCatchError(error),
       });
     }
   });

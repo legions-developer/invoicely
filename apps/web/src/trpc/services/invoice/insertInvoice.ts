@@ -15,10 +15,10 @@ export const insertInvoice = authorizedProcedure
   .mutation<MutationResponse>(async ({ ctx, input }) => {
     // If user didn't allow saving data in db then return error
     if (!ctx.auth.user.allowedSavingData) {
-      return {
-        success: false,
+      throw new TRPCError({
+        code: "FORBIDDEN",
         message: "User has not enabled data saving in their preferences",
-      };
+      });
     }
 
     try {
@@ -32,8 +32,7 @@ export const insertInvoice = authorizedProcedure
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to insert invoice",
-        cause: parseCatchError(error),
+        message: parseCatchError(error),
       });
     }
   });

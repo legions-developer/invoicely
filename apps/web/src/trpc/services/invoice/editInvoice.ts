@@ -35,8 +35,7 @@ export const editInvoice = authorizedProcedure.input(EditInvoiceSchema).mutation
   } catch (error) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to edit invoice",
-      cause: parseCatchError(error),
+      message: parseCatchError(error),
     });
   }
 });

@@ -21,18 +21,18 @@ export const updateInvoiceStatus = authorizedProcedure
       });
 
       if (!invoice) {
-        return {
-          success: false,
+        throw new TRPCError({
+          code: "NOT_FOUND",
           message: "Invoice not found! Please try again.",
-        };
+        });
       }
 
       // Checking if current invoice status is same as the new status
       if (invoice.status === input.status) {
-        return {
-          success: false,
+        throw new TRPCError({
+          code: "BAD_REQUEST",
           message: "Try updating to a different status. Current status is same as the new status.",
-        };
+        });
       }
 
       // Updating the invoice status
@@ -51,8 +51,7 @@ export const updateInvoiceStatus = authorizedProcedure
     } catch (error) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to update invoice status",
-        cause: parseCatchError(error),
+        message: parseCatchError(error),
       });
     }
   });
