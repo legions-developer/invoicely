@@ -1,19 +1,23 @@
 "use client";
 
-import { createInvoiceSchema, ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import {
+  createInvoiceSchema,
+  createInvoiceSchemaDefaultValues,
+  ZodCreateInvoiceSchema,
+} from "@/zod-schemas/invoice/create-invoice";
 import { createBlobUrl, revokeBlobUrl } from "@/lib/invoice/create-blob-url";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { invoiceErrorAtom } from "@/global/atoms/invoice-atom";
 import { useMounted, useResizeObserver } from "@mantine/hooks";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import PDFLoading from "@/components/layout/pdf/pdf-loading";
+import React, { useEffect, useRef, useState } from "react";
 import PDFError from "@/components/layout/pdf/pdf-error";
+import { cloneDeep, debounce, isEqual } from "lodash";
 import { ERROR_MESSAGES } from "@/constants/issues";
-import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Document, Page } from "react-pdf";
 import { useSetAtom } from "jotai";
-import { debounce } from "lodash";
 
 const PDF_VIEWER_PADDING = 18;
 
@@ -64,10 +68,14 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   const [data, setData] = useState(form.getValues());
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [generatedPdfUrl, setGeneratedPdfUrl] = useState<string | null>(null);
+  const lastProcessedValueRef = useRef<ZodCreateInvoiceSchema>(createInvoiceSchemaDefaultValues);
 
   // Watch for form changes, debounce input, validate, and then update data/errors
   useEffect(() => {
     const processFormValue = (value: ZodCreateInvoiceSchema) => {
+      if (isEqual(value, lastProcessedValueRef.current)) return; // skip unnecessary updates
+      lastProcessedValueRef.current = cloneDeep(value);
+
       // First verify the data if it matches the schema
       const isDataValid = createInvoiceSchema.safeParse(value);
       // If the data is valid, set the data to invoice and clear the errors
