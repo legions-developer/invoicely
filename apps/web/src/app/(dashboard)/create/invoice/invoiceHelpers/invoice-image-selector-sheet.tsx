@@ -7,19 +7,22 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import UploadLogoAsset from "@/app/(dashboard)/assets/upload-logo-asset";
 import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
 import EmptySection from "@/components/ui/icon-placeholder";
-import { R2_PUBLIC_URL } from "@/constants/strings";
+import { InvoiceImageType } from "@/types/common/invoice";
 import { IDBImage } from "@/types/indexdb/invoice";
 import type { _Object } from "@aws-sdk/client-s3";
 import { useParams } from "next/navigation";
+import { R2_PUBLIC_URL } from "@/constants";
+import { AuthUser } from "@/types/auth";
 import { useState } from "react";
 import Image from "next/image";
 
 interface InvoiceImageSelectorSheetProps {
   children: React.ReactNode;
-  type: "logo" | "signature";
+  type: InvoiceImageType;
   isLoading?: boolean;
   idbImages: IDBImage[];
   serverImages: _Object[];
+  user: AuthUser | undefined;
   onUrlChange: (url: string) => void;
   onBase64Change: (base64?: string) => void;
 }
@@ -30,6 +33,7 @@ export const InvoiceImageSelectorSheet = ({
   isLoading = false,
   idbImages,
   serverImages,
+  user,
   onUrlChange,
   onBase64Change,
 }: InvoiceImageSelectorSheetProps) => {
@@ -65,34 +69,36 @@ export const InvoiceImageSelectorSheet = ({
           </div>
         ) : (
           <div className="flex flex-col gap-4 p-4">
-            <div className="flex flex-col gap-4">
-              <div>
-                <div className="instrument-serif text-xl font-bold">Server {type}</div>
-                <p className="text-muted-foreground text-xs">
-                  Click to select the {type}s that are stored on your device.
-                </p>
+            {user && user.allowedSavingData && (
+              <div className="flex flex-col gap-4">
+                <div>
+                  <div className="instrument-serif text-xl font-bold">Server {type}</div>
+                  <p className="text-muted-foreground text-xs">
+                    Click to select the {type}s that are stored on your device.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                  {type === "logo" && <UploadLogoAsset disableIcon type="server" />}
+                  {type === "signature" && <UploadSignatureAsset disableIcon type="server" />}
+                  {getImagesWithKey(serverImages, type).map((image) => (
+                    <div
+                      key={image.Key}
+                      className="bg-border/30 relative cursor-pointer rounded-md"
+                      onClick={() => handleImageSelect(image.Key ?? "", "server")}
+                    >
+                      <Image
+                        src={`${R2_PUBLIC_URL}/${image.Key}`}
+                        alt={image.Key ?? "Image"}
+                        width={200}
+                        height={200}
+                        className="aspect-square w-full rounded-md border object-cover"
+                        unoptimized
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                {type === "logo" && <UploadLogoAsset disableIcon type="server" />}
-                {type === "signature" && <UploadSignatureAsset disableIcon type="server" />}
-                {getImagesWithKey(serverImages, type).map((image) => (
-                  <div
-                    key={image.Key}
-                    className="bg-border/30 relative cursor-pointer rounded-md"
-                    onClick={() => handleImageSelect(image.Key ?? "", "server")}
-                  >
-                    <Image
-                      src={`${R2_PUBLIC_URL}/${image.Key}`}
-                      alt={image.Key ?? "Image"}
-                      width={200}
-                      height={200}
-                      className="aspect-square w-full rounded-md border object-cover"
-                      unoptimized
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
             {/* Dont display local images if the invoice type is server */}
             {params?.type !== "server" && (
               <div className="flex flex-col gap-4">

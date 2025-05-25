@@ -14,7 +14,7 @@ import {
 import { NavigationItem } from "@/components/layout/sidebar/navigation-item";
 import { NavigationUser } from "@/components/layout/sidebar/navigation-user";
 import LogoIcon from "@/components/assets/logo-icon";
-import { SIDEBAR_ITEMS } from "@/constants";
+import { SIDEBAR_ITEMS } from "@/constants/sidebar";
 
 export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (

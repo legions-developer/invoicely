@@ -4,7 +4,7 @@ import BlogHero from "@/components/layout/marketing/blogs/blog-hero";
 import { getTableOfContents } from "fumadocs-core/server";
 import { allBlogs } from "content-collections";
 import { notFound } from "next/navigation";
-import { LINKS } from "@/constants";
+import { LINKS } from "@/constants/links";
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 

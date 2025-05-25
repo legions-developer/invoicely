@@ -1,4 +1,5 @@
 import { EditInvoicePageSchema } from "@/zod-schemas/invoice/edit-invoice-page";
+import { ERROR_MESSAGES } from "@/constants/issues";
 import EditInvoice from "./editInvoice";
 import React from "react";
 
@@ -16,7 +17,7 @@ const Page = async ({ params }: PageProps) => {
   });
 
   if (!parsedParams.success) {
-    throw new Error("Invalid Search Params! Please try again later.");
+    throw new Error(ERROR_MESSAGES.INVALID_SEARCH_PARAMS);
   }
 
   const { type, id } = parsedParams.data;

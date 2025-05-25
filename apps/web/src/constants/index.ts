@@ -1,3 +1,1 @@
-export * from "./links";
-export * from "./sidebar";
-export * from "./meta-data";
+export const R2_PUBLIC_URL = "https://storage.invoicely.gg";

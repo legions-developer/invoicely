@@ -1,4 +1,4 @@
-import { LINKS } from "@/constants";
+import { LINKS } from "@/constants/links";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";

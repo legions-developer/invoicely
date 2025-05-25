@@ -3,6 +3,7 @@ import { insertInvoiceQuery } from "@/lib/db-queries/invoice/insertInvoice";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { createInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { getInvoiceQuery } from "@/lib/db-queries/invoice/getInvoice";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -19,7 +20,7 @@ export const editInvoice = authorizedProcedure.input(EditInvoiceSchema).mutation
     const oldInvoice = await getInvoiceQuery(id, ctx.auth.user.id);
 
     if (!oldInvoice) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Invoice not found" });
+      throw new TRPCError({ code: "NOT_FOUND", message: ERROR_MESSAGES.INVOICE_NOT_FOUND });
     }
 
     //   now as we found old invoice , we will delete it from the database ( yea im pro :3)
@@ -30,7 +31,7 @@ export const editInvoice = authorizedProcedure.input(EditInvoiceSchema).mutation
 
     return {
       success: true,
-      message: "Invoice edited successfully",
+      message: SUCCESS_MESSAGES.INVOICE_EDITED,
     };
   } catch (error) {
     throw new TRPCError({

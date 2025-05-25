@@ -1,7 +1,7 @@
 import DashboardSidebarHeader from "@/components/layout/sidebar/dashboard-sidebar-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { generateWebsiteMetadata } from "@/constants/meta-data";
 import { DashboardSidebar } from "@/components/layout/sidebar";
-import { generateWebsiteMetadata } from "@/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = generateWebsiteMetadata({

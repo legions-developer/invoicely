@@ -3,8 +3,8 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AnimatePresence, motion } from "motion/react";
 import { Separator } from "@/components/ui/separator";
+import { SIDEBAR_ITEMS } from "@/constants/sidebar";
 import { usePathname } from "next/navigation";
-import { SIDEBAR_ITEMS } from "@/constants";
 import { ISidebarHeader } from "@/types";
 import React from "react";
 

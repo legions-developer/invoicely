@@ -1,6 +1,7 @@
 import { deleteInvoiceQuery } from "@/lib/db-queries/invoice/deleteInvoice";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
+import { SUCCESS_MESSAGES } from "@/constants/issues";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -21,7 +22,7 @@ export const deleteInvoice = authorizedProcedure
 
       return {
         success: true,
-        message: "Invoice deleted successfully.",
+        message: SUCCESS_MESSAGES.INVOICE_DELETED,
       };
     } catch (error) {
       throw new TRPCError({

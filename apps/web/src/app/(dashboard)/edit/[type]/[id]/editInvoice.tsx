@@ -1,5 +1,6 @@
 "use client";
 
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import InvoicePage from "@/app/(dashboard)/create/invoice/invoice";
 import { getInvoiceById } from "@/lib/indexdb-queries/invoice";
@@ -52,7 +53,7 @@ const EditInvoice = ({ type, id }: EditInvoiceProps) => {
         }
         setIsLoading(false);
       } else {
-        throw new Error("Invoice not found! Please try again later.");
+        throw new Error(ERROR_MESSAGES.INVOICE_NOT_FOUND);
       }
     };
 
@@ -60,7 +61,12 @@ const EditInvoice = ({ type, id }: EditInvoiceProps) => {
   }, [id, type]);
 
   if (isLoading) {
-    return <PDFLoading message="Fetching Invoice..." description="Please wait while we fetch the invoice." />;
+    return (
+      <PDFLoading
+        message={SUCCESS_MESSAGES.FETCHING_INVOICE}
+        description={SUCCESS_MESSAGES.FETCHING_INVOICE_DESCRIPTION}
+      />
+    );
   }
 
   return <InvoicePage defaultInvoice={invoice?.invoiceFields} />;

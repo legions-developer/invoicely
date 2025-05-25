@@ -1,4 +1,12 @@
 import {
+  ReactScanProvider,
+  JotaiProvider,
+  PostHogProvider,
+  OneDollarStatsProvider,
+  OpenPanelProvider,
+  TanstackProvider,
+} from "@/providers";
+import {
   Geist,
   Geist_Mono,
   JetBrains_Mono,
@@ -7,15 +15,7 @@ import {
   Urbanist,
   Bricolage_Grotesque,
 } from "next/font/google";
-import {
-  ReactScanProvider,
-  JotaiProvider,
-  PostHogProvider,
-  OneDollarStatsProvider,
-  OpenPanelProvider,
-} from "@/providers";
-import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants";
-import { TanstackProvider } from "@/providers/tanstack-provider";
+import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants/meta-data";
 import { TOAST_ICONS, TOAST_OPTIONS } from "@/constants/toast";
 import { TRPCProvider } from "@/trpc/client";
 import { ThemeProvider } from "next-themes";

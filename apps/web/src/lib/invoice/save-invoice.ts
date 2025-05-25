@@ -1,4 +1,5 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import { forceInsertInvoice } from "../indexdb-queries/invoice";
 import { asyncTryCatch } from "../neverthrow/tryCatch";
@@ -15,12 +16,12 @@ export const saveInvoiceToDatabase = async (
     const insertedInvoice = await trpcProxyClient.invoice.insert.mutate(invoice);
 
     if (!insertedInvoice.success) {
-      toast.error("Database Error", {
-        description: `Error saving invoice to database: ${insertedInvoice.message}`,
+      toast.error(ERROR_MESSAGES.DATABASE_ERROR, {
+        description: ERROR_MESSAGES.FAILED_TO_INSERT_DATA,
       });
     } else {
-      toast.success("Invoice saved successfully", {
-        description: "Invoice saved successfully in Database",
+      toast.success(SUCCESS_MESSAGES.INVOICE_SAVED, {
+        description: SUCCESS_MESSAGES.INVOICE_SAVED_DESCRIPTION,
       });
 
       // we will redirect user to its invoice Edit
@@ -28,8 +29,8 @@ export const saveInvoiceToDatabase = async (
     }
   } else {
     if (type === "server") {
-      toast.error("Error Occured", {
-        description: "Failed to save invoice to server! Please allow saving data in your account settings.",
+      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: ERROR_MESSAGES.NOT_ALLOWED_TO_SAVE_DATA,
       });
       return;
     }
@@ -37,12 +38,12 @@ export const saveInvoiceToDatabase = async (
     const { success, data } = await asyncTryCatch(forceInsertInvoice(invoice));
 
     if (!success || !data) {
-      toast.error("IndexDB Error", {
-        description: "Error saving invoice to indexedDB",
+      toast.error(ERROR_MESSAGES.INDEXDB_ERROR, {
+        description: ERROR_MESSAGES.FAILED_TO_INSERT_DATA,
       });
     } else {
-      toast.success("Invoice saved successfully", {
-        description: "Invoice saved successfully in IndexDB",
+      toast.success(SUCCESS_MESSAGES.INVOICE_SAVED, {
+        description: SUCCESS_MESSAGES.INVOICE_SAVED_DESCRIPTION,
       });
 
       // we will redirect user to its invoice Edit

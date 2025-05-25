@@ -8,6 +8,7 @@ import { useMounted, useResizeObserver } from "@mantine/hooks";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import PDFLoading from "@/components/layout/pdf/pdf-loading";
 import PDFError from "@/components/layout/pdf/pdf-error";
+import { ERROR_MESSAGES } from "@/constants/issues";
 import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Document, Page } from "react-pdf";
@@ -106,7 +107,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
 
         setGeneratedPdfUrl(newUrl);
       } catch (err) {
-        setPdfError(parseCatchError(err, "Failed to generate PDF content"));
+        setPdfError(parseCatchError(err, ERROR_MESSAGES.FAILED_TO_GENERATE_PDF));
         if (generatedPdfUrl) {
           revokeBlobUrl({ url: generatedPdfUrl });
         }

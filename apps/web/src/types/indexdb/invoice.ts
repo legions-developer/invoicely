@@ -1,5 +1,6 @@
 import type { InvoiceTypeType, InvoiceStatusType } from "@invoicely/db/schema/invoice";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import { InvoiceImageType } from "../common/invoice";
 
 export interface IDBInvoice {
   id: string;
@@ -13,7 +14,7 @@ export interface IDBInvoice {
 
 export interface IDBImage {
   id: string;
-  type: "logo" | "signature";
+  type: InvoiceImageType;
   createdAt: Date;
   base64: string;
 }

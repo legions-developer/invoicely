@@ -1,6 +1,7 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { IDB_SCHEMA_INVOICES } from "@/constants/indexed-db";
 import { IDBInvoice } from "@/types/indexdb/invoice";
+import { ERROR_MESSAGES } from "@/constants/issues";
 import { initIndexedDB } from "@/global/indexdb";
 import { v4 as uuidv4 } from "uuid";
 
@@ -59,7 +60,7 @@ export const updateInvoice = async (id: string, invoice: ZodCreateInvoiceSchema)
   const oldInvoice = await db.get(IDB_SCHEMA_INVOICES, id);
 
   if (!oldInvoice) {
-    throw new Error("Invoice not found! Please try again.");
+    throw new Error(ERROR_MESSAGES.INVOICE_NOT_FOUND);
   }
 
   // first we delete the old invoice with the id

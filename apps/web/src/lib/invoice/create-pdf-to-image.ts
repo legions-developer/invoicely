@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from "@/constants/issues";
 import { revokeBlobUrl } from "./create-blob-url";
 import { pdfjs } from "react-pdf";
 
@@ -18,7 +19,7 @@ export const createPdfToImage = async ({ pdfBlob, scale = 2 }: CreatePdfToImageP
   const ctx = canvas.getContext("2d");
 
   if (!ctx) {
-    throw new Error("Failed to get canvas context");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_GET_CANVAS_CONTEXT);
   }
 
   canvas.height = viewport.height;
@@ -34,7 +35,7 @@ export const createPdfToImage = async ({ pdfBlob, scale = 2 }: CreatePdfToImageP
   return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
-        reject(new Error("Failed to convert canvas to blob"));
+        reject(new Error(ERROR_MESSAGES.FAILED_TO_CONVERT_CANVAS_TO_BLOB));
         return;
       }
 

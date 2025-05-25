@@ -1,5 +1,6 @@
 import { uploadImage as uploadImageToIndexedDB } from "@/lib/indexdb-queries/uploadImage";
 import SignatureInputModal from "@/components/ui/image/signature-input-modal";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
@@ -16,15 +17,15 @@ const UploadSignatureAsset = ({ disableIcon = false, type }: { disableIcon?: boo
   const uploadImage = useMutation({
     ...trpc.cloudflare.uploadImageFile.mutationOptions(),
     onSuccess: () => {
-      toast.success("Success!", {
-        description: "Signature uploaded successfully",
+      toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: SUCCESS_MESSAGES.IMAGE_UPLOADED,
       });
 
       queryClient.invalidateQueries({ queryKey: trpc.cloudflare.listImages.queryKey() });
     },
     onError: (error) => {
-      toast.error("Error Occurred!", {
-        description: `Failed to upload image: ${error.message}`,
+      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: `${ERROR_MESSAGES.UPLOADING_IMAGE}: ${error.message}`,
       });
     },
   });
@@ -42,12 +43,12 @@ const UploadSignatureAsset = ({ disableIcon = false, type }: { disableIcon?: boo
       const { success, error } = await asyncTryCatch(uploadImageToIndexedDB(base64, "signature"));
 
       if (!success) {
-        toast.error("Error Occurred!", {
-          description: error.message,
+        toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+          description: `${ERROR_MESSAGES.UPLOADING_IMAGE}: ${error.message}`,
         });
       } else {
-        toast.success("Success!", {
-          description: "Signature uploaded successfully",
+        toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
+          description: SUCCESS_MESSAGES.IMAGE_UPLOADED,
         });
         queryClient.invalidateQueries({ queryKey: ["idb-images"] });
       }

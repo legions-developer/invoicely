@@ -2,14 +2,13 @@
 
 import InvoiceFieldKeyStringValuesSection from "./invoiceHelpers/invoice-field-key-string-value-section";
 import InvoiceFieldKeyNumberValuesSection from "./invoiceHelpers/invoice-field-key-number-value-section";
-import { InvoiceAccordionContent, InvoiceAccordionTrigger } from "./invoiceHelpers/invoice-accordions";
+import { Accordion, AccordionItem, AccordionContent, AccordionTrigger } from "@/components/ui/accordion";
 import SheetImageSelectorTrigger from "@/components/ui/image/sheet-image-selector-trigger";
 import { InvoiceImageSelectorSheet } from "./invoiceHelpers/invoice-image-selector-sheet";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import InvoiceItemsSection from "./invoiceHelpers/invoice-items-section";
 import { FormColorPicker } from "@/components/ui/form/form-color-picker";
 import { FormDatePicker } from "@/components/ui/form/form-date-picker";
-import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { FormTextarea } from "@/components/ui/form/form-textarea";
 import { getAllImages } from "@/lib/indexdb-queries/getAllImages";
 import { FormSelect } from "@/components/ui/form/form-select";
@@ -55,14 +54,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
           <Accordion type="single" collapsible defaultValue="company-details" className="w-full divide-y border-b">
             {/* Company Details */}
             <AccordionItem value="company-details">
-              <InvoiceAccordionTrigger>Company Details</InvoiceAccordionTrigger>
-              <InvoiceAccordionContent>
+              <AccordionTrigger>Company Details</AccordionTrigger>
+              <AccordionContent>
                 <div className="flex w-full flex-row gap-4 md:flex-col [&>*]:flex-1 [@media(min-width:1200px)]:flex-row">
                   <InvoiceImageSelectorSheet
                     type="logo"
                     isLoading={idbImages.isLoading || serverImages.isLoading}
                     idbImages={idbImages.data || []}
                     serverImages={serverImages.data?.images || []}
+                    user={session?.user}
                     onUrlChange={(url) => {
                       form.setValue("companyDetails.logo", url);
                     }}
@@ -85,6 +85,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     isLoading={idbImages.isLoading || serverImages.isLoading}
                     idbImages={idbImages.data || []}
                     serverImages={serverImages.data?.images || []}
+                    user={session?.user}
                     onUrlChange={(url) => {
                       form.setValue("companyDetails.signature", url);
                     }}
@@ -122,12 +123,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                   name="companyDetails.metadata"
                   label="Company Fields"
                 />
-              </InvoiceAccordionContent>
+              </AccordionContent>
             </AccordionItem>
             {/* Client Details */}
             <AccordionItem value="client-details">
-              <InvoiceAccordionTrigger>Client Details</InvoiceAccordionTrigger>
-              <InvoiceAccordionContent>
+              <AccordionTrigger>Client Details</AccordionTrigger>
+              <AccordionContent>
                 <FormInput name="clientDetails.name" label="Client Name" reactform={form} placeholder="John Doe" />
                 <FormTextarea
                   className="h-20"
@@ -141,12 +142,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                   name="clientDetails.metadata"
                   label="Client Fields"
                 />
-              </InvoiceAccordionContent>
+              </AccordionContent>
             </AccordionItem>
             {/* Invoice Details */}
             <AccordionItem value="invoice-details">
-              <InvoiceAccordionTrigger>Invoice Details</InvoiceAccordionTrigger>
-              <InvoiceAccordionContent>
+              <AccordionTrigger>Invoice Details</AccordionTrigger>
+              <AccordionContent>
                 <FormRow>
                   <FormSelect
                     name="invoiceDetails.currency"
@@ -229,19 +230,19 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                   name="invoiceDetails.billingDetails"
                   label="Billing Details"
                 />
-              </InvoiceAccordionContent>
+              </AccordionContent>
             </AccordionItem>
             {/* Invoice Items */}
             <AccordionItem value="invoice-items">
-              <InvoiceAccordionTrigger>Invoice Items</InvoiceAccordionTrigger>
-              <InvoiceAccordionContent>
+              <AccordionTrigger>Invoice Items</AccordionTrigger>
+              <AccordionContent>
                 <InvoiceItemsSection form={form} />
-              </InvoiceAccordionContent>
+              </AccordionContent>
             </AccordionItem>
             {/* Additional Information */}
             <AccordionItem value="additional-info">
-              <InvoiceAccordionTrigger>Additional Information</InvoiceAccordionTrigger>
-              <InvoiceAccordionContent>
+              <AccordionTrigger>Additional Information</AccordionTrigger>
+              <AccordionContent>
                 <FormTextarea
                   name="metadata.notes"
                   label="Notes"
@@ -263,7 +264,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                   name="metadata.paymentInformation"
                   label="Payment Information"
                 />
-              </InvoiceAccordionContent>
+              </AccordionContent>
             </AccordionItem>
           </Accordion>
         </form>

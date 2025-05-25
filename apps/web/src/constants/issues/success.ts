@@ -1,0 +1,17 @@
+export const enum SUCCESS_MESSAGES {
+  DEFAULT = "Success!",
+  TOAST_DEFAULT_TITLE = "Congratz! Success!",
+  IMAGE_DELETED = "Image deleted successfully",
+  LOADING_ASSETS = "Loading assets...",
+  LOADING_ASSETS_DESCRIPTION = "Please wait while we load the assets",
+  IMAGE_UPLOADED = "Image uploaded successfully",
+  FETCHING_INVOICE = "Fetching invoice...",
+  FETCHING_INVOICE_DESCRIPTION = "Please wait while we fetch the invoice.",
+  INVOICE_EDITED = "Invoice edited successfully",
+  INVOICE_EDITED_DESCRIPTION = "Invoice edited successfully in Database",
+  INVOICE_SAVED = "Invoice saved successfully",
+  INVOICE_SAVED_DESCRIPTION = "Invoice saved successfully in Database",
+  IMAGES_FETCHED = "Images fetched successfully",
+  INVOICE_DELETED = "Invoice deleted successfully",
+  INVOICE_STATUS_UPDATED = "Invoice status updated successfully",
+}

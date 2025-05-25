@@ -1,6 +1,6 @@
 import { PostHogAnalytics } from "./posthog-analytics";
 import { GithubIcon } from "@/assets/icons";
-import { LINKS } from "@/constants";
+import { LINKS } from "@/constants/links";
 import Link from "next/link";
 import React from "react";
 

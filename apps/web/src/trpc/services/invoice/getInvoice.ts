@@ -1,6 +1,7 @@
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { getInvoiceQuery } from "@/lib/db-queries/invoice/getInvoice";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
+import { ERROR_MESSAGES } from "@/constants/issues";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -15,7 +16,7 @@ export const getInvoice = authorizedProcedure.input(getInvoiceSchema).query(asyn
     if (!invoice) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Invoice not found",
+        message: ERROR_MESSAGES.INVOICE_NOT_FOUND,
       });
     }
 

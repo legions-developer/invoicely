@@ -1,4 +1,5 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import { ERROR_MESSAGES } from "@/constants/issues";
 import { db, schema } from "@invoicely/db";
 import { v4 as uuidv4 } from "uuid";
 import Decimal from "decimal.js";
@@ -20,7 +21,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     });
 
   if (!insertedInvoice) {
-    throw new Error("Failed to insert invoice record into database");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_INSERT_DATA + "~ invoice record");
   }
 
   // Inserting invoice field in db
@@ -35,7 +36,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     });
 
   if (!insertedInvoiceField) {
-    throw new Error("Failed to insert invoice field record into database");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_INSERT_DATA + "~ invoice field record");
   }
 
   // Inserting company details in db
@@ -54,7 +55,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     });
 
   if (!insertedCompanyDetails) {
-    throw new Error("Failed to insert company details record into database");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_INSERT_DATA + "~ company details record");
   }
 
   // Inserting company details metadata in db
@@ -83,7 +84,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     });
 
   if (!insertedClientDetails) {
-    throw new Error("Failed to insert client details record into database");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_INSERT_DATA + "~ client details record");
   }
 
   // Inserting client details metadata in db
@@ -117,7 +118,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     });
 
   if (!insertedInvoiceDetails) {
-    throw new Error("Failed to insert invoice details record into database");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_INSERT_DATA + "~ invoice details record");
   }
 
   // Inserting invoice billing information in db
@@ -161,7 +162,7 @@ export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId
     });
 
   if (!insertedInvoiceMetadata) {
-    throw new Error("Failed to insert invoice metadata record into database");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_INSERT_DATA + "~ invoice metadata record");
   }
 
   // Inserting invoice metadata payment information in db

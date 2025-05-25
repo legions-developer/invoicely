@@ -4,6 +4,7 @@ import { generateInvoiceName } from "@/lib/invoice/generate-invoice-name";
 import { createPdfToImage } from "@/lib/invoice/create-pdf-to-image";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import { downloadFile } from "@/lib/invoice/download-file";
+import { ERROR_MESSAGES } from "@/constants/issues";
 import { toast } from "sonner";
 
 export class InvoiceDownloadManager {
@@ -57,24 +58,24 @@ export class InvoiceDownloadManager {
   //   Error Handling
   private isBlobInitialized(): Blob {
     if (!this.blob) {
-      toast.error("Blob not initialized. Initialize the InvoiceDownloadManager");
-      throw new Error("Blob not initialized. Initialize the InvoiceDownloadManager");
+      toast.error(ERROR_MESSAGES.BLOB_NOT_INITIALIZED);
+      throw new Error(ERROR_MESSAGES.BLOB_NOT_INITIALIZED);
     }
     return this.blob;
   }
 
   private isInvoiceDataInitialized(): ZodCreateInvoiceSchema {
     if (!this.invoiceData) {
-      toast.error("Invoice data not initialized. Initialize the InvoiceDownloadManager");
-      throw new Error("Invoice data not initialized. Initialize the InvoiceDownloadManager");
+      toast.error(ERROR_MESSAGES.INVOICE_DATA_NOT_INITIALIZED);
+      throw new Error(ERROR_MESSAGES.INVOICE_DATA_NOT_INITIALIZED);
     }
     return this.invoiceData;
   }
 
   private isInvoiceNameInitialized(): string {
     if (!this.invoiceName) {
-      toast.error("Invoice name not initialized. Initialize the InvoiceDownloadManager");
-      throw new Error("Invoice name not initialized. Initialize the InvoiceDownloadManager");
+      toast.error(ERROR_MESSAGES.INVOICE_NAME_NOT_INITIALIZED);
+      throw new Error(ERROR_MESSAGES.INVOICE_NAME_NOT_INITIALIZED);
     }
     return this.invoiceName;
   }

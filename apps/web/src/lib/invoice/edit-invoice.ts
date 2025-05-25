@@ -1,4 +1,5 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import { updateInvoice } from "../indexdb-queries/invoice";
 import { asyncTryCatch } from "../neverthrow/tryCatch";
@@ -19,18 +20,18 @@ export const editInvoice = async (
     });
 
     if (!insertedInvoice.success) {
-      toast.error("Database Error", {
-        description: `Error editing invoice to database`,
+      toast.error(ERROR_MESSAGES.DATABASE_ERROR, {
+        description: ERROR_MESSAGES.FAILED_TO_EDIT_INVOICE,
       });
     } else {
-      toast.success("Invoice edited successfully", {
-        description: "Invoice edited successfully in Database",
+      toast.success(SUCCESS_MESSAGES.INVOICE_EDITED, {
+        description: SUCCESS_MESSAGES.INVOICE_EDITED_DESCRIPTION,
       });
     }
   } else {
     if (type === "server") {
-      toast.error("Error Occured", {
-        description: "Failed to save invoice to server! Please allow saving data in your account settings.",
+      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: ERROR_MESSAGES.NOT_ALLOWED_TO_SAVE_DATA,
       });
       return;
     }
@@ -38,12 +39,12 @@ export const editInvoice = async (
     const { success } = await asyncTryCatch(updateInvoice(id, invoice));
 
     if (!success) {
-      toast.error("IndexDB Error", {
-        description: "Error editing invoice to indexedDB",
+      toast.error(ERROR_MESSAGES.INDEXDB_ERROR, {
+        description: ERROR_MESSAGES.FAILED_TO_EDIT_INVOICE,
       });
     } else {
-      toast.success("Invoice edited successfully", {
-        description: "Invoice edited successfully in IndexDB",
+      toast.success(SUCCESS_MESSAGES.INVOICE_EDITED, {
+        description: SUCCESS_MESSAGES.INVOICE_EDITED_DESCRIPTION,
       });
     }
   }

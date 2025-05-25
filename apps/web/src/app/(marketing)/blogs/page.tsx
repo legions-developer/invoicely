@@ -3,7 +3,7 @@ import BlogFooter from "@/components/layout/marketing/blogs/blog-footer";
 import BlogHero from "@/components/layout/marketing/blogs/blog-hero";
 import BlogCard from "@/components/layout/marketing/blogs/blog-card";
 import { allBlogs } from "content-collections";
-import { LINKS } from "@/constants";
+import { LINKS } from "@/constants/links";
 import React from "react";
 
 const Page = () => {

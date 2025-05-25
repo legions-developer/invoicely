@@ -158,6 +158,7 @@ const LoginButtonModal = () => {
               alt="Google Login"
               width={200}
               height={40}
+              priority
             />
             <Image
               className="hidden dark:block"
@@ -165,6 +166,7 @@ const LoginButtonModal = () => {
               alt="Google Login"
               width={200}
               height={40}
+              priority
             />
           </button>
         </DialogContentContainer>

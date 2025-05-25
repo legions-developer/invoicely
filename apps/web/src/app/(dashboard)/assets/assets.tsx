@@ -5,13 +5,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ImageSparkleIcon, SignatureIcon, TrashIcon } from "@/assets/icons";
 import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
 import { deleteImageFromIDB } from "@/lib/indexdb-queries/deleteImage";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import { getAllImages } from "@/lib/indexdb-queries/getAllImages";
 import EmptySection from "@/components/ui/icon-placeholder";
 import UploadSignatureAsset from "./upload-signature.asset";
-import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
-import { R2_PUBLIC_URL } from "@/constants/strings";
 import UploadLogoAsset from "./upload-logo-asset";
 import { Button } from "@/components/ui/button";
+import { R2_PUBLIC_URL } from "@/constants";
 import { useTRPC } from "@/trpc/client";
 import { AuthUser } from "@/types/auth";
 import Image from "next/image";
@@ -39,6 +39,7 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
+  //   Fetch images from server
   const images = useQuery({
     ...trpc.cloudflare.listImages.queryOptions(),
     enabled: !!user,
@@ -47,6 +48,7 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
     refetchOnReconnect: true,
   });
 
+  //   Fetch images from indexedDB
   const imagesFromIndexedDB = useQuery({
     queryKey: ["idb-images"],
     queryFn: getAllImages,
@@ -55,18 +57,38 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
     refetchOnReconnect: true,
   });
 
-  //   Delete image mutation
-  const deleteImageMutation = useMutation({
+  //   Delete image from server
+  const deleteServerImageMutation = useMutation({
     ...trpc.cloudflare.deleteImageFile.mutationOptions(),
     onSuccess: () => {
-      toast.success("Success!", {
-        description: "Image deleted successfully",
+      toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: SUCCESS_MESSAGES.IMAGE_DELETED,
       });
+
+      // Invalidate queries
       queryClient.invalidateQueries({ queryKey: trpc.cloudflare.listImages.queryKey() });
     },
     onError: (error) => {
-      toast.error("Error Occurred!", {
-        description: `Failed to delete image: ${error.message}`,
+      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: error.message,
+      });
+    },
+  });
+
+  //   Delete image from indexedDB
+  const deleteImageFromIndexedDBMutation = useMutation({
+    mutationFn: (imageId: string) => deleteImageFromIDB(imageId),
+    onSuccess: () => {
+      toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: SUCCESS_MESSAGES.IMAGE_DELETED,
+      });
+
+      // Invalidate queries
+      queryClient.invalidateQueries({ queryKey: ["idb-images"] });
+    },
+    onError: (error) => {
+      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: error.message,
       });
     },
   });
@@ -74,7 +96,10 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
   if (images.isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <EmptySection title="Loading Assets" description="Please wait while we load the assets" />
+        <EmptySection
+          title={SUCCESS_MESSAGES.LOADING_ASSETS}
+          description={SUCCESS_MESSAGES.LOADING_ASSETS_DESCRIPTION}
+        />
       </div>
     );
   }
@@ -82,7 +107,10 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
   if (images.isError) {
     return (
       <div className="flex h-full items-center justify-center text-red-500">
-        <EmptySection title="Error Occured!" description={`Error while fetching assets! ${images.failureReason}`} />
+        <EmptySection
+          title={ERROR_MESSAGES.DEFAULT}
+          description={`${ERROR_MESSAGES.FETCHING_ASSETS} ${images.failureReason}`}
+        />
       </div>
     );
   }
@@ -90,20 +118,9 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
   const handleDeleteImage = async (imageId: string, type: "server" | "local") => {
     if (user && type === "server") {
       // Delete image from  server
-      deleteImageMutation.mutate({ key: imageId });
+      deleteServerImageMutation.mutate({ key: imageId });
     } else {
-      const { success } = await asyncTryCatch(deleteImageFromIDB(imageId));
-
-      if (!success) {
-        toast.error("Error Occurred!", {
-          description: "Failed to delete image",
-        });
-      } else {
-        toast.success("Success!", {
-          description: "Image deleted successfully",
-        });
-        queryClient.invalidateQueries({ queryKey: ["idb-images"] });
-      }
+      deleteImageFromIndexedDBMutation.mutate(imageId);
     }
   };
 
@@ -138,7 +155,7 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
                     {getImagesWithKey(images.data?.images ?? [], type.key).map((image) => (
                       <div key={image.Key} className="bg-border/30 relative rounded-md">
                         <Button
-                          disabled={deleteImageMutation.isPending}
+                          disabled={deleteServerImageMutation.isPending}
                           variant="ghost"
                           size="xs"
                           className="absolute top-2 right-2 !px-0.5 text-red-500 hover:!bg-red-500 hover:!text-white"
@@ -172,6 +189,7 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
                     return (
                       <div key={image.id} className="bg-border/30 relative rounded-md">
                         <Button
+                          disabled={deleteImageFromIndexedDBMutation.isPending}
                           variant="ghost"
                           size="xs"
                           className="absolute top-2 right-2 !px-0.5 text-red-500 hover:!bg-red-500 hover:!text-white"

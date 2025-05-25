@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from "@/constants/issues";
 import { db, schema } from "@invoicely/db";
 import { and, eq } from "drizzle-orm";
 
@@ -18,7 +19,7 @@ export const deleteInvoiceQuery = async (invoiceId: string, userId: string) => {
   });
 
   if (!invoice) {
-    throw new Error("Invoice not found or user does not have permission to delete it.");
+    throw new Error(ERROR_MESSAGES.INVOICE_NOT_FOUND_OR_NO_PERMISSION);
   }
 
   // Due to foreign key constraints, we might need to delete related records first.
@@ -33,7 +34,7 @@ export const deleteInvoiceQuery = async (invoiceId: string, userId: string) => {
     });
 
   if (!deletedInvoice) {
-    throw new Error("Failed to delete invoice from database.");
+    throw new Error(ERROR_MESSAGES.FAILED_TO_DELETE_INVOICE);
   }
 
   return deletedInvoice;

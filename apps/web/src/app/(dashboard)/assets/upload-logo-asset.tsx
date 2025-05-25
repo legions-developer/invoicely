@@ -1,6 +1,7 @@
 "use client";
 
 import { uploadImage as uploadImageToIndexedDB } from "@/lib/indexdb-queries/uploadImage";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ImageInput from "@/components/ui/image/image-input";
@@ -18,15 +19,15 @@ const UploadLogoAsset = ({ disableIcon = false, type }: { disableIcon?: boolean;
   const uploadImage = useMutation({
     ...trpc.cloudflare.uploadImageFile.mutationOptions(),
     onSuccess: () => {
-      toast.success("Success!", {
-        description: "Logo uploaded successfully",
+      toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: SUCCESS_MESSAGES.IMAGE_UPLOADED,
       });
 
       queryClient.invalidateQueries({ queryKey: trpc.cloudflare.listImages.queryKey() });
     },
     onError: (error) => {
-      toast.error("Error Occurred!", {
-        description: `Failed to upload image: ${error.message}`,
+      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+        description: `${ERROR_MESSAGES.UPLOADING_IMAGE}: ${error.message}`,
       });
     },
   });
@@ -44,12 +45,12 @@ const UploadLogoAsset = ({ disableIcon = false, type }: { disableIcon?: boolean;
       const { success } = await asyncTryCatch(uploadImageToIndexedDB(base64, "logo"));
 
       if (!success) {
-        toast.error("Error Occurred!", {
-          description: "Failed to upload image",
+        toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
+          description: ERROR_MESSAGES.UPLOADING_IMAGE,
         });
       } else {
-        toast.success("Success!", {
-          description: "Logo uploaded successfully",
+        toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
+          description: SUCCESS_MESSAGES.IMAGE_UPLOADED,
         });
         queryClient.invalidateQueries({ queryKey: ["idb-images"] });
       }

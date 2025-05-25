@@ -1,4 +1,5 @@
 import { ImageSparkleIcon, SignatureIcon } from "@/assets/icons";
+import { InvoiceImageType } from "@/types/common/invoice";
 import { XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "../label";
@@ -8,7 +9,7 @@ import React from "react";
 interface SheetImageSelectorTriggerProps {
   className?: string;
   previewUrl?: string;
-  type: "logo" | "signature";
+  type: InvoiceImageType;
   onRemove: () => void;
   label: string;
 }

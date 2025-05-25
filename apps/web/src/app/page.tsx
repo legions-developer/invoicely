@@ -8,8 +8,8 @@ import { ScribbledArrowToRight } from "@/assets/svgs";
 import LogoIcon from "@/components/assets/logo-icon";
 import { Button } from "@/components/ui/button";
 import NumberFlow from "@number-flow/react";
+import { LINKS } from "@/constants/links";
 import { useTheme } from "next-themes";
-import { LINKS } from "@/constants";
 import Link from "next/link";
 
 export default function Home() {

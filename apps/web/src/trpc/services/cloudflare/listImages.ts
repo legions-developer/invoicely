@@ -2,6 +2,7 @@ import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { getUserImages } from "@/lib/cloudflare/r2/getUserImages";
+import { SUCCESS_MESSAGES } from "@/constants/issues";
 import { TRPCError } from "@trpc/server";
 
 export const listImages = authorizedProcedure.use(awsS3Middleware).query(async ({ ctx }) => {
@@ -12,7 +13,7 @@ export const listImages = authorizedProcedure.use(awsS3Middleware).query(async (
 
     return {
       success: true,
-      message: "Images fetched successfully",
+      message: SUCCESS_MESSAGES.IMAGES_FETCHED,
       images: images,
       count: images.length,
     };

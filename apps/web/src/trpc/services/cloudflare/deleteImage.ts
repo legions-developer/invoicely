@@ -1,4 +1,5 @@
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { deleteImage } from "@/lib/cloudflare/r2/deleteImage";
@@ -20,7 +21,7 @@ export const deleteImageFile = authorizedProcedure
       if (!input.key.startsWith(userId)) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "You are not allowed to delete this image",
+          message: ERROR_MESSAGES.NOT_ALLOWED_TO_DELETE_IMAGE,
         });
       }
 
@@ -30,12 +31,12 @@ export const deleteImageFile = authorizedProcedure
       if (!success) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to delete image",
+          message: ERROR_MESSAGES.IMAGE_DELETED,
         });
       }
       return {
         success: true,
-        message: "Image deleted successfully",
+        message: SUCCESS_MESSAGES.IMAGE_DELETED,
       };
     } catch (error) {
       throw new TRPCError({

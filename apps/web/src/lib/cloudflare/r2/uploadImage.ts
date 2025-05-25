@@ -1,12 +1,11 @@
 import { createBufferFromBase64 } from "@/lib/invoice/create-buffer-from-base64";
 import { PutObjectCommand, type S3Client } from "@aws-sdk/client-s3";
 import { getImageMimeType } from "@/lib/invoice/get-image-mime";
+import { InvoiceImageType } from "@/types/common/invoice";
 import { env } from "@invoicely/utilities";
 import { v4 as uuidv4 } from "uuid";
 
-type ImageType = "signature" | "logo";
-
-export const uploadImage = async (s3: S3Client, base64: string, userId: string, imageType: ImageType) => {
+export const uploadImage = async (s3: S3Client, base64: string, userId: string, imageType: InvoiceImageType) => {
   const imageBuffer = createBufferFromBase64(base64);
   const contentType = getImageMimeType(base64);
 

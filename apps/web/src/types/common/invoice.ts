@@ -10,3 +10,5 @@ export interface Invoice {
   paidAt: Date | null;
   invoiceFields: ZodCreateInvoiceSchema;
 }
+
+export type InvoiceImageType = "logo" | "signature";
