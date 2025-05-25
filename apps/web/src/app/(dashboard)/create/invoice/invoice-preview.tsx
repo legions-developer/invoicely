@@ -83,9 +83,10 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       }
     }
   }, []);
+
   useEffect(() => {
-    generatePDF(createInvoiceSchemaDefaultValues);
-  }, []);
+    generatePDF(form.getValues());
+  }, [form]);
 
   // Watch for form changes, debounce input, validate, and then update data/errors
   useEffect(() => {
