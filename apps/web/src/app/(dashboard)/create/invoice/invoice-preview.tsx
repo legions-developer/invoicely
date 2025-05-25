@@ -90,9 +90,6 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   // Watch for form changes, debounce input, validate, and then update data/errors
   useEffect(() => {
     const processFormValue = (value: ZodCreateInvoiceSchema) => {
-      console.log("VALUE: ", JSON.stringify(value));
-      console.log("Last processed: ", JSON.stringify(lastProcessedValueRef.current));
-
       if (isEqual(value, lastProcessedValueRef.current)) return; // skip unnecessary updates
       lastProcessedValueRef.current = cloneDeep(value);
 
