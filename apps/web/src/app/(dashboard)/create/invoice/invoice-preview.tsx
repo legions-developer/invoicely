@@ -6,12 +6,12 @@ import {
   ZodCreateInvoiceSchema,
 } from "@/zod-schemas/invoice/create-invoice";
 import { createBlobUrl, revokeBlobUrl } from "@/lib/invoice/create-blob-url";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { invoiceErrorAtom } from "@/global/atoms/invoice-atom";
 import { useMounted, useResizeObserver } from "@mantine/hooks";
 import { createPdfBlob } from "@/lib/invoice/create-pdf-blob";
 import PDFLoading from "@/components/layout/pdf/pdf-loading";
-import React, { useEffect, useRef, useState } from "react";
 import PDFError from "@/components/layout/pdf/pdf-error";
 import { cloneDeep, debounce, isEqual } from "lodash";
 import { UseFormReturn } from "react-hook-form";
@@ -68,7 +68,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   const [generatedPdfUrl, setGeneratedPdfUrl] = useState<string | null>(null);
   const lastProcessedValueRef = useRef<ZodCreateInvoiceSchema>(createInvoiceSchemaDefaultValues);
 
-  const generatePDF = async (data: ZodCreateInvoiceSchema) => {
+  const generatePDF = useCallback(async (data: ZodCreateInvoiceSchema) => {
     setPdfError(null);
 
     try {
@@ -82,7 +82,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
         revokeBlobUrl({ url: generatedPdfUrl });
       }
     }
-  };
+  }, []);
   useEffect(() => {
     generatePDF(createInvoiceSchemaDefaultValues);
   }, []);
