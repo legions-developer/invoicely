@@ -38,6 +38,9 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 4. **Set up the database**
 
    ```bash
+   # Start PostgreSQL with Docker Compose
+   docker compose up -d
+
    # Generate database schema
    yarn db:generate
 
