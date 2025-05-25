@@ -64,29 +64,10 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
   const isClient = useMounted();
   const [resizeRef, container] = useResizeObserver();
   const setInvoiceError = useSetAtom(invoiceErrorAtom);
+  const [data, setData] = useState(form.getValues());
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [generatedPdfUrl, setGeneratedPdfUrl] = useState<string | null>(null);
   const lastProcessedValueRef = useRef<ZodCreateInvoiceSchema>(createInvoiceSchemaDefaultValues);
-
-  const generatePDF = useCallback(async (data: ZodCreateInvoiceSchema) => {
-    setPdfError(null);
-
-    try {
-      const blob = await createPdfBlob({ invoiceData: data });
-      const newUrl = createBlobUrl({ blob });
-
-      setGeneratedPdfUrl(newUrl);
-    } catch (err) {
-      setPdfError(parseCatchError(err, "Failed to generate PDF content"));
-      if (generatedPdfUrl) {
-        revokeBlobUrl({ url: generatedPdfUrl });
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    generatePDF(form.getValues());
-  }, [form]);
 
   // Watch for form changes, debounce input, validate, and then update data/errors
   useEffect(() => {
@@ -98,8 +79,8 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       const isDataValid = createInvoiceSchema.safeParse(value);
       // If the data is valid, set the data to invoice and clear the errors
       if (isDataValid.success) {
+        setData(value);
         setInvoiceError([]);
-        generatePDF(value);
       } else {
         setInvoiceError(isDataValid.error.issues);
       }
@@ -117,12 +98,39 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       // Cleanup subscription and cancel any pending debounced calls
       subscription.unsubscribe();
       debouncedProcessFormValue.cancel();
+    };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form]);
+
+  // Effect to generate PDF when data changes
+  useEffect(() => {
+    setPdfError(null);
+
+    (async () => {
+      try {
+        const blob = await createPdfBlob({ invoiceData: data });
+        const newUrl = createBlobUrl({ blob });
+
+        setGeneratedPdfUrl(newUrl);
+      } catch (err) {
+        setPdfError(parseCatchError(err, "Failed to generate PDF content"));
+        if (generatedPdfUrl) {
+          revokeBlobUrl({ url: generatedPdfUrl });
+        }
+      }
+    })();
+
+    // Cleanup on component unmount or when data changes again (before new generation)
+    return () => {
       if (generatedPdfUrl) {
         revokeBlobUrl({ url: generatedPdfUrl });
       }
     };
-  }, [form]);
+
+    // Dont Include generatedPdfUrl in the dependency array as it will cause infinite re-renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   // If there is an error loading the PDF, show an error message
   if (pdfError) {
