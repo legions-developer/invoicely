@@ -25,14 +25,16 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:generate": "dotenv -- turbo run db:generate",
+    "db:migrate": "dotenv -- turbo run db:migrate",
+    "db:push": "dotenv -- turbo run db:push",
+    "db:studio": "dotenv -- turbo run db:studio"
   },
   "devDependencies": {
     "@invoicely/eslint-config": "workspace:*",
     "@invoicely/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
+    "dotenv-cli": "^8.0.0",
     "husky": "^9.1.7",
     "patch-package": "^8.0.0",
     "prettier": "^3.5.3",
