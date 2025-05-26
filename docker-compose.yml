@@ -1,6 +1,15 @@
 name: invoicely
 
 services:
+  app:
+    container_name: invoicely_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks:
+      - invoicely_network
   db:
     container_name: invoicely_db
     image: bitnami/postgresql:15
