@@ -325,10 +325,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Built with ❤️ by the Invoicely team</p>
-  <p>
-    <a href="https://github.com/legions-developer/invoicely">⭐ Star us on GitHub</a> |
-    <a href="https://github.com/legions-developer/invoicely/issues">🐛 Report Bug</a> |
-    <a href="https://github.com/legions-developer/invoicely/issues">💡 Request Feature</a>
-  </p>
+ <a href="https://www.star-history.com/#legions-developer/invoicely&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=legions-developer/invoicely&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=legions-developer/invoicely&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=legions-developer/invoicely&type=Date" />
+ </picture>
+</a>
 </div>
