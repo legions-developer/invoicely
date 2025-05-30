@@ -38,6 +38,7 @@ COPY --from=base /app/packages ./packages
 COPY --from=base /app/apps ./apps
 
 COPY --from=base /app/env-links.sh ./env-links.sh
+RUN apk add --no-cache bash
 RUN chmod +x ./env-links.sh
 
 # Install only production dependencies (including workspace deps)
