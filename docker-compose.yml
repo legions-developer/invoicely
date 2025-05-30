@@ -3,6 +3,8 @@ name: invoicely
 services:
   app:
     container_name: invoicely_app
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Dockerfile
@@ -10,6 +12,8 @@ services:
       - 3000:3000
     networks:
       - invoicely_network
+    depends_on:
+      - db
   db:
     container_name: invoicely_db
     image: bitnami/postgresql:15

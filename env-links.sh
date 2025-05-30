@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 for app_dir in apps/*; do
   app_dir=${app_dir%/}

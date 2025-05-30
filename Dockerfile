@@ -37,8 +37,13 @@ COPY --from=base /app/.yarnrc.yml ./.yarnrc.yml
 COPY --from=base /app/packages ./packages
 COPY --from=base /app/apps ./apps
 
+COPY --from=base /app/env-links.sh ./env-links.sh
+RUN chmod +x ./env-links.sh
+
 # Install only production dependencies (including workspace deps)
 RUN yarn workspaces focus web --production
+
+RUN yarn run sys-link
 
 # Copy the built Next.js app
 COPY --from=base /app/apps/web/.next ./apps/web/.next
