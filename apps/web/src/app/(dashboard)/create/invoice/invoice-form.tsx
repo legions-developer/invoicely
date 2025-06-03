@@ -16,12 +16,14 @@ import { currenciesWithSymbols } from "@/constants/currency";
 import { FormInput } from "@/components/ui/form/form-input";
 import FormRow from "@/components/ui/form/form-row";
 import { SelectItem } from "@/components/ui/select";
+import { useResizeObserver } from "@mantine/hooks";
 import { Form } from "@/components/ui/form/form";
 import { useQuery } from "@tanstack/react-query";
 import { UseFormReturn } from "react-hook-form";
 import { useSession } from "@/lib/client-auth";
 import { Badge } from "@/components/ui/badge";
 import { useTRPC } from "@/trpc/client";
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface InvoiceFormProps {
@@ -30,6 +32,8 @@ interface InvoiceFormProps {
 
 const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
   const trpc = useTRPC();
+  const [resizeRef, container] = useResizeObserver();
+
   const { data: session } = useSession();
   // fetching images from indexedDB
   const idbImages = useQuery({
@@ -55,8 +59,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
             {/* Company Details */}
             <AccordionItem value="company-details">
               <AccordionTrigger>Company Details</AccordionTrigger>
-              <AccordionContent>
-                <div className="flex w-full flex-row gap-4 md:flex-col [&>*]:flex-1 [@media(min-width:1200px)]:flex-row">
+              <AccordionContent ref={resizeRef} className={cn(container.width > 1200 ? "flex-row gap-4" : "flex-col")}>
+                <div className={cn(container.width > 1200 ? "w-fit" : "w-full [&>*]:w-full", "flex flex-row gap-4")}>
                   <InvoiceImageSelectorSheet
                     type="logo"
                     isLoading={idbImages.isLoading || serverImages.isLoading}
@@ -104,25 +108,27 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     />
                   </InvoiceImageSelectorSheet>
                 </div>
-                <FormInput
-                  name="companyDetails.name"
-                  label="Company Name"
-                  reactform={form}
-                  placeholder="John Doe ltd."
-                  description="Name of your company"
-                />
-                <FormTextarea
-                  className="h-20"
-                  name="companyDetails.address"
-                  label="Company Address"
-                  reactform={form}
-                  placeholder="123 Business St, City, Country"
-                />
-                <InvoiceFieldKeyStringValuesSection
-                  reactform={form}
-                  name="companyDetails.metadata"
-                  label="Company Fields"
-                />
+                <div className="flex w-full flex-col gap-2">
+                  <FormInput
+                    name="companyDetails.name"
+                    label="Company Name"
+                    reactform={form}
+                    placeholder="John Doe ltd."
+                    description="Name of your company"
+                  />
+                  <FormTextarea
+                    className="h-20"
+                    name="companyDetails.address"
+                    label="Company Address"
+                    reactform={form}
+                    placeholder="123 Business St, City, Country"
+                  />
+                  <InvoiceFieldKeyStringValuesSection
+                    reactform={form}
+                    name="companyDetails.metadata"
+                    label="Company Fields"
+                  />
+                </div>
               </AccordionContent>
             </AccordionItem>
             {/* Client Details */}
