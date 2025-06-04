@@ -15,14 +15,14 @@ const MDXImage = ({ src, ...props }: MDXImageProps) => {
   useEffect(() => {
     if (!src) return;
 
-    const isDark = resolvedTheme === 'dark';
-    
+    const isDark = resolvedTheme === "dark";
+
     if (isDark) {
       // Generate dark mode image path
-      const extension = src.split('.').pop();
-      const baseName = src.replace(`.${extension}`, '');
+      const extension = src.split(".").pop();
+      const baseName = src.replace(`.${extension}`, "");
       const darkImageSrc = `${baseName}-dark.${extension}`;
-      
+
       // Check if dark image exists
       const img = new Image();
       img.onload = () => {
@@ -45,7 +45,7 @@ const MDXImage = ({ src, ...props }: MDXImageProps) => {
   if (isLoading || !imageSrc) {
     return (
       <div className="-mx-12 my-12 border-y border-dashed p-4">
-        <div className="h-64 rounded-lg bg-gray-200 dark:bg-gray-800 animate-pulse" />
+        <div className="h-64 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800" />
       </div>
     );
   }
