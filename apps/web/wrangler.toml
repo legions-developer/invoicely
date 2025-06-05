@@ -1,5 +1,5 @@
 main = ".open-next/worker.js"
-name = "web"
+name = "invoicely-web"
 compatibility_date = "2025-05-05"
 compatibility_flags = ["nodejs_compat"]
 
