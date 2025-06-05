@@ -6,3 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
+
+# To enable logging in Cloudflare Logs
+[observability.logs]
+enabled = true
