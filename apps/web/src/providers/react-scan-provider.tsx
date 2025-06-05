@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { scan } from "react-scan";
 
+if (typeof window !== "undefined") {
+  scan({
+    enabled: false,
+  });
+}
+
 export const ReactScanProvider = () => {
-  useEffect(() => {
-    scan({
-      enabled: false,
-    });
-  }, []);
-  return <></>;
+  return null;
 };

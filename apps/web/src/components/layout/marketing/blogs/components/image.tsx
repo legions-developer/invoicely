@@ -1,60 +1,54 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMounted } from "@mantine/hooks";
 import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
+import React from "react";
 
-interface MDXImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  src: string;
-}
-
-const MDXImage = ({ src, ...props }: MDXImageProps) => {
+const MDXImage = ({ src, className, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => {
   const { resolvedTheme } = useTheme();
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const isMounted = useMounted();
+  const isDark = resolvedTheme === "dark";
 
-  useEffect(() => {
-    if (!src) return;
+  const darkImageSrc = getDarkImageSrc(src);
+  const finalImageSrc = isDark ? darkImageSrc : src;
 
-    const isDark = resolvedTheme === "dark";
-
-    if (isDark) {
-      // Generate dark mode image path
-      const extension = src.split(".").pop();
-      const baseName = src.replace(`.${extension}`, "");
-      const darkImageSrc = `${baseName}-dark.${extension}`;
-
-      // Check if dark image exists
-      const img = new Image();
-      img.onload = () => {
-        setImageSrc(darkImageSrc);
-        setIsLoading(false);
-      };
-      img.onerror = () => {
-        // Fallback to light image if dark doesn't exist
-        setImageSrc(src);
-        setIsLoading(false);
-      };
-      img.src = darkImageSrc;
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    // if its dark mode fallback to light mode images else fallback to dark mode images
+    if (isDark && darkImageSrc) {
+      (e.target as HTMLImageElement).src = darkImageSrc;
     } else {
-      setImageSrc(src);
-      setIsLoading(false);
+      (e.target as HTMLImageElement).src = src as string;
     }
-  }, [src, resolvedTheme]);
+  };
 
-  // Don't render anything until we've determined the correct image
-  if (isLoading || !imageSrc) {
-    return (
-      <div className="-mx-12 my-12 border-y border-dashed p-4">
-        <div className="h-64 animate-pulse rounded-lg bg-gray-200 dark:bg-gray-800" />
-      </div>
-    );
+  if (!isMounted) {
+    return <Skeleton className="h-64 animate-pulse rounded-lg" />;
   }
 
   return (
     <div className="-mx-12 my-12 border-y border-dashed p-4">
-      <img src={imageSrc} {...props} className="rounded-lg object-cover object-center" />
+      <img
+        src={finalImageSrc}
+        className={cn("rounded-lg object-cover object-center", className)}
+        onError={handleImageError}
+        {...props}
+      />
     </div>
   );
 };
 
 export default MDXImage;
+
+// Generate dark mode image path
+const getDarkImageSrc = (originalSrc: string | Blob | undefined) => {
+  // if the image is not a string, return undefined
+  if (typeof originalSrc !== "string") {
+    return undefined;
+  }
+
+  const extension = originalSrc.split(".").pop();
+  const baseName = originalSrc.replace(`.${extension}`, "");
+  return `${baseName}-dark.${extension}`;
+};

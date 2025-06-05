@@ -93,25 +93,24 @@ export default function RootLayout({
       >
         <TanstackProvider>
           <TRPCProvider>
-            <OpenPanelProvider>
+            <PostHogProvider>
               <OneDollarStatsProvider>
-                <PostHogProvider>
-                  <JotaiProvider>
-                    <ThemeProvider attribute="class" defaultTheme="system" storageKey="invoicely-theme">
-                      <ReactScanProvider />
-                      <Toaster
-                        richColors
-                        position="top-center"
-                        toastOptions={TOAST_OPTIONS}
-                        icons={TOAST_ICONS}
-                        visibleToasts={4}
-                      />
-                      {children}
-                    </ThemeProvider>
-                  </JotaiProvider>
-                </PostHogProvider>
+                <JotaiProvider>
+                  <ThemeProvider attribute="class" defaultTheme="system" storageKey="invoicely-theme">
+                    <OpenPanelProvider />
+                    <ReactScanProvider />
+                    <Toaster
+                      richColors
+                      position="top-center"
+                      toastOptions={TOAST_OPTIONS}
+                      icons={TOAST_ICONS}
+                      visibleToasts={4}
+                    />
+                    {children}
+                  </ThemeProvider>
+                </JotaiProvider>
               </OneDollarStatsProvider>
-            </OpenPanelProvider>
+            </PostHogProvider>
           </TRPCProvider>
         </TanstackProvider>
       </body>

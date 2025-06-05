@@ -30,7 +30,7 @@ const BlogCard = ({ blog, idx, length }: BlogCardProps) => {
         />
         <div className="relative z-10 flex flex-col p-6">
           <h3 className="instrument-serif text-2xl font-bold">{blog.title}</h3>
-          <p className="text-muted-foreground text-sm leading-5">{blog.summary}</p>
+          <p className="text-muted-foreground line-clamp-2 text-[13px] leading-4 font-light">{blog.summary}</p>
         </div>
       </div>
     </Link>
