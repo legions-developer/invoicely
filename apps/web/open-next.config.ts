@@ -1,3 +1,7 @@
 import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
-export default defineCloudflareConfig();
+const config = defineCloudflareConfig();
+
+config.buildCommand = "next build --no-lint";
+
+export default config;
