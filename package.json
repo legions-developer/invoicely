@@ -41,7 +41,8 @@
     "prettier-plugin-sort-imports": "^1.8.7",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "turbo": "^2.5.3",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "wrangler": "^4.19.1"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.816.0",
