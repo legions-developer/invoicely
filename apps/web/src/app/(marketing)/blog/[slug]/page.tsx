@@ -8,10 +8,6 @@ import { LINKS } from "@/constants/links";
 import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 
-export async function generateStaticParams() {
-  return allBlogs.map((writing) => ({ slug: writing._meta.path }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
 
