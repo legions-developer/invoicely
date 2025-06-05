@@ -1,0 +1,8 @@
+main = ".open-next/worker.js"
+name = "web"
+compatibility_date = "2025-05-05"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
