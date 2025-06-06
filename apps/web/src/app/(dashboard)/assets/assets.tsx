@@ -134,7 +134,7 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
               </div>
             </AccordionTrigger>
             <AccordionContent>
-              {user && (
+              {user && (getImagesWithKey(images.data?.images, type.key).length > 0 || user.allowedSavingData) && (
                 <>
                   <div>
                     <div className="instrument-serif text-xl font-bold">Server {type.title}</div>
@@ -144,8 +144,8 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
                   </div>
                   {/* List Images */}
                   <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-5">
-                    {type.key === "logo" && <UploadLogoAsset type="server" />}
-                    {type.key === "signature" && <UploadSignatureAsset type="server" />}
+                    {type.key === "logo" && user.allowedSavingData && <UploadLogoAsset type="server" />}
+                    {type.key === "signature" && user.allowedSavingData && <UploadSignatureAsset type="server" />}
                     {getImagesWithKey(images.data?.images, type.key).map((image) => (
                       <div key={image} className="bg-border/30 relative rounded-md">
                         <Button

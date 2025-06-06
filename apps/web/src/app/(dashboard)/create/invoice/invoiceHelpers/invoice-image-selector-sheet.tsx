@@ -68,7 +68,7 @@ export const InvoiceImageSelectorSheet = ({
           </div>
         ) : (
           <div className="flex flex-col gap-4 p-4">
-            {user && user.allowedSavingData && (
+            {user && (getImagesWithKey(serverImages, type).length > 0 || user.allowedSavingData) && (
               <div className="flex flex-col gap-4">
                 <div>
                   <div className="instrument-serif text-xl font-bold">Server {type}</div>
@@ -77,8 +77,8 @@ export const InvoiceImageSelectorSheet = ({
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-                  {type === "logo" && <UploadLogoAsset disableIcon type="server" />}
-                  {type === "signature" && <UploadSignatureAsset disableIcon type="server" />}
+                  {type === "logo" && user.allowedSavingData && <UploadLogoAsset disableIcon type="server" />}
+                  {type === "signature" && user.allowedSavingData && <UploadSignatureAsset disableIcon type="server" />}
                   {getImagesWithKey(serverImages, type).map((image) => (
                     <div
                       key={image}
