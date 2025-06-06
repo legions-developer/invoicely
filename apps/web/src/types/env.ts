@@ -1,5 +1,5 @@
 import type { R2Bucket } from "@cloudflare/workers-types";
 
-export interface CloudflareEnv {
+export interface CfEnv {
   R2_IMAGES: R2Bucket;
 }
