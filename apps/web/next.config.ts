@@ -39,7 +39,3 @@ const nextConfig: NextConfig = {
 };
 
 export default withContentCollections(nextConfig);
-
-// export default withBundleAnalyzer({
-//   enabled: process.env.CONFIG_BUILD_ANALYZE === "true",
-// })(withContentCollections(nextConfig));
