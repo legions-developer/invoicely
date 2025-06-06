@@ -1,13 +1,13 @@
-import { ListObjectsV2Command, S3Client } from "@aws-sdk/client-s3";
-import { env } from "@invoicely/utilities";
-
-export const getUserImagesCount = async (s3: S3Client, userId: string) => {
-  const listObjectsV2Command = new ListObjectsV2Command({
-    Bucket: env.CF_R2_BUCKET_NAME,
-    Prefix: `${userId}/`,
+/**
+ * Get the number of images for a user
+ * @param env - The Cloudflare environment
+ * @param userId - The user ID
+ * @returns The number of images for the user
+ */
+export const getUserImagesCount = async (env: CloudflareEnv, userId: string) => {
+  const imageObjects = await env.R2_IMAGES.list({
+    prefix: `${userId}/`,
   });
 
-  const response = await s3.send(listObjectsV2Command);
-
-  return response.Contents?.length ?? 0;
+  return imageObjects.objects.length;
 };

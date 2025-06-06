@@ -1,8 +1,8 @@
+import { cloudflareContextMiddleware } from "@/trpc/middlewares/cloudflareContextMiddleware";
 import { getFileSizeFromBase64 } from "@/lib/invoice/get-file-size-from-base64";
 import { getUserImagesCount } from "@/lib/cloudflare/r2/getUserImagesCount";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
-import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { uploadImage } from "@/lib/cloudflare/r2/uploadImage";
 import { TRPCError } from "@trpc/server";
@@ -14,7 +14,7 @@ const fileSizes = {
 };
 
 export const uploadImageFile = authorizedProcedure
-  .use(awsS3Middleware)
+  .use(cloudflareContextMiddleware)
   .input(
     z.object({
       type: z.enum(["logo", "signature"]),
@@ -32,7 +32,7 @@ export const uploadImageFile = authorizedProcedure
     }
 
     try {
-      const userImagesCount = await getUserImagesCount(ctx.s3, userId);
+      const userImagesCount = await getUserImagesCount(ctx.cloudflareEnv, userId);
 
       if (userImagesCount >= 25) {
         throw new TRPCError({
@@ -50,7 +50,7 @@ export const uploadImageFile = authorizedProcedure
         });
       }
 
-      const image = await uploadImage(ctx.s3, input.base64, userId, input.type);
+      const image = await uploadImage(ctx.cloudflareEnv, input.base64, userId, input.type);
 
       if (!image) {
         throw new TRPCError({
