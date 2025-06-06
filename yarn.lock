@@ -2269,6 +2269,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cloudflare/workers-types@npm:^4.20250606.0":
+  version: 4.20250606.0
+  resolution: "@cloudflare/workers-types@npm:4.20250606.0"
+  checksum: 10c0/aae4802d3641d6042670e0c6cd876c712cdace6df8352d6d56db05288eb3a90a58ff5bec3afee386bcd6115740fc27a1ac73b3f3b9b5a5f09c8a3246648abc8a
+  languageName: node
+  linkType: hard
+
 "@content-collections/core@npm:^0.8.2":
   version: 0.8.2
   resolution: "@content-collections/core@npm:0.8.2"
@@ -19288,6 +19295,7 @@ __metadata:
   resolution: "web@workspace:apps/web"
   dependencies:
     "@aws-sdk/s3-request-presigner": "npm:^3.817.0"
+    "@cloudflare/workers-types": "npm:^4.20250606.0"
     "@content-collections/core": "npm:^0.8.2"
     "@content-collections/mdx": "npm:^0.2.2"
     "@content-collections/next": "npm:^0.2.6"

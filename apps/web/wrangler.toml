@@ -7,6 +7,11 @@ compatibility_flags = ["nodejs_compat"]
 directory = ".open-next/assets"
 binding = "ASSETS"
 
+# r2 Buckets
+[[r2_buckets]]
+binding = "R2_IMAGES"
+bucket_name = "invoicely"
+
 # To enable logging in Cloudflare Logs
 [observability.logs]
 enabled = true
