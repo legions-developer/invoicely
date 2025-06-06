@@ -45,8 +45,6 @@
     "wrangler": "^4.19.1"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.816.0",
-    "@next/bundle-analyzer": "^15.3.3",
     "@t3-oss/env-nextjs": "^0.13.4",
     "@trpc/react-query": "^11.1.2",
     "cookie": "^1.0.2",
