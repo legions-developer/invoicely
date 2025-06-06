@@ -1,13 +1,12 @@
+import { cloudflareContextMiddleware } from "@/trpc/middlewares/cloudflareContextMiddleware";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
-import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
-import { deleteImage } from "@/lib/cloudflare/r2/deleteImage";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const deleteImageFile = authorizedProcedure
-  .use(awsS3Middleware)
+  .use(cloudflareContextMiddleware)
   .input(
     z.object({
       key: z.string(),
@@ -26,14 +25,8 @@ export const deleteImageFile = authorizedProcedure
       }
 
       //    delete image from r2
-      const success = await deleteImage(ctx.s3, input.key);
+      await ctx.cloudflareEnv.R2_IMAGES.delete(input.key);
 
-      if (!success) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: ERROR_MESSAGES.IMAGE_DELETED,
-        });
-      }
       return {
         success: true,
         message: SUCCESS_MESSAGES.IMAGE_DELETED,
