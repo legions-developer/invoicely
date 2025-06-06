@@ -147,19 +147,19 @@ const AssetsPage = ({ user }: { user: AuthUser | undefined }) => {
                     {type.key === "logo" && <UploadLogoAsset type="server" />}
                     {type.key === "signature" && <UploadSignatureAsset type="server" />}
                     {getImagesWithKey(images.data?.images, type.key).map((image) => (
-                      <div key={image.key} className="bg-border/30 relative rounded-md">
+                      <div key={image} className="bg-border/30 relative rounded-md">
                         <Button
                           disabled={deleteServerImageMutation.isPending}
                           variant="ghost"
                           size="xs"
                           className="absolute top-2 right-2 !px-0.5 text-red-500 hover:!bg-red-500 hover:!text-white"
-                          onClick={() => handleDeleteImage(image.key ?? "", "server")}
+                          onClick={() => handleDeleteImage(image, "server")}
                         >
                           <TrashIcon />
                         </Button>
                         <Image
-                          src={`${R2_PUBLIC_URL}/${image.key}`}
-                          alt={image.key ?? "Image"}
+                          src={`${R2_PUBLIC_URL}/${image}`}
+                          alt={image}
                           width={200}
                           height={200}
                           className="aspect-square w-full rounded-md object-cover"

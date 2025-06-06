@@ -20,7 +20,7 @@ interface InvoiceImageSelectorSheetProps {
   type: InvoiceImageType;
   isLoading?: boolean;
   idbImages: IDBImage[];
-  serverImages: R2Object[];
+  serverImages: string[];
   user: AuthUser | undefined;
   onUrlChange: (url: string) => void;
   onBase64Change: (base64?: string) => void;
@@ -81,13 +81,13 @@ export const InvoiceImageSelectorSheet = ({
                   {type === "signature" && <UploadSignatureAsset disableIcon type="server" />}
                   {getImagesWithKey(serverImages, type).map((image) => (
                     <div
-                      key={image.key}
+                      key={image}
                       className="bg-border/30 relative cursor-pointer rounded-md"
-                      onClick={() => handleImageSelect(image.key ?? "", "server")}
+                      onClick={() => handleImageSelect(image, "server")}
                     >
                       <Image
-                        src={`${R2_PUBLIC_URL}/${image.key}`}
-                        alt={image.key ?? "Image"}
+                        src={`${R2_PUBLIC_URL}/${image}`}
+                        alt={image}
                         width={200}
                         height={200}
                         className="aspect-square w-full rounded-md border object-cover"
