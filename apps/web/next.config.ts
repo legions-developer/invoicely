@@ -1,6 +1,9 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import { withContentCollections } from "@content-collections/next";
-// import withBundleAnalyzer from "@next/bundle-analyzer";
 import type { NextConfig } from "next";
+
+// Initialize OpenNext.js for Cloudflare
+initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   /* config options here */
