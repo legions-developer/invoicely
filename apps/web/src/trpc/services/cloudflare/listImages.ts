@@ -1,15 +1,15 @@
-import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
-import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
+import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure"; 
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { getUserImages } from "@/lib/cloudflare/r2/getUserImages";
 import { SUCCESS_MESSAGES } from "@/constants/issues";
 import { TRPCError } from "@trpc/server";
+import { cloudflareContextMiddleware } from "@/trpc/middlewares/cloudflareContextMiddleware";
 
-export const listImages = authorizedProcedure.use(awsS3Middleware).query(async ({ ctx }) => {
+export const listImages = authorizedProcedure.use(cloudflareContextMiddleware).query(async ({ ctx }) => {
   const userId = ctx.auth.user.id;
 
   try {
-    const images = await getUserImages(ctx.s3, userId);
+    const images = await getUserImages(ctx.cloudflareEnv, userId);
 
     return {
       success: true,

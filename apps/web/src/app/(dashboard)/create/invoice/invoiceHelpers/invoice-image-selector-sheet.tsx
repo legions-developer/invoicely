@@ -9,7 +9,6 @@ import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
 import EmptySection from "@/components/ui/icon-placeholder";
 import { InvoiceImageType } from "@/types/common/invoice";
 import { IDBImage } from "@/types/indexdb/invoice";
-import type { _Object } from "@aws-sdk/client-s3";
 import { useParams } from "next/navigation";
 import { R2_PUBLIC_URL } from "@/constants";
 import { AuthUser } from "@/types/auth";
@@ -21,7 +20,7 @@ interface InvoiceImageSelectorSheetProps {
   type: InvoiceImageType;
   isLoading?: boolean;
   idbImages: IDBImage[];
-  serverImages: _Object[];
+  serverImages: R2Object[];
   user: AuthUser | undefined;
   onUrlChange: (url: string) => void;
   onBase64Change: (base64?: string) => void;
@@ -82,13 +81,13 @@ export const InvoiceImageSelectorSheet = ({
                   {type === "signature" && <UploadSignatureAsset disableIcon type="server" />}
                   {getImagesWithKey(serverImages, type).map((image) => (
                     <div
-                      key={image.Key}
+                      key={image.key}
                       className="bg-border/30 relative cursor-pointer rounded-md"
-                      onClick={() => handleImageSelect(image.Key ?? "", "server")}
+                      onClick={() => handleImageSelect(image.key ?? "", "server")}
                     >
                       <Image
-                        src={`${R2_PUBLIC_URL}/${image.Key}`}
-                        alt={image.Key ?? "Image"}
+                        src={`${R2_PUBLIC_URL}/${image.key}`}
+                        alt={image.key ?? "Image"}
                         width={200}
                         height={200}
                         className="aspect-square w-full rounded-md border object-cover"
