@@ -28,11 +28,10 @@ import React, { useState } from "react";
 interface InvoiceItemsSectionProps {
   form: UseFormReturn<ZodCreateInvoiceSchema>;
 }
-
 type InvoiceItem = ZodCreateInvoiceSchema["items"][number];
 
 const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control: form.control,
     name: "items",
   });
@@ -43,7 +42,10 @@ const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
       {fields.length > 0 && (
         <div className="flex flex-col gap-2">
           {fields.map((field, index) => (
-            <div className="bg-muted/50 flex w-full flex-row justify-between gap-2 rounded-md p-3" key={field.id}>
+            <div
+              className="bg-muted/50 hover:bg-muted flex w-full flex-row justify-between gap-2 rounded-md p-3 duration-200"
+              key={field.id}
+            >
               <div className="flex w-full flex-row gap-2">
                 <div className="bg-muted-foreground/20 grid aspect-square h-full place-items-center rounded-md">
                   <BoxIcon />
@@ -58,11 +60,18 @@ const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
                 </div>
               </div>
               <div className="flex flex-row gap-2">
-                <div className="flex flex-col items-end justify-between">
+                <div className="flex flex-col items-end justify-between gap-1">
                   <div className="flex flex-row gap-1.5">
-                    <Button className="text-muted-foreground h-5.5 w-5.5 rounded" variant="ghost" size="icon">
-                      <PencilIcon className="size-3" />
-                    </Button>
+                    <HandleItemModal type="edit" append={append} update={update} editingIndex={index} data={field}>
+                      <Button
+                        type="button"
+                        className="text-muted-foreground h-5.5 w-5.5 rounded"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <PencilIcon className="size-3" />
+                      </Button>
+                    </HandleItemModal>
                     <Button
                       className="h-5.5 w-5.5 rounded"
                       variant="destructive"
@@ -87,43 +96,58 @@ const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
         </div>
       )}
       {/* Dialog for adding a new item */}
-      <AddItemModal append={append} />
+      <HandleItemModal type="add" append={append} update={update}>
+        <Button type="button" className="w-full border-dashed" variant="outline">
+          <BoxPlusIcon />
+          Add Item
+        </Button>
+      </HandleItemModal>
     </div>
   );
 };
 
 export default InvoiceItemsSection;
 
-const AddItemModal = ({ append }: { append: (data: InvoiceItem) => void }) => {
+interface AddItemModalProps {
+  type: "add" | "edit";
+  children: React.ReactNode;
+  data?: InvoiceItem;
+  editingIndex?: number | null;
+  append: (data: InvoiceItem) => void;
+  update: (index: number, data: InvoiceItem) => void;
+}
+
+const HandleItemModal = ({ type, append, update, editingIndex, data, children }: AddItemModalProps) => {
   const [open, setOpen] = useState(false);
 
   const invoiceItemForm = useForm<InvoiceItem>({
     resolver: zodResolver(createInvoiceItemSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      quantity: 1,
-      unitPrice: 1,
+      name: data?.name || "",
+      description: data?.description || "",
+      quantity: data?.quantity || 1,
+      unitPrice: data?.unitPrice || 1,
     },
   });
 
-  const onAddItem = (data: InvoiceItem) => {
-    append(data);
+  const onHandleSubmit = (data: InvoiceItem) => {
+    if (type === "edit" && typeof editingIndex === "number") {
+      update(editingIndex, data);
+    } else {
+      append(data);
+    }
+
+    // Clean up the form
     invoiceItemForm.reset();
     setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="w-full border-dashed" variant="outline">
-          <BoxPlusIcon />
-          Add Item
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <Form {...invoiceItemForm}>
-          <form onSubmit={invoiceItemForm.handleSubmit(onAddItem)}>
+          <form onSubmit={invoiceItemForm.handleSubmit(onHandleSubmit)}>
             <DialogHeaderContainer>
               <DialogIcon>
                 <BoxPlusIcon />
