@@ -27,13 +27,15 @@ import LogoIcon from "@/components/assets/logo-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MiniSwitch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { useMounted } from "@mantine/hooks";
 import { useState } from "react";
 import Image from "next/image";
 
 export function NavigationUser() {
+  const isMounted = useMounted();
   const session = useSession();
 
-  if (session.isPending) {
+  if (session.isPending || !isMounted) {
     return <Skeleton className="h-[142px] w-full" />;
   }
 
