@@ -42,10 +42,7 @@ const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
       {fields.length > 0 && (
         <div className="flex flex-col gap-2">
           {fields.map((field, index) => (
-            <div
-              className="bg-muted/50 hover:bg-muted flex w-full flex-row justify-between gap-2 rounded-md p-3 duration-200"
-              key={field.id}
-            >
+            <div className="bg-muted/50 flex w-full flex-row justify-between gap-2 rounded-md p-3" key={field.id}>
               <div className="flex w-full flex-row gap-2">
                 <div className="bg-muted-foreground/20 grid aspect-square h-full place-items-center rounded-md">
                   <BoxIcon />
