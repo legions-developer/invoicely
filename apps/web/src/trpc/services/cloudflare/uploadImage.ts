@@ -1,9 +1,9 @@
 import { ForbiddenError, PayloadTooLargeError, R2StorageError, ServiceUnavailableError } from "@/lib/effect/error/trpc";
-import { cloudflareContextMiddleware } from "@/trpc/middlewares/cloudflareContextMiddleware";
 import { getFileSizeFromBase64 } from "@/lib/invoice/get-file-size-from-base64";
 import { getUserImagesCount } from "@/lib/cloudflare/r2/getUserImagesCount";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
+import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
 import { uploadImage } from "@/lib/cloudflare/r2/uploadImage";
 import { TRPCError } from "@trpc/server";
@@ -16,7 +16,7 @@ const fileSizes = {
 };
 
 export const uploadImageFile = authorizedProcedure
-  .use(cloudflareContextMiddleware)
+  .use(awsS3Middleware)
   .input(
     z.object({
       type: z.enum(["logo", "signature"]),
@@ -35,7 +35,7 @@ export const uploadImageFile = authorizedProcedure
 
       // Getting the number of images the user has uploaded
       const userImagesCount = yield* Effect.tryPromise({
-        try: () => getUserImagesCount(ctx.cloudflareEnv, userId),
+        try: () => getUserImagesCount(ctx.s3, userId),
         catch: (error) => new R2StorageError({ message: parseCatchError(error) }),
       });
 
@@ -59,7 +59,7 @@ export const uploadImageFile = authorizedProcedure
 
       // Upload the image to Cloudflare R2
       const image = yield* Effect.tryPromise({
-        try: () => uploadImage(ctx.cloudflareEnv, input.base64, userId, input.type),
+        try: () => uploadImage(ctx.s3, input.base64, userId, input.type),
         catch: (error) => new R2StorageError({ message: parseCatchError(error) }),
       });
 

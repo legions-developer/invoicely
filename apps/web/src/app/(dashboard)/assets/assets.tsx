@@ -18,7 +18,14 @@ import Image from "next/image";
 import { toast } from "sonner";
 import React from "react";
 
-const typeOfImages = [
+interface ImageType {
+  key: "logo" | "signature";
+  icon: React.ReactNode;
+  title: "Logos" | "Signatures";
+  description: string;
+}
+
+const typeOfImages: ImageType[] = [
   {
     key: "logo",
     icon: <ImageSparkleIcon />,

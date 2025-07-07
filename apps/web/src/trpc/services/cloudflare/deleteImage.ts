@@ -1,14 +1,15 @@
-import { cloudflareContextMiddleware } from "@/trpc/middlewares/cloudflareContextMiddleware";
 import { authorizedProcedure } from "@/trpc/procedures/authorizedProcedure";
 import { NotOwnerError, R2StorageError } from "@/lib/effect/error/trpc";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
+import { awsS3Middleware } from "@/trpc/middlewares/awsS3Middleware";
 import { parseCatchError } from "@/lib/neverthrow/parseCatchError";
+import { deleteImage } from "@/lib/cloudflare/r2/deleteImage";
 import { TRPCError } from "@trpc/server";
 import { Effect } from "effect";
 import { z } from "zod";
 
 export const deleteImageFile = authorizedProcedure
-  .use(cloudflareContextMiddleware)
+  .use(awsS3Middleware)
   .input(
     z.object({
       key: z.string(),
@@ -27,7 +28,7 @@ export const deleteImageFile = authorizedProcedure
       // Now, as image is owned by the user, we can delete it
       // Delete the image from Cloudflare R2
       yield* Effect.tryPromise({
-        try: () => ctx.cloudflareEnv.R2_IMAGES.delete(input.key),
+        try: () => deleteImage(ctx.s3, input.key),
         catch: (error) => new R2StorageError({ message: parseCatchError(error) }),
       });
 
