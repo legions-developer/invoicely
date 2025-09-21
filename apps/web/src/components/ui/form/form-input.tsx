@@ -64,7 +64,6 @@ export const FormInput = <
                 )}
                 {...props}
                 id={props.name}
-                {...field}
                 onChange={(e) => {
                   // Convert string to number if type is number
                   if (props.type === "number") {

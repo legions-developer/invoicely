@@ -65,7 +65,6 @@ export const FormTextarea = <
                 )}
                 {...props}
                 id={props.name}
-                {...field}
                 onChange={(e) => {
                   field.onChange(e);
                 }}

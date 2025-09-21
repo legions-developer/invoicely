@@ -81,21 +81,11 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       if (isEqual(value, lastProcessedValueRef.current)) return; // skip unnecessary updates
       lastProcessedValueRef.current = cloneDeep(value);
   
-      // Safely handle empty or missing company details
-      const processedValue = {
-        ...value,
-        companyDetails: {
-          ...value.companyDetails,
-          name: value.companyDetails?.name?.trim() || "Invoicely Ltd.",
-          address: value.companyDetails?.address?.trim() || "123 Main St, Anytown, USA",
-        },
-      };
-  
       // Validate the processed data against the schema
-      const isDataValid = createInvoiceSchema.safeParse(processedValue);
+      const isDataValid = createInvoiceSchema.safeParse(value);
   
       if (isDataValid.success) {
-        setData(processedValue);
+        setData(value);
         setInvoiceError([]);
       } else {
         setInvoiceError(isDataValid.error.issues);
@@ -126,20 +116,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
     (async () => {
       try {
 
-        const processedData = {
-          ...data,
-          companyDetails: {
-            name: data.companyDetails?.name?.trim() || "Invoicely Ltd.",
-            address: data.companyDetails?.address?.trim() || "123 Main St, Anytown, USA",
-            metadata: data.companyDetails?.metadata || [], // Ensure metadata is an array
-            logoBase64: data.companyDetails?.logoBase64 || undefined,
-            logo: data.companyDetails?.logo || null,
-            signatureBase64: data.companyDetails?.signatureBase64 || undefined,
-            signature: data.companyDetails?.signature || null,
-          },
-        };
-
-        const blob = await createPdfBlob({ invoiceData: processedData, template: form.watch("invoiceDetails.theme.template") });
+        const blob = await createPdfBlob({ invoiceData: data, template: form.watch("invoiceDetails.theme.template") });
         const newUrl = createBlobUrl({ blob });
 
         setGeneratedPdfUrl(newUrl);
