@@ -80,32 +80,42 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
     const processFormValue = (value: ZodCreateInvoiceSchema) => {
       if (isEqual(value, lastProcessedValueRef.current)) return; // skip unnecessary updates
       lastProcessedValueRef.current = cloneDeep(value);
-
-      // First verify the data if it matches the schema
-      const isDataValid = createInvoiceSchema.safeParse(value);
-      // If the data is valid, set the data to invoice and clear the errors
+  
+      // Safely handle empty or missing company details
+      const processedValue = {
+        ...value,
+        companyDetails: {
+          ...value.companyDetails,
+          name: value.companyDetails?.name?.trim() || "Invoicely Ltd.",
+          address: value.companyDetails?.address?.trim() || "123 Main St, Anytown, USA",
+        },
+      };
+  
+      // Validate the processed data against the schema
+      const isDataValid = createInvoiceSchema.safeParse(processedValue);
+  
       if (isDataValid.success) {
-        setData(value);
+        setData(processedValue);
         setInvoiceError([]);
       } else {
         setInvoiceError(isDataValid.error.issues);
       }
     };
-
+  
     // Create a debounced version of the processing function
     const debouncedProcessFormValue = debounce(processFormValue, 1000);
-
+  
     const subscription = form.watch((value) => {
       // Ensure the watched value is cast correctly, matching the original logic
       debouncedProcessFormValue(value as ZodCreateInvoiceSchema);
     });
-
+  
     return () => {
       // Cleanup subscription and cancel any pending debounced calls
       subscription.unsubscribe();
       debouncedProcessFormValue.cancel();
     };
-
+  
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
@@ -115,7 +125,21 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
 
     (async () => {
       try {
-        const blob = await createPdfBlob({ invoiceData: data, template: form.watch("invoiceDetails.theme.template") });
+
+        const processedData = {
+          ...data,
+          companyDetails: {
+            name: data.companyDetails?.name?.trim() || "Invoicely Ltd.",
+            address: data.companyDetails?.address?.trim() || "123 Main St, Anytown, USA",
+            metadata: data.companyDetails?.metadata || [], // Ensure metadata is an array
+            logoBase64: data.companyDetails?.logoBase64 || undefined,
+            logo: data.companyDetails?.logo || null,
+            signatureBase64: data.companyDetails?.signatureBase64 || undefined,
+            signature: data.companyDetails?.signature || null,
+          },
+        };
+
+        const blob = await createPdfBlob({ invoiceData: processedData, template: form.watch("invoiceDetails.theme.template") });
         const newUrl = createBlobUrl({ blob });
 
         setGeneratedPdfUrl(newUrl);
