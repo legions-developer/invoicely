@@ -116,7 +116,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     name="companyDetails.name"
                     label="Company Name"
                     reactform={form}
-                    placeholder="Invoicely ltd."
+                    placeholder="Invoicely Ltd"
                     description="Name of your company"
                   />
                   <FormTextarea
@@ -124,7 +124,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                     name="companyDetails.address"
                     label="Company Address"
                     reactform={form}
-                    placeholder="123 Main St, Anytown, USA"
+                    placeholder="123 Business St, City, Country"
                   />
                   <InvoiceFieldKeyStringValuesSection
                     reactform={form}
