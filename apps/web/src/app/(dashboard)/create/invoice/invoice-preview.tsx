@@ -105,7 +105,7 @@ const InvoicePreview = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> 
       subscription.unsubscribe();
       debouncedProcessFormValue.cancel();
     };
-    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form]);
 
