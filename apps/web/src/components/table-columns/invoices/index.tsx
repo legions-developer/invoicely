@@ -127,7 +127,7 @@ export const columns = [
     id: "actions",
     header: ({ column }) => <HeaderColumnButton column={column}>Actions</HeaderColumnButton>,
     cell: ({ row }) => {
-      const { id, type } = row.original;
+      const { id, type, status } = row.original;
 
       return (
         <div key={id} className="flex flex-row items-center gap-2">
@@ -138,7 +138,7 @@ export const columns = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <UpdateStatusModal invoiceId={id} type={type} />
+              <UpdateStatusModal invoiceId={id} type={type} currentStatus={status} />
               <Link href={`/edit/${type}/${id}`}>
                 <DropdownMenuItem>
                   <FilePenIcon />
