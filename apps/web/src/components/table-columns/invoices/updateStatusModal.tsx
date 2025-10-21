@@ -44,6 +44,7 @@ import { z } from "zod";
 interface UpdateStatusModalProps {
   type: InvoiceTypeType;
   invoiceId: string;
+  currentStatus: string;
 }
 
 const invoiceStatusSchema = z.object({
@@ -53,7 +54,7 @@ const invoiceStatusSchema = z.object({
 
 type InvoiceStatusSchema = z.infer<typeof invoiceStatusSchema>;
 
-const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
+const UpdateStatusModal = ({ invoiceId, type, currentStatus }: UpdateStatusModalProps) => {
   const [open, setOpen] = useState(false);
   const trpc = useTRPC();
   const queryClient = useQueryClient();
@@ -97,7 +98,7 @@ const UpdateStatusModal = ({ invoiceId, type }: UpdateStatusModalProps) => {
     resolver: zodResolver(invoiceStatusSchema),
     defaultValues: {
       id: invoiceId,
-      status: "pending",
+      status: currentStatus as (typeof invoiceStatusEnum.enumValues)[number],
     },
   });
 

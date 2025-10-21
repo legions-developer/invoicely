@@ -6,6 +6,9 @@
 
 Modern, open-source invoice generation platform built with Next.js, tRPC, and TypeScript.
 
+> [!CAUTION]
+> We do not allow vibe coding. Your PR will be rejected if the code quality is poor and vibe coded.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
