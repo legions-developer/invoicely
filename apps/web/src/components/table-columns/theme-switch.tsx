@@ -9,16 +9,16 @@ import React from "react";
 
 const ThemeSwitch = () => {
   const mounted = useMounted();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   return mounted ? (
-    <Switch defaultChecked={theme === "dark"} onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")} />
+    <Switch checked={resolvedTheme === "dark"} onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")} />
   ) : null;
 };
 
 export default ThemeSwitch;
 
 function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   return (
     <SwitchPrimitive.Root
       data-slot="switch"
@@ -34,7 +34,7 @@ function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimi
           "bg-background dark:data-[state=unchecked]:bg-foreground dark:data-[state=checked]:bg-primary-foreground pointer-events-none flex size-4 items-center justify-between rounded-full text-black ring-0 transition-transform duration-300 data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0",
         )}
       >
-        {theme !== "dark" ? <Sun className="mx-auto size-2.5" /> : <Moon className="mx-auto size-2.5" />}
+        {resolvedTheme !== "dark" ? <Sun className="mx-auto size-2.5" /> : <Moon className="mx-auto size-2.5" />}
       </SwitchPrimitive.Thumb>
     </SwitchPrimitive.Root>
   );
