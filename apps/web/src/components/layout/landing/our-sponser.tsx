@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-interface Sponser {
+interface Sponsor {
   name: string;
   image: string | null;
   description: string;
@@ -16,7 +16,7 @@ interface Sponser {
   link?: string;
 }
 
-const sponsers: Sponser[] = [
+const sponsors: Sponsor[] = [
   {
     name: "Vercel",
     label: "Open Source Program",
@@ -54,7 +54,7 @@ const sponsers: Sponser[] = [
   // Add Company Here
   {
     name: "Your Company Here",
-    label: "Free Sponser",
+    label: "Free Sponsor",
     imageClass: "h-20 w-40",
     image: null,
     description:
@@ -67,19 +67,19 @@ const OurSponser = () => {
   return (
     <div className="flex w-full flex-col">
       <div className="flex flex-col items-center border-b border-dashed py-4">
-        <FancyBadgeWithBorders>Our Sponsers</FancyBadgeWithBorders>
+        <FancyBadgeWithBorders>Our Sponsors</FancyBadgeWithBorders>
       </div>
       <div className="flex flex-col">
-        {sponsers.map((sponser, index) => (
+        {sponsors.map((sponsor, index) => (
           <div
-            key={sponser.name}
+            key={sponsor.name}
             className={cn("grid grid-flow-row grid-cols-1 border-b border-dashed sm:grid-cols-3 md:h-[150px]")}
           >
             <ModernCardContainer className={cn("flex flex-col p-6 sm:col-span-2", index % 2 === 0 && "sm:order-1")}>
-              <ModernCardTitle label={sponser.label}>{sponser.name}</ModernCardTitle>
-              <ModernCardDescription>{sponser.description}</ModernCardDescription>
-              {sponser.link && (
-                <Link className="mt-1" href={sponser.link}>
+              <ModernCardTitle label={sponsor.label}>{sponsor.name}</ModernCardTitle>
+              <ModernCardDescription>{sponsor.description}</ModernCardDescription>
+              {sponsor.link && (
+                <Link className="mt-1" href={sponsor.link}>
                   <Button variant="white" size="xs">
                     Contact Us
                   </Button>
@@ -88,16 +88,16 @@ const OurSponser = () => {
             </ModernCardContainer>
             <ModernCardContainer
               className={cn(
-                index === sponsers.length - 1 && "!p-2",
+                index === sponsors.length - 1 && "!p-2",
                 index % 2 === 0 ? "sm:border-r" : "sm:border-l",
                 "flex flex-col items-center justify-center border-none p-6 sm:border-dashed",
               )}
             >
-              {sponser.image ? (
+              {sponsor.image ? (
                 <Image
-                  className={cn("object-contain", sponser.invert && "invert dark:invert-0", sponser.imageClass)}
-                  src={sponser.image}
-                  alt={sponser.name}
+                  className={cn("object-contain", sponsor.invert && "invert dark:invert-0", sponsor.imageClass)}
+                  src={sponsor.image}
+                  alt={sponsor.name}
                   width={254}
                   height={254}
                 />
