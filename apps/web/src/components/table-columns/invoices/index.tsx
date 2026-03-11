@@ -27,6 +27,7 @@ import { Badge, BadgeVariants } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
+import MigrateToDbModal from "./migrateToDbModal";
 import DeleteInvoiceModal from "./deleteInvoiceModal";
 import UpdateStatusModal from "./updateStatusModal";
 import { Invoice } from "@/types/common/invoice";
@@ -127,7 +128,7 @@ export const columns = [
     id: "actions",
     header: ({ column }) => <HeaderColumnButton column={column}>Actions</HeaderColumnButton>,
     cell: ({ row }) => {
-      const { id, type, status } = row.original;
+      const { id, type, status, paidAt, invoiceFields } = row.original;
 
       return (
         <div key={id} className="flex flex-row items-center gap-2">
@@ -145,6 +146,14 @@ export const columns = [
                   <span>Edit</span>
                 </DropdownMenuItem>
               </Link>
+              {type === "local" && (
+                <MigrateToDbModal
+                  invoiceId={id}
+                  invoiceFields={invoiceFields}
+                  status={status}
+                  paidAt={paidAt}
+                />
+              )}
               <DeleteInvoiceModal invoiceId={id} type={type} />
             </DropdownMenuContent>
           </DropdownMenu>

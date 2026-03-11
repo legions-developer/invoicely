@@ -14,4 +14,6 @@ export const enum SUCCESS_MESSAGES {
   IMAGES_FETCHED = "Images fetched successfully",
   INVOICE_DELETED = "Invoice deleted successfully",
   INVOICE_STATUS_UPDATED = "Invoice status updated successfully",
+  INVOICE_MIGRATED = "Invoice migrated to database successfully",
+  INVOICE_MIGRATED_DESCRIPTION = "Your local invoice has been saved to the database.",
 }
