@@ -1,19 +1,31 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import type { InvoiceStatusType } from "@invoicely/db/schema/invoice";
 import { ERROR_MESSAGES } from "@/constants/issues";
 import { db, schema } from "@invoicely/db";
 import { v4 as uuidv4 } from "uuid";
 import Decimal from "decimal.js";
 
-export const insertInvoiceQuery = async (invoice: ZodCreateInvoiceSchema, userId: string, id?: string) => {
+interface InsertInvoiceOptions {
+  status?: InvoiceStatusType;
+  paidAt?: Date | null;
+}
+
+export const insertInvoiceQuery = async (
+  invoice: ZodCreateInvoiceSchema,
+  userId: string,
+  id?: string,
+  options?: InsertInvoiceOptions,
+) => {
   // Inserting invoice in db
   const [insertedInvoice] = await db
     .insert(schema.invoices)
     .values({
       id: id ?? uuidv4(),
       type: "server",
-      status: "pending",
+      status: options?.status ?? "pending",
       createdAt: new Date(),
       updatedAt: new Date(),
+      paidAt: options?.paidAt ?? undefined,
       userId: userId,
     })
     .returning({

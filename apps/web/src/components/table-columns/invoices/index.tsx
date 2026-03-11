@@ -29,6 +29,7 @@ import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
 import DeleteInvoiceModal from "./deleteInvoiceModal";
 import UpdateStatusModal from "./updateStatusModal";
+import MigrateToDbModal from "./migrateToDbModal";
 import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
@@ -127,7 +128,7 @@ export const columns = [
     id: "actions",
     header: ({ column }) => <HeaderColumnButton column={column}>Actions</HeaderColumnButton>,
     cell: ({ row }) => {
-      const { id, type, status } = row.original;
+      const { id, type, status, paidAt, invoiceFields } = row.original;
 
       return (
         <div key={id} className="flex flex-row items-center gap-2">
@@ -145,6 +146,9 @@ export const columns = [
                   <span>Edit</span>
                 </DropdownMenuItem>
               </Link>
+              {type === "local" && (
+                <MigrateToDbModal invoiceId={id} invoiceFields={invoiceFields} status={status} paidAt={paidAt} />
+              )}
               <DeleteInvoiceModal invoiceId={id} type={type} />
             </DropdownMenuContent>
           </DropdownMenu>
