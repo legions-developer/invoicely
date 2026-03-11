@@ -2,8 +2,8 @@ import { updateInvoiceStatus } from "./updateInvoiceStatus";
 import { insertInvoice } from "./insertInvoice";
 import { deleteInvoice } from "./deleteInvoice";
 import { createTRPCRouter } from "@/trpc/init";
-import { migrateToDb } from "./migrateToDb";
 import { listInvoices } from "./listInvoices";
+import { migrateToDb } from "./migrateToDb";
 import { editInvoice } from "./editInvoice";
 import { getInvoice } from "./getInvoice";
 

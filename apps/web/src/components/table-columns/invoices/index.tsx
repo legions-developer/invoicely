@@ -27,9 +27,9 @@ import { Badge, BadgeVariants } from "@/components/ui/badge";
 import { createColumnHelper } from "@tanstack/react-table";
 import { getTotalValue } from "@/constants/pdf-helpers";
 import getSymbolFromCurrency from "currency-symbol-map";
-import MigrateToDbModal from "./migrateToDbModal";
 import DeleteInvoiceModal from "./deleteInvoiceModal";
 import UpdateStatusModal from "./updateStatusModal";
+import MigrateToDbModal from "./migrateToDbModal";
 import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
@@ -147,12 +147,7 @@ export const columns = [
                 </DropdownMenuItem>
               </Link>
               {type === "local" && (
-                <MigrateToDbModal
-                  invoiceId={id}
-                  invoiceFields={invoiceFields}
-                  status={status}
-                  paidAt={paidAt}
-                />
+                <MigrateToDbModal invoiceId={id} invoiceFields={invoiceFields} status={status} paidAt={paidAt} />
               )}
               <DeleteInvoiceModal invoiceId={id} type={type} />
             </DropdownMenuContent>

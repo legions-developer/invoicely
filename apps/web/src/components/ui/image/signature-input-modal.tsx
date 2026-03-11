@@ -278,9 +278,11 @@ export default function SignatureInputModal({
                 onBegin={() => setIsSignatureEmpty(false)}
                 penColor={darkMode ? "white" : "black"}
                 backgroundColor={darkMode ? "#181818" : "#ffffff"}
-                canvasProps={{ 
-                  className: "signature-canvas w-full h-full max-w-[330px] max-h-[330px] min-w-[200px] min-h-[200px] aspect-square" 
-                }}              />
+                canvasProps={{
+                  className:
+                    "signature-canvas w-full h-full max-w-[330px] max-h-[330px] min-w-[200px] min-h-[200px] aspect-square",
+                }}
+              />
             </div>
           </DialogContentContainer>
           <DialogFooter>
