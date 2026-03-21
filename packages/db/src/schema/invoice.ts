@@ -106,7 +106,7 @@ export const invoiceItems = pgTable("invoice_items", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   quantity: integer("quantity").notNull(),
-  unitPrice: Numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
+  unitPrice: Numeric("unit_price", { precision: 10, scale: 4 }).notNull(),
   invoiceFieldId: uuid("invoice_field_id")
     .references(() => invoiceFields.id, { onDelete: "cascade" })
     .notNull(),
