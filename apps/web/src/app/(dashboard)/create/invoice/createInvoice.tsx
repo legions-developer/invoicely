@@ -29,15 +29,25 @@ const CreateInvoice = () => {
     );
   }
 
+  const { companyDetails: defaultCompany, clientDetails: defaultClient } = createInvoiceSchemaDefaultValues;
+  const savedCompany = savedDetails?.companyDetails;
+  const savedClient = savedDetails?.clientDetails;
+
   const defaultInvoice = {
     ...createInvoiceSchemaDefaultValues,
+    // Empty saved fields fall back to the demo defaults (e.g. "Invoicely Ltd"),
+    // so an absent or blank profile behaves like the original create flow.
     companyDetails: {
-      ...createInvoiceSchemaDefaultValues.companyDetails,
-      ...(savedDetails?.companyDetails ?? {}),
+      ...defaultCompany,
+      name: savedCompany?.name || defaultCompany.name,
+      address: savedCompany?.address || defaultCompany.address,
+      metadata: savedCompany?.metadata?.length ? savedCompany.metadata : defaultCompany.metadata,
     },
     clientDetails: {
-      ...createInvoiceSchemaDefaultValues.clientDetails,
-      ...(savedDetails?.clientDetails ?? {}),
+      ...defaultClient,
+      name: savedClient?.name || defaultClient.name,
+      address: savedClient?.address || defaultClient.address,
+      metadata: savedClient?.metadata?.length ? savedClient.metadata : defaultClient.metadata,
     },
     invoiceDetails: {
       ...createInvoiceSchemaDefaultValues.invoiceDetails,
