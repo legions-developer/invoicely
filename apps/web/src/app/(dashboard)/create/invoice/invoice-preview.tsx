@@ -25,6 +25,7 @@ const PDF_VIEWER_PADDING = 18;
 // Custom PDF viewer component that handles displaying a PDF document
 const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
   const [error, setError] = useState<Error | null>(null);
+  const [numPages, setNumPages] = useState(0);
 
   if (width === 0) {
     // setting width to 600px Because the container is not mounted yet
@@ -36,11 +37,17 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
     return null;
   }
 
+  const pageWidth = width > 600 ? 600 - PDF_VIEWER_PADDING : width - PDF_VIEWER_PADDING;
+
   return (
-    <div className="flex h-full w-full items-center justify-center">
+    <div className="flex h-full w-full justify-center">
       <Document
         file={url}
         loading={null}
+        onLoadSuccess={({ numPages }) => {
+          setNumPages(numPages);
+          setError(null);
+        }}
         onLoadError={(error) => {
           console.error("[ERROR]: Error loading PDF:", error);
           // Send the error to Sentry
@@ -51,16 +58,18 @@ const PDFViewer = ({ url, width }: { url: string | null; width: number }) => {
 
           // retry converting the pdf to blob
         }}
-        className="scroll-bar-hidden dark:bg-background flex h-full max-h-full w-full items-center justify-center overflow-y-scroll py-[18px] sm:items-start"
+        className="scroll-bar-hidden dark:bg-background flex h-full max-h-full w-full flex-col items-center gap-4 overflow-y-scroll py-[18px]"
       >
-        {!error && (
-          <Page
-            pageNumber={1}
-            width={width > 600 ? 600 - PDF_VIEWER_PADDING : width - PDF_VIEWER_PADDING}
-            renderTextLayer={false}
-            renderAnnotationLayer={false}
-          />
-        )}
+        {!error &&
+          Array.from({ length: numPages }, (_, index) => (
+            <Page
+              key={`page_${index + 1}`}
+              pageNumber={index + 1}
+              width={pageWidth}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+            />
+          ))}
       </Document>
     </div>
   );
