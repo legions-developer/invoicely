@@ -38,7 +38,7 @@ const DefaultDetails = () => {
   return <DefaultDetailsForm defaultValues={defaultValues} />;
 };
 
-export default DefaultDetails;
+export { DefaultDetails };
 
 const DefaultDetailsForm = ({ defaultValues }: { defaultValues: ZodDefaultDetailsSchema }) => {
   const queryClient = useQueryClient();

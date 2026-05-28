@@ -1,12 +1,4 @@
 import {
-  ReactScanProvider,
-  JotaiProvider,
-  PostHogProvider,
-  OneDollarStatsProvider,
-  OpenPanelProvider,
-  TanstackProvider,
-} from "@/providers";
-import {
   Geist,
   Geist_Mono,
   JetBrains_Mono,
@@ -15,6 +7,7 @@ import {
   Urbanist,
   Bricolage_Grotesque,
 } from "next/font/google";
+import { ReactScanProvider, JotaiProvider, PostHogProvider, OpenPanelProvider, TanstackProvider } from "@/providers";
 import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants/meta-data";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { TOAST_ICONS, TOAST_OPTIONS } from "@/constants/toast";
