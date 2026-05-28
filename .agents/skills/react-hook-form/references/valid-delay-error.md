@@ -45,6 +45,7 @@ function SearchForm() {
 ```
 
 **When to use:**
+
 - Real-time validation with `onChange` mode
 - Fields with character count requirements
 - Search inputs with minimum length

@@ -11,8 +11,8 @@ description: Configure multi-tenant organizations, manage members and invitation
 4. Verify: check that organization, member, invitation tables exist in your database
 
 ```ts
-import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
+import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
   plugins: [
@@ -28,8 +28,8 @@ export const auth = betterAuth({
 ### Client-Side Setup
 
 ```ts
-import { createAuthClient } from "better-auth/client";
 import { organizationClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/client";
 
 export const authClient = createAuthClient({
   plugins: [organizationClient()],
@@ -82,7 +82,6 @@ await auth.api.createOrganization({
 ```
 
 **Note**: The `userId` parameter cannot be used alongside session headers.
-
 
 ## Active Organizations
 
@@ -154,8 +153,8 @@ organization({
 ### Setting Up Invitation Emails
 
 ```ts
-import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
+import { betterAuth } from "better-auth";
 import { sendEmail } from "./email";
 
 export const auth = betterAuth({
@@ -241,9 +240,9 @@ import { organization } from "better-auth/plugins";
 export const auth = betterAuth({
   plugins: [
     organization({
-        teams: {
-            enabled: true
-        }
+      teams: {
+        enabled: true,
+      },
     }),
   ],
 });
@@ -268,10 +267,10 @@ Set active team with `setActiveTeam({ teamId })`.
 ```ts
 organization({
   teams: {
-      maximumTeams: 20, // Max teams per org
-      maximumMembersPerTeam: 50, // Max members per team
-      allowRemovingAllTeams: false, // Prevent removing last team
-  }
+    maximumTeams: 20, // Max teams per org
+    maximumMembersPerTeam: 50, // Max members per team
+    allowRemovingAllTeams: false, // Prevent removing last team
+  },
 });
 ```
 
@@ -280,15 +279,15 @@ organization({
 ### Enabling Dynamic Access Control
 
 ```ts
-import { organization } from "better-auth/plugins";
 import { dynamicAccessControl } from "@better-auth/organization/addons";
+import { organization } from "better-auth/plugins";
 
 export const auth = betterAuth({
   plugins: [
     organization({
-        dynamicAccessControl: {
-            enabled: true
-        }
+      dynamicAccessControl: {
+        enabled: true,
+      },
     }),
   ],
 });
@@ -438,8 +437,8 @@ organization({
 ## Complete Configuration Example
 
 ```ts
-import { betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
+import { betterAuth } from "better-auth";
 import { sendEmail } from "./email";
 
 export const auth = betterAuth({

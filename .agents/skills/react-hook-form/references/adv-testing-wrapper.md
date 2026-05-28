@@ -12,18 +12,18 @@ Hook tests require proper context providers. Create a reusable wrapper function 
 **Incorrect (missing providers causes hook errors):**
 
 ```typescript
-import { renderHook } from '@testing-library/react'
-import { useForm } from 'react-hook-form'
+import { renderHook } from "@testing-library/react";
+import { useForm } from "react-hook-form";
 
-test('form submits correctly', () => {
-  const { result } = renderHook(() => useForm())  // May fail if form uses context
+test("form submits correctly", () => {
+  const { result } = renderHook(() => useForm()); // May fail if form uses context
 
   act(() => {
-    result.current.setValue('email', 'test@example.com')
-  })
+    result.current.setValue("email", "test@example.com");
+  });
 
-  expect(result.current.getValues('email')).toBe('test@example.com')
-})
+  expect(result.current.getValues("email")).toBe("test@example.com");
+});
 ```
 
 **Correct (wrapper provides all required context):**

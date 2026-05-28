@@ -186,8 +186,8 @@ Default: `scrypt` (Node.js native, no external dependencies).
 To use Argon2id or another algorithm, provide custom `hash` and `verify` functions:
 
 ```ts
-import { betterAuth } from "better-auth";
 import { hash, verify, type Options } from "@node-rs/argon2";
+import { betterAuth } from "better-auth";
 
 const argon2Options: Options = {
   memoryCost: 65536, // 64 MiB
@@ -202,8 +202,7 @@ export const auth = betterAuth({
     enabled: true,
     password: {
       hash: (password) => hash(password, argon2Options),
-      verify: ({ password, hash: storedHash }) =>
-        verify(storedHash, password, argon2Options),
+      verify: ({ password, hash: storedHash }) => verify(storedHash, password, argon2Options),
     },
   },
 });

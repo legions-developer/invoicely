@@ -8,11 +8,11 @@ Advanced patterns for dependency injection, database integration, authentication
 
 ```typescript
 // di-container.ts
-import { Pool } from "pg";
 import { UserRepository } from "./repositories/user.repository";
-import { UserService } from "./services/user.service";
 import { UserController } from "./controllers/user.controller";
+import { UserService } from "./services/user.service";
 import { AuthService } from "./services/auth.service";
+import { Pool } from "pg";
 
 class Container {
   private instances = new Map<string, any>();
@@ -58,25 +58,13 @@ container.singleton(
     }),
 );
 
-container.singleton(
-  "userRepository",
-  () => new UserRepository(container.resolve("db")),
-);
+container.singleton("userRepository", () => new UserRepository(container.resolve("db")));
 
-container.singleton(
-  "userService",
-  () => new UserService(container.resolve("userRepository")),
-);
+container.singleton("userService", () => new UserService(container.resolve("userRepository")));
 
-container.register(
-  "userController",
-  () => new UserController(container.resolve("userService")),
-);
+container.register("userController", () => new UserController(container.resolve("userService")));
 
-container.singleton(
-  "authService",
-  () => new AuthService(container.resolve("userRepository")),
-);
+container.singleton("authService", () => new AuthService(container.resolve("userRepository")));
 ```
 
 ## Database Patterns
@@ -192,24 +180,23 @@ export class OrderService {
       await client.query("BEGIN");
 
       // Create order
-      const orderResult = await client.query(
-        "INSERT INTO orders (user_id, total) VALUES ($1, $2) RETURNING id",
-        [userId, calculateTotal(items)],
-      );
+      const orderResult = await client.query("INSERT INTO orders (user_id, total) VALUES ($1, $2) RETURNING id", [
+        userId,
+        calculateTotal(items),
+      ]);
       const orderId = orderResult.rows[0].id;
 
       // Create order items
       for (const item of items) {
-        await client.query(
-          "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)",
-          [orderId, item.productId, item.quantity, item.price],
-        );
+        await client.query("INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)", [
+          orderId,
+          item.productId,
+          item.quantity,
+          item.price,
+        ]);
 
         // Update inventory
-        await client.query(
-          "UPDATE products SET stock = stock - $1 WHERE id = $2",
-          [item.quantity, item.productId],
-        );
+        await client.query("UPDATE products SET stock = stock - $1 WHERE id = $2", [item.quantity, item.productId]);
       }
 
       await client.query("COMMIT");
@@ -230,10 +217,10 @@ export class OrderService {
 
 ```typescript
 // services/auth.service.ts
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/user.repository";
 import { UnauthorizedError } from "../utils/errors";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 export class AuthService {
   constructor(private userRepository: UserRepository) {}
@@ -273,10 +260,7 @@ export class AuthService {
 
   async refreshToken(refreshToken: string) {
     try {
-      const payload = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET!,
-      ) as { userId: string };
+      const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!) as { userId: string };
 
       const user = await this.userRepository.findById(payload.userId);
 
@@ -353,11 +337,7 @@ export class CacheService {
 
 // Cache decorator
 export function Cacheable(ttl: number = 300) {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
@@ -387,12 +367,7 @@ export function Cacheable(ttl: number = 300) {
 import { Response } from "express";
 
 export class ApiResponse {
-  static success<T>(
-    res: Response,
-    data: T,
-    message?: string,
-    statusCode = 200,
-  ) {
+  static success<T>(res: Response, data: T, message?: string, statusCode = 200) {
     return res.status(statusCode).json({
       status: "success",
       message,
@@ -408,13 +383,7 @@ export class ApiResponse {
     });
   }
 
-  static paginated<T>(
-    res: Response,
-    data: T[],
-    page: number,
-    limit: number,
-    total: number,
-  ) {
+  static paginated<T>(res: Response, data: T[], page: number, limit: number, total: number) {
     return res.json({
       status: "success",
       data,

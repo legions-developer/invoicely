@@ -26,9 +26,9 @@ Comprehensive guidance for building scalable, maintainable, and production-ready
 
 ```typescript
 import express, { Request, Response, NextFunction } from "express";
+import compression from "compression";
 import helmet from "helmet";
 import cors from "cors";
-import compression from "compression";
 
 const app = express();
 
@@ -58,10 +58,10 @@ app.listen(PORT, () => {
 **Basic Setup:**
 
 ```typescript
-import Fastify from "fastify";
+import compress from "@fastify/compress";
 import helmet from "@fastify/helmet";
 import cors from "@fastify/cors";
-import compress from "@fastify/compress";
+import Fastify from "fastify";
 
 const fastify = Fastify({
   logger: {
@@ -128,9 +128,9 @@ src/
 
 ```typescript
 // controllers/user.controller.ts
+import { CreateUserDTO, UpdateUserDTO } from "../types/user.types";
 import { Request, Response, NextFunction } from "express";
 import { UserService } from "../services/user.service";
-import { CreateUserDTO, UpdateUserDTO } from "../types/user.types";
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -182,8 +182,8 @@ export class UserController {
 
 ```typescript
 // services/user.service.ts
-import { UserRepository } from "../repositories/user.repository";
 import { CreateUserDTO, UpdateUserDTO, User } from "../types/user.types";
+import { UserRepository } from "../repositories/user.repository";
 import { NotFoundError, ValidationError } from "../utils/errors";
 import bcrypt from "bcrypt";
 
@@ -242,25 +242,19 @@ export class UserService {
 
 ```typescript
 // repositories/user.repository.ts
-import { Pool } from "pg";
 import { CreateUserDTO, UpdateUserDTO, UserEntity } from "../types/user.types";
+import { Pool } from "pg";
 
 export class UserRepository {
   constructor(private db: Pool) {}
 
-  async create(
-    userData: CreateUserDTO & { password: string },
-  ): Promise<UserEntity> {
+  async create(userData: CreateUserDTO & { password: string }): Promise<UserEntity> {
     const query = `
       INSERT INTO users (name, email, password)
       VALUES ($1, $2, $3)
       RETURNING id, name, email, password, created_at, updated_at
     `;
-    const { rows } = await this.db.query(query, [
-      userData.name,
-      userData.email,
-      userData.password,
-    ]);
+    const { rows } = await this.db.query(query, [userData.name, userData.email, userData.password]);
     return rows[0];
   }
 
@@ -280,9 +274,7 @@ export class UserRepository {
     const fields = Object.keys(updates);
     const values = Object.values(updates);
 
-    const setClause = fields
-      .map((field, idx) => `${field} = $${idx + 2}`)
-      .join(", ");
+    const setClause = fields.map((field, idx) => `${field} = $${idx + 2}`).join(", ");
 
     const query = `
       UPDATE users
@@ -314,8 +306,8 @@ Use a DI container to wire up repositories, services, and controllers. For a ful
 ```typescript
 // middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 import { UnauthorizedError } from "../utils/errors";
+import jwt from "jsonwebtoken";
 
 interface JWTPayload {
   userId: string;
@@ -330,11 +322,7 @@ declare global {
   }
 }
 
-export const authenticate = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
 
@@ -374,8 +362,8 @@ export const authorize = (...roles: string[]) => {
 ```typescript
 // middleware/validation.middleware.ts
 import { Request, Response, NextFunction } from "express";
-import { AnyZodObject, ZodError } from "zod";
 import { ValidationError } from "../utils/errors";
+import { AnyZodObject, ZodError } from "zod";
 
 export const validate = (schema: AnyZodObject) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -465,11 +453,7 @@ const logger = pino({
   },
 });
 
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
 
   // Log response when finished
@@ -548,15 +532,10 @@ export class ConflictError extends AppError {
 ```typescript
 // middleware/error-handler.ts
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../utils/errors";
 import { logger } from "./logger.middleware";
+import { AppError } from "../utils/errors";
 
-export const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
       status: "error",
@@ -574,10 +553,7 @@ export const errorHandler = (
   });
 
   // Don't leak error details in production
-  const message =
-    process.env.NODE_ENV === "production"
-      ? "Internal server error"
-      : err.message;
+  const message = process.env.NODE_ENV === "production" ? "Internal server error" : err.message;
 
   res.status(500).json({
     status: "error",
@@ -586,9 +562,7 @@ export const errorHandler = (
 };
 
 // Async error wrapper
-export const asyncHandler = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
-) => {
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
@@ -600,6 +574,7 @@ export const asyncHandler = (
 Node.js supports both SQL and NoSQL databases. Use connection pooling for all production databases.
 
 Key patterns covered in [references/advanced-patterns.md](references/advanced-patterns.md):
+
 - **PostgreSQL with connection pool** — `pg` Pool configuration and graceful shutdown
 - **MongoDB with Mongoose** — connection management and schema definition
 - **Transaction pattern** — `BEGIN`/`COMMIT`/`ROLLBACK` with `pg` client

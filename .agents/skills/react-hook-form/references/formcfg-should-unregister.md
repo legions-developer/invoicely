@@ -56,6 +56,7 @@ function MultiStepForm() {
 ```
 
 **When NOT to use:**
+
 - Multi-step wizards where you need to preserve values across steps
 - Conditional fields that should retain values when hidden
 

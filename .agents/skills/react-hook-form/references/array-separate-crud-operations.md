@@ -63,14 +63,14 @@ function ReplaceItemForm() {
 **Alternative (defer removal with useEffect):**
 
 ```typescript
-const [pendingRemoval, setPendingRemoval] = useState<number | null>(null)
+const [pendingRemoval, setPendingRemoval] = useState<number | null>(null);
 
 useEffect(() => {
   if (pendingRemoval !== null) {
-    remove(pendingRemoval)
-    setPendingRemoval(null)
+    remove(pendingRemoval);
+    setPendingRemoval(null);
   }
-}, [pendingRemoval, remove])
+}, [pendingRemoval, remove]);
 ```
 
 Reference: [useFieldArray](https://react-hook-form.com/docs/usefieldarray)

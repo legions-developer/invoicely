@@ -282,7 +282,7 @@ packages/
 ```js
 // apps/web/.eslintrc.js
 module.exports = {
-  extends: ["@repo/eslint-config/next"]
+  extends: ["@repo/eslint-config/next"],
 };
 ```
 

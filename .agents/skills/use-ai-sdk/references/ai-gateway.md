@@ -20,11 +20,11 @@ AI_GATEWAY_API_KEY=your_api_key_here
 The AI Gateway is the default global provider, so you can access models using a simple string:
 
 ```ts
-import { generateText } from 'ai';
+import { generateText } from "ai";
 
 const { text } = await generateText({
-  model: 'anthropic/claude-sonnet-4.5',
-  prompt: 'What is love?',
+  model: "anthropic/claude-sonnet-4.5",
+  prompt: "What is love?",
 });
 ```
 
@@ -32,12 +32,12 @@ You can also explicitly import and use the gateway provider:
 
 ```ts
 // Option 1: Import from 'ai' package (included by default)
-import { gateway } from 'ai';
-model: gateway('anthropic/claude-sonnet-4.5');
+import { gateway } from "ai";
+model: gateway("anthropic/claude-sonnet-4.5");
 
 // Option 2: Install and import from '@ai-sdk/gateway' package
-import { gateway } from '@ai-sdk/gateway';
-model: gateway('anthropic/claude-sonnet-4.5');
+import { gateway } from "@ai-sdk/gateway";
+model: gateway("anthropic/claude-sonnet-4.5");
 ```
 
 ## Find Available Models

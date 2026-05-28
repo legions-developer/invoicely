@@ -7,24 +7,24 @@ Connection pooling, query optimization, edge runtime integration, and performanc
 ### PostgreSQL (node-postgres)
 
 ```typescript
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
 const pool = new Pool({
   host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
+  port: parseInt(process.env.DB_PORT || "5432"),
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  max: 20,                    // Maximum pool size
-  idleTimeoutMillis: 30000,   // Close idle clients after 30s
+  max: 20, // Maximum pool size
+  idleTimeoutMillis: 30000, // Close idle clients after 30s
   connectionTimeoutMillis: 2000, // Timeout connection attempts
 });
 
 export const db = drizzle(pool);
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
+process.on("SIGTERM", async () => {
   await pool.end();
 });
 ```
@@ -32,8 +32,8 @@ process.on('SIGTERM', async () => {
 ### MySQL (mysql2)
 
 ```typescript
-import mysql from 'mysql2/promise';
-import { drizzle } from 'drizzle-orm/mysql2';
+import { drizzle } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 
 const poolConnection = mysql.createPool({
   host: process.env.DB_HOST,
@@ -55,10 +55,10 @@ export const db = drizzle(poolConnection);
 ### SQLite (better-sqlite3)
 
 ```typescript
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
 
-const sqlite = new Database('sqlite.db', {
+const sqlite = new Database("sqlite.db", {
   readonly: false,
   fileMustExist: false,
   timeout: 5000,
@@ -66,14 +66,14 @@ const sqlite = new Database('sqlite.db', {
 });
 
 // Performance pragmas
-sqlite.pragma('journal_mode = WAL');
-sqlite.pragma('synchronous = normal');
-sqlite.pragma('cache_size = -64000'); // 64MB cache
-sqlite.pragma('temp_store = memory');
+sqlite.pragma("journal_mode = WAL");
+sqlite.pragma("synchronous = normal");
+sqlite.pragma("cache_size = -64000"); // 64MB cache
+sqlite.pragma("temp_store = memory");
 
 export const db = drizzle(sqlite);
 
-process.on('exit', () => sqlite.close());
+process.on("exit", () => sqlite.close());
 ```
 
 ## Query Optimization
@@ -85,49 +85,51 @@ process.on('exit', () => sqlite.close());
 const users = await db.select().from(users);
 
 // ✅ Good: Fetch only needed columns
-const users = await db.select({
-  id: users.id,
-  email: users.email,
-  name: users.name,
-}).from(users);
+const users = await db
+  .select({
+    id: users.id,
+    email: users.email,
+    name: users.name,
+  })
+  .from(users);
 ```
 
 ### Use Indexes Effectively
 
 ```typescript
-import { pgTable, serial, text, varchar, index } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, varchar, index } from "drizzle-orm/pg-core";
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull(),
-  city: text('city'),
-  status: text('status'),
-}, (table) => ({
-  // Index frequently queried columns
-  emailIdx: index('email_idx').on(table.email),
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 255 }).notNull(),
+    city: text("city"),
+    status: text("status"),
+  },
+  (table) => ({
+    // Index frequently queried columns
+    emailIdx: index("email_idx").on(table.email),
 
-  // Composite index for common query patterns
-  cityStatusIdx: index('city_status_idx').on(table.city, table.status),
-}));
+    // Composite index for common query patterns
+    cityStatusIdx: index("city_status_idx").on(table.city, table.status),
+  }),
+);
 
 // Query uses index
-const activeUsersInNYC = await db.select()
+const activeUsersInNYC = await db
+  .select()
   .from(users)
-  .where(and(
-    eq(users.city, 'NYC'),
-    eq(users.status, 'active')
-  ));
+  .where(and(eq(users.city, "NYC"), eq(users.status, "active")));
 ```
 
 ### Analyze Query Plans
 
 ```typescript
-import { sql } from 'drizzle-orm';
+import { sql } from "drizzle-orm";
 
 // PostgreSQL EXPLAIN
-const plan = await db.execute(
-  sql`EXPLAIN ANALYZE SELECT * FROM ${users} WHERE ${users.email} = 'user@example.com'`
-);
+const plan = await db.execute(sql`EXPLAIN ANALYZE SELECT * FROM ${users} WHERE ${users.email} = 'user@example.com'`);
 
 console.log(plan.rows);
 
@@ -141,20 +143,14 @@ console.log(plan.rows);
 
 ```typescript
 // ❌ Bad: OFFSET on large datasets (gets slower as offset increases)
-const page = await db.select()
-  .from(users)
-  .limit(20)
-  .offset(10000); // Scans 10,020 rows!
+const page = await db.select().from(users).limit(20).offset(10000); // Scans 10,020 rows!
 
 // ✅ Good: Cursor-based pagination (constant time)
-const page = await db.select()
-  .from(users)
-  .where(gt(users.id, lastSeenId))
-  .orderBy(asc(users.id))
-  .limit(20);
+const page = await db.select().from(users).where(gt(users.id, lastSeenId)).orderBy(asc(users.id)).limit(20);
 
 // ✅ Good: Seek method for timestamp-based pagination
-const page = await db.select()
+const page = await db
+  .select()
   .from(posts)
   .where(lt(posts.createdAt, lastSeenTimestamp))
   .orderBy(desc(posts.createdAt))
@@ -166,7 +162,7 @@ const page = await db.select()
 ### Cloudflare Workers (D1)
 
 ```typescript
-import { drizzle } from 'drizzle-orm/d1';
+import { drizzle } from "drizzle-orm/d1";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -182,10 +178,10 @@ export default {
 ### Vercel Edge (Neon)
 
 ```typescript
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export async function GET() {
   const sql = neon(process.env.DATABASE_URL!);
@@ -200,18 +196,18 @@ export async function GET() {
 ### Supabase Edge Functions
 
 ```typescript
-import { createClient } from '@supabase/supabase-js';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { createClient } from "@supabase/supabase-js";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 Deno.serve(async (req) => {
-  const client = postgres(Deno.env.get('DATABASE_URL')!);
+  const client = postgres(Deno.env.get("DATABASE_URL")!);
   const db = drizzle(client);
 
   const data = await db.select().from(users);
 
   return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 });
 ```
@@ -221,7 +217,7 @@ Deno.serve(async (req) => {
 ### In-Memory Cache
 
 ```typescript
-import { LRUCache } from 'lru-cache';
+import { LRUCache } from "lru-cache";
 
 const cache = new LRUCache<string, any>({
   max: 500,
@@ -244,15 +240,11 @@ async function getCachedUser(id: number) {
 ### Redis Cache Layer
 
 ```typescript
-import { Redis } from 'ioredis';
+import { Redis } from "ioredis";
 
 const redis = new Redis(process.env.REDIS_URL);
 
-async function getCachedData<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl: number = 300
-): Promise<T> {
+async function getCachedData<T>(key: string, fetcher: () => Promise<T>, ttl: number = 300): Promise<T> {
   // Try cache first
   const cached = await redis.get(key);
   if (cached) return JSON.parse(cached);
@@ -267,11 +259,7 @@ async function getCachedData<T>(
 }
 
 // Usage
-const users = await getCachedData(
-  'users:all',
-  () => db.select().from(users),
-  600
-);
+const users = await getCachedData("users:all", () => db.select().from(users), 600);
 ```
 
 ### Materialized Views (PostgreSQL)
@@ -294,17 +282,18 @@ CREATE UNIQUE INDEX ON user_stats (id);
 */
 
 // Define schema
-export const userStats = pgMaterializedView('user_stats').as((qb) =>
-  qb.select({
-    id: users.id,
-    name: users.name,
-    postCount: sql<number>`COUNT(${posts.id})`,
-    commentCount: sql<number>`COUNT(${comments.id})`,
-  })
-  .from(users)
-  .leftJoin(posts, eq(posts.authorId, users.id))
-  .leftJoin(comments, eq(comments.userId, users.id))
-  .groupBy(users.id)
+export const userStats = pgMaterializedView("user_stats").as((qb) =>
+  qb
+    .select({
+      id: users.id,
+      name: users.name,
+      postCount: sql<number>`COUNT(${posts.id})`,
+      commentCount: sql<number>`COUNT(${comments.id})`,
+    })
+    .from(users)
+    .leftJoin(posts, eq(posts.authorId, users.id))
+    .leftJoin(comments, eq(comments.userId, users.id))
+    .groupBy(users.id),
 );
 
 // Refresh materialized view
@@ -319,21 +308,17 @@ const stats = await db.select().from(userStats);
 ### Batch Insert with COPY (PostgreSQL)
 
 ```typescript
-import { copyFrom } from 'pg-copy-streams';
-import { pipeline } from 'stream/promises';
-import { Readable } from 'stream';
+import { pipeline } from "stream/promises";
+import { copyFrom } from "pg-copy-streams";
+import { Readable } from "stream";
 
 async function bulkInsert(data: any[]) {
   const client = await pool.connect();
 
   try {
-    const stream = client.query(
-      copyFrom(`COPY users (email, name) FROM STDIN WITH (FORMAT csv)`)
-    );
+    const stream = client.query(copyFrom(`COPY users (email, name) FROM STDIN WITH (FORMAT csv)`));
 
-    const input = Readable.from(
-      data.map(row => `${row.email},${row.name}\n`)
-    );
+    const input = Readable.from(data.map((row) => `${row.email},${row.name}\n`));
 
     await pipeline(input, stream);
   } finally {
@@ -357,9 +342,7 @@ async function bulkUpdate(updates: { id: number; name: string }[]) {
   for await (const chunk of chunked(updates, 100)) {
     await db.transaction(async (tx) => {
       for (const update of chunk) {
-        await tx.update(users)
-          .set({ name: update.name })
-          .where(eq(users.id, update.id));
+        await tx.update(users).set({ name: update.name }).where(eq(users.id, update.id));
       }
     });
   }
@@ -403,8 +386,8 @@ export async function handler() {
 
 ```typescript
 // No connection pooling needed - uses HTTP
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql);
@@ -416,8 +399,8 @@ const users = await db.select().from(users);
 ## Read Replicas
 
 ```typescript
-import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 
 // Primary (writes)
 const primaryPool = new Pool({ connectionString: process.env.PRIMARY_DB_URL });
@@ -442,14 +425,14 @@ async function createUser(data: NewUser) {
 ### Query Logging
 
 ```typescript
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from "drizzle-orm/node-postgres";
 
 const db = drizzle(pool, {
   logger: {
     logQuery(query: string, params: unknown[]) {
-      console.log('Query:', query);
-      console.log('Params:', params);
-      console.time('query');
+      console.log("Query:", query);
+      console.log("Params:", params);
+      console.time("query");
     },
   },
 });
@@ -489,12 +472,9 @@ class MetricsLogger {
 ### Performance Monitoring
 
 ```typescript
-import { performance } from 'perf_hooks';
+import { performance } from "perf_hooks";
 
-async function measureQuery<T>(
-  name: string,
-  query: Promise<T>
-): Promise<T> {
+async function measureQuery<T>(name: string, query: Promise<T>): Promise<T> {
   const start = performance.now();
 
   try {
@@ -512,10 +492,7 @@ async function measureQuery<T>(
 }
 
 // Usage
-const users = await measureQuery(
-  'fetchUsers',
-  db.select().from(users).limit(100)
-);
+const users = await measureQuery("fetchUsers", db.select().from(users).limit(100));
 ```
 
 ## Database-Specific Optimizations
@@ -526,7 +503,7 @@ const users = await measureQuery(
 // Connection optimization
 const pool = new Pool({
   max: 20,
-  application_name: 'myapp',
+  application_name: "myapp",
   statement_timeout: 30000, // 30s query timeout
   query_timeout: 30000,
   connectionTimeoutMillis: 5000,
@@ -552,7 +529,7 @@ const pool = mysql.createPool({
   supportBigNumbers: true,
   bigNumberStrings: false,
   multipleStatements: false, // Security
-  timezone: 'Z', // UTC
+  timezone: "Z", // UTC
 });
 ```
 
@@ -560,16 +537,16 @@ const pool = mysql.createPool({
 
 ```typescript
 // WAL mode for concurrent reads
-sqlite.pragma('journal_mode = WAL');
+sqlite.pragma("journal_mode = WAL");
 
 // Optimize for performance
-sqlite.pragma('synchronous = NORMAL');
-sqlite.pragma('cache_size = -64000'); // 64MB
-sqlite.pragma('temp_store = MEMORY');
-sqlite.pragma('mmap_size = 30000000000'); // 30GB mmap
+sqlite.pragma("synchronous = NORMAL");
+sqlite.pragma("cache_size = -64000"); // 64MB
+sqlite.pragma("temp_store = MEMORY");
+sqlite.pragma("mmap_size = 30000000000"); // 30GB mmap
 
 // Disable for bulk inserts
-const stmt = sqlite.prepare('INSERT INTO users (email, name) VALUES (?, ?)');
+const stmt = sqlite.prepare("INSERT INTO users (email, name) VALUES (?, ?)");
 
 const insertMany = sqlite.transaction((users) => {
   for (const user of users) {

@@ -50,9 +50,11 @@ function RegistrationForm() {
 **Alternative (use onChange mode if real-time validation needed):**
 
 ```typescript
-const { formState: { isValid } } = useForm({
-  mode: 'onChange',  // Explicit: validation runs on every change
-})
+const {
+  formState: { isValid },
+} = useForm({
+  mode: "onChange", // Explicit: validation runs on every change
+});
 ```
 
 Reference: [useForm - mode](https://react-hook-form.com/docs/useform)

@@ -228,8 +228,8 @@ Use `turbo.jsonc` extension to add comments with IDE support:
   "tasks": {
     "build": {
       // Next.js outputs
-      "outputs": [".next/**", "!.next/cache/**"]
-    }
-  }
+      "outputs": [".next/**", "!.next/cache/**"],
+    },
+  },
 }
 ```

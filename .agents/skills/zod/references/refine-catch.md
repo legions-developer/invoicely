@@ -12,24 +12,24 @@ When parsing data that might have some invalid fields but you want to accept wha
 **Incorrect (all-or-nothing parsing):**
 
 ```typescript
-import { z } from 'zod'
+import { z } from "zod";
 
 const userPrefsSchema = z.object({
-  theme: z.enum(['light', 'dark']),
+  theme: z.enum(["light", "dark"]),
   fontSize: z.number().min(8).max(32),
   language: z.string(),
   notifications: z.boolean(),
-})
+});
 
 // Corrupted localStorage data
 const stored = {
-  theme: 'invalid-theme',  // Bad
-  fontSize: 200,  // Bad
-  language: 'en',  // Good
-  notifications: 'yes',  // Bad - should be boolean
-}
+  theme: "invalid-theme", // Bad
+  fontSize: 200, // Bad
+  language: "en", // Good
+  notifications: "yes", // Bad - should be boolean
+};
 
-userPrefsSchema.parse(stored)
+userPrefsSchema.parse(stored);
 // ZodError: Invalid enum value at "theme"
 // User loses ALL their preferences because one field is bad
 ```
@@ -37,24 +37,24 @@ userPrefsSchema.parse(stored)
 **Correct (fault-tolerant with catch):**
 
 ```typescript
-import { z } from 'zod'
+import { z } from "zod";
 
 const userPrefsSchema = z.object({
-  theme: z.enum(['light', 'dark']).catch('light'),
+  theme: z.enum(["light", "dark"]).catch("light"),
   fontSize: z.number().min(8).max(32).catch(16),
-  language: z.string().catch('en'),
+  language: z.string().catch("en"),
   notifications: z.boolean().catch(true),
-})
+});
 
 // Corrupted data
 const stored = {
-  theme: 'invalid-theme',
+  theme: "invalid-theme",
   fontSize: 200,
-  language: 'en',
-  notifications: 'yes',
-}
+  language: "en",
+  notifications: "yes",
+};
 
-const prefs = userPrefsSchema.parse(stored)
+const prefs = userPrefsSchema.parse(stored);
 // {
 //   theme: 'light',      // Fallback used
 //   fontSize: 16,        // Fallback used
@@ -70,10 +70,10 @@ const prefs = userPrefsSchema.parse(stored)
 // Factory function receives the caught error
 const schema = z.object({
   data: z.array(z.number()).catch((ctx) => {
-    console.warn('Invalid data array:', ctx.error)
-    return []  // Return empty array as fallback
+    console.warn("Invalid data array:", ctx.error);
+    return []; // Return empty array as fallback
   }),
-})
+});
 ```
 
 **Use case: API response resilience:**
@@ -84,21 +84,21 @@ const productSchema = z.object({
   name: z.string(),
   price: z.number().positive(),
   // Legacy field that might be missing or wrong format
-  legacyCode: z.string().catch('UNKNOWN'),
+  legacyCode: z.string().catch("UNKNOWN"),
   // External data that might be malformed
   metadata: z.record(z.string()).catch({}),
-})
+});
 
 // API returns partial data
 const apiResponse = {
-  id: 'prod-123',
-  name: 'Widget',
+  id: "prod-123",
+  name: "Widget",
   price: 29.99,
-  legacyCode: null,  // Bad - should be string
-  metadata: 'invalid',  // Bad - should be object
-}
+  legacyCode: null, // Bad - should be string
+  metadata: "invalid", // Bad - should be object
+};
 
-const product = productSchema.parse(apiResponse)
+const product = productSchema.parse(apiResponse);
 // Works! Returns product with fallbacks for bad fields
 ```
 
@@ -106,13 +106,13 @@ const product = productSchema.parse(apiResponse)
 
 ```typescript
 // .default() - only fills in undefined
-z.string().default('fallback')
+z.string().default("fallback");
 // undefined -> 'fallback'
 // null -> ZodError
 // '' -> '' (empty string is valid)
 
 // .catch() - fallback for ANY parse failure
-z.string().catch('fallback')
+z.string().catch("fallback");
 // undefined -> 'fallback'
 // null -> 'fallback'
 // 123 -> 'fallback'
@@ -123,19 +123,14 @@ z.string().catch('fallback')
 
 ```typescript
 // Catch only specific validation failures
-const schema = z.string()
-  .email()
-  .catch('invalid@example.com')  // Fallback if not valid email
+const schema = z.string().email().catch("invalid@example.com"); // Fallback if not valid email
 
 // Chain for complex defaults
-const ageSchema = z.coerce.number()
-  .int()
-  .min(0)
-  .max(120)
-  .catch(0)  // Invalid ages become 0
+const ageSchema = z.coerce.number().int().min(0).max(120).catch(0); // Invalid ages become 0
 ```
 
 **When NOT to use this pattern:**
+
 - When invalid data should cause errors (strict validation)
 - When you need to know which fields failed (use safeParse)
 - Critical fields that must be valid

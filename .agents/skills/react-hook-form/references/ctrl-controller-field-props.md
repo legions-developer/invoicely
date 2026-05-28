@@ -49,6 +49,7 @@ function FormWithSelect({ control }: { control: Control<FormData> }) {
 ```
 
 **Common mappings by library:**
+
 - MUI Select: `value`, `onChange` (receives event)
 - Radix/shadcn Select: `value`, `onValueChange` (receives value directly)
 - React Select: `value`, `onChange` (receives option object)

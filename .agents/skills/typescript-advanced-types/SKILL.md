@@ -375,12 +375,7 @@ type OptionalKeys<T> = {
   [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
 }[keyof T];
 
-type IsComplete<T, S> =
-  RequiredKeys<T> extends keyof S
-    ? S[RequiredKeys<T>] extends undefined
-      ? false
-      : true
-    : false;
+type IsComplete<T, S> = RequiredKeys<T> extends keyof S ? (S[RequiredKeys<T>] extends undefined ? false : true) : false;
 
 class Builder<T, S extends BuilderState<T> = {}> {
   private state: S = {} as S;
@@ -404,11 +399,7 @@ interface User {
 
 const builder = new Builder<User>();
 
-const user = builder
-  .set("id", "1")
-  .set("name", "John")
-  .set("email", "john@example.com")
-  .build(); // OK: all required fields set
+const user = builder.set("id", "1").set("name", "John").set("email", "john@example.com").build(); // OK: all required fields set
 
 // const incomplete = builder
 //   .set("id", "1")
@@ -419,11 +410,7 @@ const user = builder
 
 ```typescript
 type DeepReadonly<T> = {
-  readonly [P in keyof T]: T[P] extends object
-    ? T[P] extends Function
-      ? T[P]
-      : DeepReadonly<T[P]>
-    : T[P];
+  readonly [P in keyof T]: T[P] extends object ? (T[P] extends Function ? T[P] : DeepReadonly<T[P]>) : T[P];
 };
 
 type DeepPartial<T> = {
@@ -586,9 +573,7 @@ type Event =
 function reducer(state: State, event: Event): State {
   switch (state.type) {
     case "idle":
-      return event.type === "FETCH"
-        ? { type: "fetching", requestId: event.requestId }
-        : state;
+      return event.type === "FETCH" ? { type: "fetching", requestId: event.requestId } : state;
     case "fetching":
       if (event.type === "SUCCESS") {
         return { type: "success", data: event.data };
@@ -634,10 +619,7 @@ function isString(value: unknown): value is string {
   return typeof value === "string";
 }
 
-function isArrayOf<T>(
-  value: unknown,
-  guard: (item: unknown) => item is T,
-): value is T[] {
+function isArrayOf<T>(value: unknown, guard: (item: unknown) => item is T): value is T[] {
   return Array.isArray(value) && value.every(guard);
 }
 
@@ -681,11 +663,7 @@ function processValue(value: unknown) {
 
 ```typescript
 // Type assertion tests
-type AssertEqual<T, U> = [T] extends [U]
-  ? [U] extends [T]
-    ? true
-    : false
-  : false;
+type AssertEqual<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
 
 type Test1 = AssertEqual<string, string>; // true
 type Test2 = AssertEqual<string, number>; // false

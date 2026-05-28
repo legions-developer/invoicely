@@ -14,6 +14,7 @@ progressive_disclosure:
     - query-patterns.md
     - vs-prisma.md
 ---
+
 # Drizzle ORM
 
 Modern TypeScript-first ORM with zero dependencies, compile-time type safety, and SQL-like syntax. Optimized for edge runtimes and serverless environments.
@@ -39,19 +40,19 @@ npm install -D drizzle-kit
 
 ```typescript
 // db/schema.ts
-import { pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  email: text('email').notNull().unique(),
-  name: text('name').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  email: text("email").notNull().unique(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // db/client.ts
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as schema from './schema';
+import { drizzle } from "drizzle-orm/node-postgres";
+import * as schema from "./schema";
+import { Pool } from "pg";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 export const db = drizzle(pool, { schema });
@@ -60,15 +61,18 @@ export const db = drizzle(pool, { schema });
 ### First Query
 
 ```typescript
-import { db } from './db/client';
-import { users } from './db/schema';
-import { eq } from 'drizzle-orm';
+import { users } from "./db/schema";
+import { eq } from "drizzle-orm";
+import { db } from "./db/client";
 
 // Insert
-const newUser = await db.insert(users).values({
-  email: 'user@example.com',
-  name: 'John Doe',
-}).returning();
+const newUser = await db
+  .insert(users)
+  .values({
+    email: "user@example.com",
+    name: "John Doe",
+  })
+  .returning();
 
 // Select
 const allUsers = await db.select().from(users);
@@ -77,7 +81,7 @@ const allUsers = await db.select().from(users);
 const user = await db.select().from(users).where(eq(users.id, 1));
 
 // Update
-await db.update(users).set({ name: 'Jane Doe' }).where(eq(users.id, 1));
+await db.update(users).set({ name: "Jane Doe" }).where(eq(users.id, 1));
 
 // Delete
 await db.delete(users).where(eq(users.id, 1));
@@ -87,33 +91,37 @@ await db.delete(users).where(eq(users.id, 1));
 
 ### Column Types Reference
 
-| PostgreSQL | MySQL | SQLite | TypeScript |
-|------------|-------|--------|------------|
-| `serial()` | `serial()` | `integer()` | `number` |
-| `text()` | `text()` | `text()` | `string` |
-| `integer()` | `int()` | `integer()` | `number` |
-| `boolean()` | `boolean()` | `integer()` | `boolean` |
-| `timestamp()` | `datetime()` | `integer()` | `Date` |
-| `json()` | `json()` | `text()` | `unknown` |
-| `uuid()` | `varchar(36)` | `text()` | `string` |
+| PostgreSQL    | MySQL         | SQLite      | TypeScript |
+| ------------- | ------------- | ----------- | ---------- |
+| `serial()`    | `serial()`    | `integer()` | `number`   |
+| `text()`      | `text()`      | `text()`    | `string`   |
+| `integer()`   | `int()`       | `integer()` | `number`   |
+| `boolean()`   | `boolean()`   | `integer()` | `boolean`  |
+| `timestamp()` | `datetime()`  | `integer()` | `Date`     |
+| `json()`      | `json()`      | `text()`    | `unknown`  |
+| `uuid()`      | `varchar(36)` | `text()`    | `string`   |
 
 ### Common Schema Patterns
 
 ```typescript
-import { pgTable, serial, text, varchar, integer, boolean, timestamp, json, unique } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, varchar, integer, boolean, timestamp, json, unique } from "drizzle-orm/pg-core";
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
-  role: text('role', { enum: ['admin', 'user', 'guest'] }).default('user'),
-  metadata: json('metadata').$type<{ theme: string; locale: string }>(),
-  isActive: boolean('is_active').default(true),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-}, (table) => ({
-  emailIdx: unique('email_unique_idx').on(table.email),
-}));
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+    role: text("role", { enum: ["admin", "user", "guest"] }).default("user"),
+    metadata: json("metadata").$type<{ theme: string; locale: string }>(),
+    isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    emailIdx: unique("email_unique_idx").on(table.email),
+  }),
+);
 
 // Infer TypeScript types
 type User = typeof users.$inferSelect;
@@ -125,18 +133,20 @@ type NewUser = typeof users.$inferInsert;
 ### One-to-Many
 
 ```typescript
-import { pgTable, serial, text, integer } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { pgTable, serial, text, integer } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
-export const authors = pgTable('authors', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
+export const authors = pgTable("authors", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
 });
 
-export const posts = pgTable('posts', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
-  authorId: integer('author_id').notNull().references(() => authors.id),
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  authorId: integer("author_id")
+    .notNull()
+    .references(() => authors.id),
 });
 
 export const authorsRelations = relations(authors, ({ many }) => ({
@@ -159,22 +169,30 @@ const authorsWithPosts = await db.query.authors.findMany({
 ### Many-to-Many
 
 ```typescript
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
 });
 
-export const groups = pgTable('groups', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
+export const groups = pgTable("groups", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
 });
 
-export const usersToGroups = pgTable('users_to_groups', {
-  userId: integer('user_id').notNull().references(() => users.id),
-  groupId: integer('group_id').notNull().references(() => groups.id),
-}, (table) => ({
-  pk: primaryKey({ columns: [table.userId, table.groupId] }),
-}));
+export const usersToGroups = pgTable(
+  "users_to_groups",
+  {
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id),
+    groupId: integer("group_id")
+      .notNull()
+      .references(() => groups.id),
+  },
+  (table) => ({
+    pk: primaryKey({ columns: [table.userId, table.groupId] }),
+  }),
+);
 
 export const usersRelations = relations(users, ({ many }) => ({
   groups: many(usersToGroups),
@@ -195,27 +213,28 @@ export const usersToGroupsRelations = relations(usersToGroups, ({ one }) => ({
 ### Filtering
 
 ```typescript
-import { eq, ne, gt, gte, lt, lte, like, ilike, inArray, isNull, isNotNull, and, or, between } from 'drizzle-orm';
+import { eq, ne, gt, gte, lt, lte, like, ilike, inArray, isNull, isNotNull, and, or, between } from "drizzle-orm";
 
 // Equality
-await db.select().from(users).where(eq(users.email, 'user@example.com'));
+await db.select().from(users).where(eq(users.email, "user@example.com"));
 
 // Comparison
 await db.select().from(users).where(gt(users.id, 10));
 
 // Pattern matching
-await db.select().from(users).where(like(users.name, '%John%'));
+await db.select().from(users).where(like(users.name, "%John%"));
 
 // Multiple conditions
-await db.select().from(users).where(
-  and(
-    eq(users.role, 'admin'),
-    gt(users.createdAt, new Date('2024-01-01'))
-  )
-);
+await db
+  .select()
+  .from(users)
+  .where(and(eq(users.role, "admin"), gt(users.createdAt, new Date("2024-01-01"))));
 
 // IN clause
-await db.select().from(users).where(inArray(users.id, [1, 2, 3]));
+await db
+  .select()
+  .from(users)
+  .where(inArray(users.id, [1, 2, 3]));
 
 // NULL checks
 await db.select().from(users).where(isNull(users.deletedAt));
@@ -224,7 +243,7 @@ await db.select().from(users).where(isNull(users.deletedAt));
 ### Joins
 
 ```typescript
-import { eq } from 'drizzle-orm';
+import { eq } from "drizzle-orm";
 
 // Inner join
 const result = await db
@@ -245,7 +264,7 @@ const result = await db
   .leftJoin(posts, eq(users.id, posts.authorId));
 
 // Multiple joins with aggregation
-import { count, sql } from 'drizzle-orm';
+import { count, sql } from "drizzle-orm";
 
 const result = await db
   .select({
@@ -260,7 +279,7 @@ const result = await db
 ### Pagination & Sorting
 
 ```typescript
-import { desc, asc } from 'drizzle-orm';
+import { desc, asc } from "drizzle-orm";
 
 // Order by
 await db.select().from(users).orderBy(desc(users.createdAt));
@@ -270,7 +289,9 @@ await db.select().from(users).limit(10).offset(20);
 
 // Pagination helper
 function paginate(page: number, pageSize: number = 10) {
-  return db.select().from(users)
+  return db
+    .select()
+    .from(users)
     .limit(pageSize)
     .offset(page * pageSize);
 }
@@ -305,12 +326,12 @@ const tx = db.transaction(async (tx) => {
 
 ```typescript
 // drizzle.config.ts
-import type { Config } from 'drizzle-kit';
+import type { Config } from "drizzle-kit";
 
 export default {
-  schema: './db/schema.ts',
-  out: './drizzle',
-  dialect: 'postgresql',
+  schema: "./db/schema.ts",
+  out: "./drizzle",
+  dialect: "postgresql",
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
@@ -364,6 +385,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 ## Red Flags
 
 **Stop and reconsider if:**
+
 - Using `any` or `unknown` for JSON columns without type annotation
 - Building raw SQL strings without using `sql` template (SQL injection risk)
 - Not using transactions for multi-step data modifications
@@ -373,12 +395,12 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 ## Performance Benefits vs Prisma
 
-| Metric | Drizzle | Prisma |
-|--------|---------|--------|
-| **Bundle Size** | ~35KB | ~230KB |
-| **Cold Start** | ~10ms | ~250ms |
-| **Query Speed** | Baseline | ~2-3x slower |
-| **Memory** | ~10MB | ~50MB |
+| Metric              | Drizzle           | Prisma                |
+| ------------------- | ----------------- | --------------------- |
+| **Bundle Size**     | ~35KB             | ~230KB                |
+| **Cold Start**      | ~10ms             | ~250ms                |
+| **Query Speed**     | Baseline          | ~2-3x slower          |
+| **Memory**          | ~10MB             | ~50MB                 |
 | **Type Generation** | Runtime inference | Build-time generation |
 
 ## Integration
@@ -390,6 +412,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 ## Related Skills
 
 When using Drizzle, these skills enhance your workflow:
+
 - **prisma**: Alternative ORM comparison: Drizzle vs Prisma trade-offs
 - **typescript**: Advanced TypeScript patterns for type-safe queries
 - **nextjs**: Drizzle with Next.js Server Actions and API routes

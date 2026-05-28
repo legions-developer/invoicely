@@ -11,8 +11,8 @@ description: Configure TOTP authenticator apps, send OTP codes via email/SMS, ma
 4. Verify: check that `twoFactorSecret` column exists on user table
 
 ```ts
-import { betterAuth } from "better-auth";
 import { twoFactor } from "better-auth/plugins";
+import { betterAuth } from "better-auth";
 
 export const auth = betterAuth({
   appName: "My App",
@@ -27,8 +27,8 @@ export const auth = betterAuth({
 ### Client-Side Setup
 
 ```ts
-import { createAuthClient } from "better-auth/client";
 import { twoFactorClient } from "better-auth/client/plugins";
+import { createAuthClient } from "better-auth/client";
 
 export const authClient = createAuthClient({
   plugins: [
@@ -101,8 +101,8 @@ twoFactor({
 ### Configuring OTP Delivery
 
 ```ts
-import { betterAuth } from "better-auth";
 import { twoFactor } from "better-auth/plugins";
+import { betterAuth } from "better-auth";
 import { sendEmail } from "./email";
 
 export const auth = betterAuth({
@@ -233,7 +233,7 @@ const signIn = async (email: string, password: string) => {
           window.location.href = "/2fa";
         }
       },
-    }
+    },
   );
 };
 ```
@@ -289,8 +289,8 @@ const disable2FA = async (password: string) => {
 ## Complete Configuration Example
 
 ```ts
-import { betterAuth } from "better-auth";
 import { twoFactor } from "better-auth/plugins";
+import { betterAuth } from "better-auth";
 import { sendEmail } from "./email";
 
 export const auth = betterAuth({

@@ -43,6 +43,7 @@ function MyForm() {
 ```
 
 **When to use each:**
+
 - `useFormState`: Need to react to state changes (display updates)
 - `getFieldState`: Need current state at a point in time (conditional logic)
 

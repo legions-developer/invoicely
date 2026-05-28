@@ -104,11 +104,7 @@ Files considered when calculating task hash. Defaults to all tracked files in pa
 {
   "tasks": {
     "build": {
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        "!README.md",
-        "$TURBO_ROOT$/tsconfig.base.json"
-      ]
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "$TURBO_ROOT$/tsconfig.base.json"]
     }
   }
 }

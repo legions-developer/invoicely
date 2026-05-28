@@ -42,6 +42,7 @@ function SubmitButton() {
 ```
 
 **When to use each:**
+
 - `watch()`: Need to react to value changes (display, conditional rendering)
 - `getValues()`: Need current value at a point in time (event handlers, submit)
 

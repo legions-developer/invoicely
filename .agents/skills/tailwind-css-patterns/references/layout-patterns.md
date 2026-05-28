@@ -17,7 +17,7 @@ Basic flex container:
 Responsive flex direction:
 
 ```html
-<div class="flex flex-col md:flex-row gap-4">
+<div class="flex flex-col gap-4 md:flex-row">
   <div class="flex-1">Item 1</div>
   <div class="flex-1">Item 2</div>
   <div class="flex-1">Item 3</div>
@@ -28,12 +28,12 @@ Common flex patterns:
 
 ```html
 <!-- Center content -->
-<div class="flex items-center justify-center min-h-screen">
+<div class="flex min-h-screen items-center justify-center">
   <div>Centered Content</div>
 </div>
 
 <!-- Space between items -->
-<div class="flex justify-between items-center">
+<div class="flex items-center justify-between">
   <span>Left</span>
   <span>Right</span>
 </div>
@@ -60,7 +60,7 @@ Basic grid:
 Responsive grid:
 
 ```html
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
   <!-- 1 column mobile, 2 tablet, 4 desktop -->
   <div>Item 1</div>
   <div>Item 2</div>
@@ -82,7 +82,7 @@ Auto-fit columns:
 Centered container with max width:
 
 ```html
-<div class="container mx-auto px-4 max-w-7xl">
+<div class="container mx-auto max-w-7xl px-4">
   <!-- Centered content with padding -->
 </div>
 ```
@@ -90,7 +90,7 @@ Centered container with max width:
 Responsive max width:
 
 ```html
-<div class="w-full max-w-md mx-auto">
+<div class="mx-auto w-full max-w-md">
   <!-- Max 448px width, centered -->
 </div>
 ```
@@ -158,25 +158,19 @@ Space between children:
 Responsive typography:
 
 ```html
-<h1 class="text-2xl md:text-4xl lg:text-6xl font-bold">
-  Responsive Heading
-</h1>
+<h1 class="text-2xl font-bold md:text-4xl lg:text-6xl">Responsive Heading</h1>
 ```
 
 ### Line Height & Letter Spacing
 
 ```html
-<p class="leading-relaxed tracking-wide">
-  Text with relaxed line height and wide letter spacing
-</p>
+<p class="leading-relaxed tracking-wide">Text with relaxed line height and wide letter spacing</p>
 ```
 
 ### Text Alignment
 
 ```html
-<p class="text-left md:text-center">
-  Left aligned on mobile, centered on tablet+
-</p>
+<p class="text-left md:text-center">Left aligned on mobile, centered on tablet+</p>
 ```
 
 ---
@@ -188,9 +182,7 @@ Responsive typography:
 ```html
 <div class="bg-blue-500">Blue background</div>
 <div class="bg-gray-100">Light gray background</div>
-<div class="bg-gradient-to-r from-blue-500 to-purple-600">
-  Gradient background
-</div>
+<div class="bg-gradient-to-r from-blue-500 to-purple-600">Gradient background</div>
 ```
 
 ### Text Colors
@@ -204,19 +196,17 @@ Responsive typography:
 ### Opacity
 
 ```html
-<div class="bg-blue-500 bg-opacity-50">
-  Semi-transparent blue
-</div>
+<div class="bg-opacity-50 bg-blue-500">Semi-transparent blue</div>
 ```
 
 ---
 
 ## Responsive Breakpoints Reference
 
-| Prefix | Min Width | CSS Equivalent |
-|--------|-----------|----------------|
-| `sm:` | 640px | `@media (min-width: 640px)` |
-| `md:` | 768px | `@media (min-width: 768px)` |
-| `lg:` | 1024px | `@media (min-width: 1024px)` |
-| `xl:` | 1280px | `@media (min-width: 1280px)` |
-| `2xl:` | 1536px | `@media (min-width: 1536px)` |
+| Prefix | Min Width | CSS Equivalent               |
+| ------ | --------- | ---------------------------- |
+| `sm:`  | 640px     | `@media (min-width: 640px)`  |
+| `md:`  | 768px     | `@media (min-width: 768px)`  |
+| `lg:`  | 1024px    | `@media (min-width: 1024px)` |
+| `xl:`  | 1280px    | `@media (min-width: 1280px)` |
+| `2xl:` | 1536px    | `@media (min-width: 1536px)` |

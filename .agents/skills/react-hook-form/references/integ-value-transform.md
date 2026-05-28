@@ -52,8 +52,8 @@ function QuantityInput({ control }: { control: Control }) {
 
 ```typescript
 const schema = z.object({
-  quantity: z.string().transform((val) => (val === '' ? null : parseInt(val, 10))),
-})
+  quantity: z.string().transform((val) => (val === "" ? null : parseInt(val, 10))),
+});
 ```
 
 Reference: [React Hook Form - Advanced Usage](https://react-hook-form.com/advanced-usage)

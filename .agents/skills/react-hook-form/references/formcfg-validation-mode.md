@@ -44,6 +44,7 @@ function RegistrationForm() {
 ```
 
 **When to use other modes:**
+
 - `onBlur`: Validate when user leaves a field (good balance of UX and performance)
 - `onTouched`: Like `onBlur` but only after first interaction
 - `onChange`: Only when real-time validation feedback is critical (use sparingly)

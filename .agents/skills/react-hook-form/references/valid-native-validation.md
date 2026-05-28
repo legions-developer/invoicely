@@ -53,6 +53,7 @@ function NewsletterForm() {
 ```
 
 **When NOT to use:**
+
 - Custom error message styling required
 - Complex cross-field validation
 - Need consistent UX across browsers

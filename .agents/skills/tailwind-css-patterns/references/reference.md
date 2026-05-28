@@ -19,14 +19,12 @@ npm install tailwindcss @tailwindcss/vite
 
 ```javascript
 // vite.config.ts
-import { defineConfig } from 'vite'
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
 
 export default defineConfig({
- plugins: [
- tailwindcss(),
- ],
-})
+  plugins: [tailwindcss()],
+});
 ```
 
 ```css
@@ -35,11 +33,7 @@ export default defineConfig({
 ```
 
 ```html
-
-
-
 # Hello world!
-
 ```
 
 ## Utility Classes with Variants
@@ -47,13 +41,7 @@ export default defineConfig({
 Applying conditional styles using variant prefixes for hover, focus, and responsive breakpoints.
 
 ```html
-
- Save changes
-
-Content adapts to color scheme preference
-
- Submit
-
+Save changes Content adapts to color scheme preference Submit
 ```
 
 ## Custom Theme Configuration
@@ -65,33 +53,31 @@ Defining custom design tokens using the `@theme` directive in CSS.
 @import "tailwindcss";
 
 @theme {
- /* Custom fonts */
- --font-display: "Satoshi", "sans-serif";
- --font-body: "Inter", system-ui, sans-serif;
+  /* Custom fonts */
+  --font-display: "Satoshi", "sans-serif";
+  --font-body: "Inter", system-ui, sans-serif;
 
- /* Custom colors */
- --color-brand-50: oklch(0.98 0.02 264);
- --color-brand-100: oklch(0.95 0.05 264);
- --color-brand-500: oklch(0.55 0.22 264);
- --color-brand-900: oklch(0.25 0.12 264);
+  /* Custom colors */
+  --color-brand-50: oklch(0.98 0.02 264);
+  --color-brand-100: oklch(0.95 0.05 264);
+  --color-brand-500: oklch(0.55 0.22 264);
+  --color-brand-900: oklch(0.25 0.12 264);
 
- /* Custom breakpoints */
- --breakpoint-3xl: 120rem;
- --breakpoint-4xl: 160rem;
+  /* Custom breakpoints */
+  --breakpoint-3xl: 120rem;
+  --breakpoint-4xl: 160rem;
 
- /* Custom spacing */
- --spacing-18: calc(var(--spacing) * 18);
+  /* Custom spacing */
+  --spacing-18: calc(var(--spacing) * 18);
 
- /* Custom animations */
- --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
- --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  /* Custom animations */
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
 }
 ```
 
 ```html
-
 Custom design system
-
 ```
 
 ## Arbitrary Values
@@ -99,21 +85,8 @@ Custom design system
 Using square bracket notation for one-off custom values without leaving HTML.
 
 ```html
-
-Pixel-perfect positioning
-
-Custom hex colors, font sizes, and content
-
-Any CSS property
-
-Reference custom properties
-
-Complex grid layouts
-
-Font size from CSS variable
-
-Color from CSS variable
-
+Pixel-perfect positioning Custom hex colors, font sizes, and content Any CSS property Reference custom properties
+Complex grid layouts Font size from CSS variable Color from CSS variable
 ```
 
 ## Color System
@@ -121,18 +94,8 @@ Color from CSS variable
 Working with Tailwind's comprehensive color palette and opacity modifiers.
 
 ```html
-
-Color utilities across all properties
-
-Alpha channel with percentage
-
-Arbitrary opacity values
-
-Opacity from CSS variable
-
+Color utilities across all properties Alpha channel with percentage Arbitrary opacity values Opacity from CSS variable
 Adapts to color scheme
-
-
 ```
 
 ## Dark Mode
@@ -140,10 +103,7 @@ Adapts to color scheme
 Implementing dark mode with CSS media queries or manual toggle.
 
 ```html
-
 Content automatically adapts
-
-
 ```
 
 ```css
@@ -154,21 +114,16 @@ Content automatically adapts
 ```
 
 ```html
-
 Controlled by .dark class
-
-
-
-
 ```
 
 ```javascript
 // Dark mode toggle logic
 // On page load or theme change
 document.documentElement.classList.toggle(
- "dark",
- localStorage.theme === "dark" ||
- (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+  "dark",
+  localStorage.theme === "dark" ||
+    (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
 );
 
 // User chooses light mode
@@ -186,18 +141,7 @@ localStorage.removeItem("theme");
 Styling elements based on pseudo-classes and parent/sibling state.
 
 ```html
-
-- Item content
-
-
-**Title**
-Description
-
-Please provide a valid email address.
-
-
- Option
-
+- Item content **Title** Description Please provide a valid email address. Option
 ```
 
 ## Responsive Design
@@ -205,20 +149,7 @@ Please provide a valid email address.
 Building mobile-first responsive layouts with breakpoint variants.
 
 ```html
-
-# Responsive heading
-
-Text scales with viewport
-
-
-Desktop only
-
-Mobile only
-
-Custom breakpoint
-
-Below medium
-
+# Responsive heading Text scales with viewport Desktop only Mobile only Custom breakpoint Below medium
 ```
 
 ## Custom Utilities
@@ -228,60 +159,55 @@ Creating reusable custom utility classes with variant support.
 ```css
 /* Simple custom utility */
 @utility content-auto {
- content-visibility: auto;
+  content-visibility: auto;
 }
 
 /* Complex utility with nesting */
 @utility scrollbar-hidden {
- &::-webkit-scrollbar {
- display: none;
- }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Functional utility with theme values */
 @theme {
- --tab-size-2: 2;
- --tab-size-4: 4;
- --tab-size-github: 8;
+  --tab-size-2: 2;
+  --tab-size-4: 4;
+  --tab-size-github: 8;
 }
 
 @utility tab-* {
- tab-size: --value(--tab-size-*);
+  tab-size: --value(--tab-size-*);
 }
 
 /* Supporting arbitrary, bare, and theme values */
 @utility opacity-* {
- opacity: --value([percentage]);
- opacity: calc(--value(integer) * 1%);
- opacity: --value(--opacity-*);
+  opacity: --value([percentage]);
+  opacity: calc(--value(integer) * 1%);
+  opacity: --value(--opacity-*);
 }
 
 /* Utility with modifiers */
 @utility text-* {
- font-size: --value(--text-*, [length]);
- line-height: --modifier(--leading-*, [length], [*]);
+  font-size: --value(--text-*, [length]);
+  line-height: --modifier(--leading-*, [length], [*]);
 }
 
 /* Negative value support */
 @utility inset-* {
- inset: --spacing(--value(integer));
- inset: --value([percentage], [length]);
+  inset: --spacing(--value(integer));
+  inset: --value([percentage], [length]);
 }
 
 @utility -inset-* {
- inset: --spacing(--value(integer) * -1);
- inset: calc(--value([percentage], [length]) * -1);
+  inset: --spacing(--value(integer) * -1);
+  inset: calc(--value([percentage], [length]) * -1);
 }
 ```
 
 ```html
-
-Custom utilities work with variants
-
-Variants and arbitrary values supported
-
-Utility with modifier (font-size/line-height)
-
+Custom utilities work with variants Variants and arbitrary values supported Utility with modifier
+(font-size/line-height)
 ```
 
 ## Custom Variants
@@ -294,11 +220,11 @@ Registering custom conditional styles with the `@custom-variant` directive.
 
 /* Variant with media query */
 @custom-variant any-hover {
- @media (any-hover: hover) {
- &:hover {
- @slot;
- }
- }
+  @media (any-hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
 }
 
 /* ARIA state variant */
@@ -310,16 +236,7 @@ Registering custom conditional styles with the `@custom-variant` directive.
 ```
 
 ```html
-
- Midnight theme button
-
-
- Sortable column
-
-Checked state
-
-One-off custom selectors
-
+Midnight theme button Sortable column Checked state One-off custom selectors
 ```
 
 ## Applying Variants in CSS
@@ -329,35 +246,35 @@ Using the `@variant` directive to apply variants within custom CSS.
 ```css
 /* Single variant */
 .my-element {
- background: white;
+  background: white;
 
- @variant dark {
- background: black;
- }
+  @variant dark {
+    background: black;
+  }
 }
 
 /* Nested variants */
 .my-button {
- background: white;
+  background: white;
 
- @variant dark {
- background: gray;
+  @variant dark {
+    background: gray;
 
- @variant hover {
- background: black;
- }
- }
+    @variant hover {
+      background: black;
+    }
+  }
 }
 
 /* Compiled output */
 .my-element {
- background: white;
+  background: white;
 }
 
 @media (prefers-color-scheme: dark) {
- .my-element {
- background: black;
- }
+  .my-element {
+    background: black;
+  }
 }
 ```
 
@@ -370,56 +287,52 @@ Organizing custom styles into Tailwind's cascade layers.
 
 /* Base styles for HTML elements */
 @layer base {
- h1 {
- font-size: var(--text-2xl);
- font-weight: bold;
- }
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: bold;
+  }
 
- h2 {
- font-size: var(--text-xl);
- font-weight: 600;
- }
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: 600;
+  }
 
- body {
- font-family: var(--font-body);
- }
+  body {
+    font-family: var(--font-body);
+  }
 }
 
 /* Reusable component classes */
 @layer components {
- .btn {
- padding: --spacing(2) --spacing(4);
- border-radius: var(--radius);
- font-weight: 600;
- transition: all 150ms;
- }
+  .btn {
+    padding: --spacing(2) --spacing(4);
+    border-radius: var(--radius);
+    font-weight: 600;
+    transition: all 150ms;
+  }
 
- .btn-primary {
- background-color: var(--color-blue-500);
- color: white;
- }
+  .btn-primary {
+    background-color: var(--color-blue-500);
+    color: white;
+  }
 
- .card {
- background-color: var(--color-white);
- border-radius: var(--radius-lg);
- padding: --spacing(6);
- box-shadow: var(--shadow-xl);
- }
+  .card {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: --spacing(6);
+    box-shadow: var(--shadow-xl);
+  }
 
- /* Third-party component overrides */
- .select2-dropdown {
- border-radius: var(--radius);
- box-shadow: var(--shadow-lg);
- }
+  /* Third-party component overrides */
+  .select2-dropdown {
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+  }
 }
 ```
 
 ```html
-
-Square corners despite card class
-
- Component with utility overrides
-
+Square corners despite card class Component with utility overrides
 ```
 
 ## Functions and Directives
@@ -429,14 +342,14 @@ Using Tailwind's CSS functions for dynamic values and opacity adjustments.
 ```css
 /* Alpha function for opacity */
 .my-element {
- color: --alpha(var(--color-lime-300) / 50%);
- background: --alpha(var(--color-blue-500) / 25%);
+  color: --alpha(var(--color-lime-300) / 50%);
+  background: --alpha(var(--color-blue-500) / 25%);
 }
 
 /* Spacing function */
 .my-element {
- margin: --spacing(4);
- padding: calc(--spacing(6) - 1px);
+  margin: --spacing(4);
+  padding: calc(--spacing(6) - 1px);
 }
 
 /* In arbitrary values */
@@ -446,15 +359,15 @@ Using Tailwind's CSS functions for dynamic values and opacity adjustments.
 
 /* Apply directive for inline utilities */
 .select2-dropdown {
- @apply rounded-b-lg shadow-md;
+  @apply rounded-b-lg shadow-md;
 }
 
 .select2-search {
- @apply rounded border border-gray-300;
+  @apply rounded border border-gray-300;
 }
 
 .select2-results__group {
- @apply text-lg font-bold text-gray-900;
+  @apply text-lg font-bold text-gray-900;
 }
 ```
 
@@ -463,17 +376,7 @@ Using Tailwind's CSS functions for dynamic values and opacity adjustments.
 Styling ::before, ::after, ::placeholder, and other pseudo-elements.
 
 ```html
-
- Email
-
-
-- First item
-- Second item
-
-Select this text to see custom colors
-
-Typography with pseudo-elements
-
+Email - First item - Second item Select this text to see custom colors Typography with pseudo-elements
 ```
 
 ## Media Queries
@@ -481,24 +384,8 @@ Typography with pseudo-elements
 Conditional styling based on user preferences and device capabilities.
 
 ```html
-
- Respects user preference
-
- Only animates if motion allowed
-
- Adjusts for contrast needs
-
-
-Hidden in portrait mode
-
-Layout adapts to orientation
-
- Not shown when printing
-
-Only visible in print
-
-Progressive enhancement
-
+Respects user preference Only animates if motion allowed Adjusts for contrast needs Hidden in portrait mode Layout
+adapts to orientation Not shown when printing Only visible in print Progressive enhancement
 ```
 
 ## Summary

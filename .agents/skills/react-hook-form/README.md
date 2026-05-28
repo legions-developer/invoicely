@@ -51,16 +51,16 @@ pnpm validate
 
 1. Choose the appropriate category prefix:
 
-| Category | Prefix | Impact |
-|----------|--------|--------|
-| Form Configuration | `config-` | CRITICAL |
-| Field Subscription | `sub-` | CRITICAL |
-| Controlled Components | `ctrl-` | HIGH |
-| Validation Patterns | `valid-` | HIGH |
-| Field Arrays | `array-` | MEDIUM-HIGH |
-| State Management | `state-` | MEDIUM |
-| Integration Patterns | `integ-` | MEDIUM |
-| Advanced Patterns | `adv-` | LOW |
+| Category              | Prefix    | Impact      |
+| --------------------- | --------- | ----------- |
+| Form Configuration    | `config-` | CRITICAL    |
+| Field Subscription    | `sub-`    | CRITICAL    |
+| Controlled Components | `ctrl-`   | HIGH        |
+| Validation Patterns   | `valid-`  | HIGH        |
+| Field Arrays          | `array-`  | MEDIUM-HIGH |
+| State Management      | `state-`  | MEDIUM      |
+| Integration Patterns  | `integ-`  | MEDIUM      |
+| Advanced Patterns     | `adv-`    | LOW         |
 
 2. Create a new file: `rules/{prefix}-{description}.md`
 
@@ -103,26 +103,27 @@ Rules follow the pattern: `{prefix}-{slug}.md`
 - **slug**: Kebab-case description of the rule
 
 Examples:
+
 - `config-validation-mode.md`
 - `sub-usewatch-over-watch.md`
 - `ctrl-usecontroller-isolation.md`
 
 ## Impact Levels
 
-| Level | Description |
-|-------|-------------|
-| CRITICAL | Cascade effect on entire form performance |
-| HIGH | Significant impact on specific operations |
-| MEDIUM-HIGH | Notable improvement for common patterns |
-| MEDIUM | Measurable improvement in specific scenarios |
-| LOW-MEDIUM | Minor optimization for edge cases |
-| LOW | Best practice with minimal performance impact |
+| Level       | Description                                   |
+| ----------- | --------------------------------------------- |
+| CRITICAL    | Cascade effect on entire form performance     |
+| HIGH        | Significant impact on specific operations     |
+| MEDIUM-HIGH | Notable improvement for common patterns       |
+| MEDIUM      | Measurable improvement in specific scenarios  |
+| LOW-MEDIUM  | Minor optimization for edge cases             |
+| LOW         | Best practice with minimal performance impact |
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm build` | Compile rules into AGENTS.md |
+| Command         | Description                            |
+| --------------- | -------------------------------------- |
+| `pnpm build`    | Compile rules into AGENTS.md           |
 | `pnpm validate` | Check skill against quality guidelines |
 
 ## Contributing

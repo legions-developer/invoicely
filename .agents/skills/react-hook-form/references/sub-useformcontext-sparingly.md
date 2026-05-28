@@ -51,6 +51,7 @@ function NameInput({ register }: { register: UseFormRegister<ContactFormData> })
 ```
 
 **When to use useFormContext:**
+
 - Components nested 3+ levels deep
 - Shared components used across multiple forms
 - Complex form sections with many fields

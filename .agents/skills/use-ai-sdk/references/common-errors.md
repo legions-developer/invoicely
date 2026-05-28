@@ -10,16 +10,16 @@ description: Reference for common AI SDK errors and how to resolve them.
 ```typescript
 // ❌ Incorrect
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   maxTokens: 512, // deprecated: use `maxOutputTokens` instead
-  prompt: 'Write a short story',
+  prompt: "Write a short story",
 });
 
 // ✅ Correct
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   maxOutputTokens: 512,
-  prompt: 'Write a short story',
+  prompt: "Write a short story",
 });
 ```
 
@@ -28,20 +28,20 @@ const result = await generateText({
 ```typescript
 // ❌ Incorrect
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   tools: { weather },
   maxSteps: 5, // deprecated: use `stopWhen: isStepCount(n)` instead
-  prompt: 'What is the weather in NYC?',
+  prompt: "What is the weather in NYC?",
 });
 
 // ✅ Correct
-import { generateText, isStepCount } from 'ai';
+import { generateText, isStepCount } from "ai";
 
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   tools: { weather },
   stopWhen: isStepCount(5),
-  prompt: 'What is the weather in NYC?',
+  prompt: "What is the weather in NYC?",
 });
 ```
 
@@ -50,7 +50,7 @@ const result = await generateText({
 ```typescript
 // ❌ Incorrect
 const weatherTool = tool({
-  description: 'Get weather for a location',
+  description: "Get weather for a location",
   parameters: z.object({
     // deprecated: use `inputSchema` instead
     location: z.string(),
@@ -60,7 +60,7 @@ const weatherTool = tool({
 
 // ✅ Correct
 const weatherTool = tool({
-  description: 'Get weather for a location',
+  description: "Get weather for a location",
   inputSchema: z.object({
     location: z.string(),
   }),
@@ -74,11 +74,11 @@ const weatherTool = tool({
 
 ```typescript
 // ❌ Deprecated
-import { generateObject } from 'ai'; // deprecated: use `generateText` with `output` instead
+import { generateObject } from "ai"; // deprecated: use `generateText` with `output` instead
 
 const result = await generateObject({
   // deprecated function
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   schema: z.object({
     // deprecated: use `Output.object({ schema })` instead
     recipe: z.object({
@@ -86,14 +86,14 @@ const result = await generateObject({
       ingredients: z.array(z.string()),
     }),
   }),
-  prompt: 'Generate a recipe for chocolate cake',
+  prompt: "Generate a recipe for chocolate cake",
 });
 
 // ✅ Correct
-import { generateText, Output } from 'ai';
+import { generateText, Output } from "ai";
 
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   output: Output.object({
     schema: z.object({
       recipe: z.object({
@@ -102,7 +102,7 @@ const result = await generateText({
       }),
     }),
   }),
-  prompt: 'Generate a recipe for chocolate cake',
+  prompt: "Generate a recipe for chocolate cake",
 });
 
 console.log(result.output); // typed object
@@ -113,7 +113,7 @@ console.log(result.output); // typed object
 ```typescript
 // ❌ Incorrect
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   prompt: `Extract the user info as JSON: { "name": string, "age": number }
 
   Input: John is 25 years old`,
@@ -121,17 +121,17 @@ const result = await generateText({
 const parsed = JSON.parse(result.text);
 
 // ✅ Correct
-import { generateText, Output } from 'ai';
+import { generateText, Output } from "ai";
 
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   output: Output.object({
     schema: z.object({
       name: z.string(),
       age: z.number(),
     }),
   }),
-  prompt: 'Extract the user info: John is 25 years old',
+  prompt: "Extract the user info: John is 25 years old",
 });
 
 console.log(result.output); // { name: 'John', age: 25 }
@@ -142,30 +142,30 @@ console.log(result.output); // { name: 'John', age: 25 }
 ```typescript
 // Output.array - for generating arrays of items
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   output: Output.array({
     element: z.object({
       city: z.string(),
       country: z.string(),
     }),
   }),
-  prompt: 'List 5 capital cities',
+  prompt: "List 5 capital cities",
 });
 
 // Output.choice - for selecting from predefined options
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   output: Output.choice({
-    options: ['positive', 'negative', 'neutral'] as const,
+    options: ["positive", "negative", "neutral"] as const,
   }),
-  prompt: 'Classify the sentiment: I love this product!',
+  prompt: "Classify the sentiment: I love this product!",
 });
 
 // Output.json - for untyped JSON output
 const result = await generateText({
-  model: 'anthropic/claude-opus-4.5',
+  model: "anthropic/claude-opus-4.5",
   output: Output.json(),
-  prompt: 'Return some JSON data',
+  prompt: "Return some JSON data",
 });
 ```
 
@@ -195,7 +195,7 @@ The `useChat` hook no longer manages input state internally. You must now manage
 
 ```tsx
 // ❌ Deprecated
-import { useChat } from '@ai-sdk/react';
+import { useChat } from "@ai-sdk/react";
 
 export default function Page() {
   const {
@@ -203,7 +203,7 @@ export default function Page() {
     handleInputChange, // deprecated: use custom onChange handler
     handleSubmit, // deprecated: use sendMessage() instead
   } = useChat({
-    api: '/api/chat', // deprecated: use `transport: new DefaultChatTransport({ api })` instead
+    api: "/api/chat", // deprecated: use `transport: new DefaultChatTransport({ api })` instead
   });
 
   return (
@@ -215,25 +215,25 @@ export default function Page() {
 }
 
 // ✅ Correct
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
-import { useState } from 'react';
+import { DefaultChatTransport } from "ai";
+import { useChat } from "@ai-sdk/react";
+import { useState } from "react";
 
 export default function Page() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const { sendMessage } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
+    transport: new DefaultChatTransport({ api: "/api/chat" }),
   });
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     sendMessage({ text: input });
-    setInput('');
+    setInput("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input value={input} onChange={e => setInput(e.target.value)} />
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
       <button type="submit">Send</button>
     </form>
   );
@@ -256,28 +256,24 @@ Typed tool parts also use different property names:
 {
   message.parts.map((part, i) => {
     switch (part.type) {
-      case 'text':
+      case "text":
         return <div key={`${message.id}-${i}`}>{part.text}</div>;
-      case 'tool-invocation': // deprecated: use typed tool parts instead
-        return (
-          <pre key={`${message.id}-${i}`}>
-            {JSON.stringify(part.toolInvocation, null, 2)}
-          </pre>
-        );
+      case "tool-invocation": // deprecated: use typed tool parts instead
+        return <pre key={`${message.id}-${i}`}>{JSON.stringify(part.toolInvocation, null, 2)}</pre>;
     }
   });
 }
 
 // ✅ Correct - using typed tool parts (recommended)
 {
-  message.parts.map(part => {
+  message.parts.map((part) => {
     switch (part.type) {
-      case 'text':
+      case "text":
         return part.text;
-      case 'tool-askForConfirmation':
+      case "tool-askForConfirmation":
         // handle askForConfirmation tool
         break;
-      case 'tool-getWeatherInformation':
+      case "tool-getWeatherInformation":
         // handle getWeatherInformation tool
         break;
     }
@@ -285,11 +281,11 @@ Typed tool parts also use different property names:
 }
 
 // ✅ Alternative - using isToolUIPart as a catch-all
-import { isToolUIPart } from 'ai';
+import { isToolUIPart } from "ai";
 
 {
-  message.parts.map(part => {
-    if (part.type === 'text') {
+  message.parts.map((part) => {
+    if (part.type === "text") {
       return part.text;
     }
     if (isToolUIPart(part)) {
@@ -311,26 +307,23 @@ Tool part properties are only available in certain states. TypeScript will error
 ```tsx
 // ❌ Incorrect - input may be undefined during streaming
 // TS18048: 'part.input' is possibly 'undefined'
-if (part.type === 'tool-getWeather') {
+if (part.type === "tool-getWeather") {
   const location = part.input.location;
 }
 
 // ✅ Correct - check for input-available or output-available
-if (
-  part.type === 'tool-getWeather' &&
-  (part.state === 'input-available' || part.state === 'output-available')
-) {
+if (part.type === "tool-getWeather" && (part.state === "input-available" || part.state === "output-available")) {
   const location = part.input.location;
 }
 
 // ❌ Incorrect - output is only available after execution
 // TS18048: 'part.output' is possibly 'undefined'
-if (part.type === 'tool-getWeather') {
+if (part.type === "tool-getWeather") {
   const weather = part.output;
 }
 
 // ✅ Correct - check for output-available
-if (part.type === 'tool-getWeather' && part.state === 'output-available') {
+if (part.type === "tool-getWeather" && part.state === "output-available") {
   const location = part.input.location;
   const weather = part.output;
 }
@@ -340,16 +333,13 @@ if (part.type === 'tool-getWeather' && part.state === 'output-available') {
 
 ```tsx
 // ❌ Incorrect
-if (part.type === 'tool-invocation') {
+if (part.type === "tool-invocation") {
   // deprecated: use `part.input` on typed tool parts instead
   const location = part.toolInvocation.args.location;
 }
 
 // ✅ Correct
-if (
-  part.type === 'tool-getWeather' &&
-  (part.state === 'input-available' || part.state === 'output-available')
-) {
+if (part.type === "tool-getWeather" && (part.state === "input-available" || part.state === "output-available")) {
   const location = part.input.location;
 }
 ```
@@ -358,13 +348,13 @@ if (
 
 ```tsx
 // ❌ Incorrect
-if (part.type === 'tool-invocation') {
+if (part.type === "tool-invocation") {
   // deprecated: use `part.output` on typed tool parts instead
   const weather = part.toolInvocation.result;
 }
 
 // ✅ Correct
-if (part.type === 'tool-getWeather' && part.state === 'output-available') {
+if (part.type === "tool-getWeather" && part.state === "output-available") {
   const weather = part.output;
 }
 ```
@@ -373,13 +363,13 @@ if (part.type === 'tool-getWeather' && part.state === 'output-available') {
 
 ```tsx
 // ❌ Incorrect
-if (part.type === 'tool-invocation') {
+if (part.type === "tool-invocation") {
   // deprecated: use `part.toolCallId` on typed tool parts instead
   const id = part.toolInvocation.toolCallId;
 }
 
 // ✅ Correct
-if (part.type === 'tool-getWeather') {
+if (part.type === "tool-getWeather") {
   const id = part.toolCallId;
 }
 ```
@@ -389,21 +379,21 @@ if (part.type === 'tool-getWeather') {
 ```tsx
 // ❌ Incorrect
 switch (part.toolInvocation.state) {
-  case 'partial-call': // deprecated: use `input-streaming` instead
+  case "partial-call": // deprecated: use `input-streaming` instead
     return <div>Loading...</div>;
-  case 'call': // deprecated: use `input-available` instead
+  case "call": // deprecated: use `input-available` instead
     return <div>Executing...</div>;
-  case 'result': // deprecated: use `output-available` instead
+  case "result": // deprecated: use `output-available` instead
     return <div>Done</div>;
 }
 
 // ✅ Correct
 switch (part.state) {
-  case 'input-streaming':
+  case "input-streaming":
     return <div>Loading...</div>;
-  case 'input-available':
+  case "input-available":
     return <div>Executing...</div>;
-  case 'output-available':
+  case "output-available":
     return <div>Done</div>;
 }
 ```
@@ -415,14 +405,14 @@ switch (part.state) {
 addToolResult({
   // deprecated: use `addToolOutput` instead
   toolCallId: part.toolInvocation.toolCallId,
-  result: 'Yes, confirmed.', // deprecated: use `output` instead
+  result: "Yes, confirmed.", // deprecated: use `output` instead
 });
 
 // ✅ Correct
 addToolOutput({
-  tool: 'askForConfirmation',
+  tool: "askForConfirmation",
   toolCallId: part.toolCallId,
-  output: 'Yes, confirmed.',
+  output: "Yes, confirmed.",
 });
 ```
 
