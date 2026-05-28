@@ -113,6 +113,11 @@ export const createInvoiceSchema = z.object({
           })
           .default("default")
           .optional(),
+        font: z
+          .enum(["quicksand", "geist", "inter", "jetbrainsmono"], {
+            invalid_type_error: "Invalid font",
+          })
+          .optional(),
       }),
       currency: z
         .string({ invalid_type_error: "Currency must be a string" })

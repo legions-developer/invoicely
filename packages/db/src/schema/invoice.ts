@@ -1,5 +1,6 @@
 import { PdfTemplateName } from "@/app/(dashboard)/create/invoice/invoiceHelpers/invoice-templates";
 import { pgTable, text, timestamp, uuid, pgEnum, jsonb, integer } from "drizzle-orm/pg-core";
+import { InvoiceFontName } from "@/constants/pdf-fonts";
 import { Numeric } from "../custom/decimal";
 import { relations } from "drizzle-orm";
 import { users } from "./user";
@@ -8,6 +9,7 @@ interface InvoiceTheme {
   baseColor: string;
   mode: "dark" | "light";
   template?: PdfTemplateName;
+  font?: InvoiceFontName;
 }
 
 // Enums

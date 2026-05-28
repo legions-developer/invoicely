@@ -7,6 +7,7 @@ import SheetImageSelectorTrigger from "@/components/ui/image/sheet-image-selecto
 import { InvoiceImageSelectorSheet } from "./invoiceHelpers/invoice-image-selector-sheet";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { InvoiceTemplateSelector } from "./invoiceHelpers/invoice-templates";
+import { InvoiceFontSelector } from "./invoiceHelpers/invoice-fonts";
 import { FormColorPicker } from "@/components/ui/form/form-color-picker";
 import InvoiceItemsSection from "./invoiceHelpers/invoice-items-section";
 import { FormDatePicker } from "@/components/ui/form/form-date-picker";
@@ -54,7 +55,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
         <form>
           <div className="flex h-14 flex-row items-center justify-between border-b px-4">
             <span className="text-sm font-medium">Invoice Template</span>
-            <div className="">
+            <div className="flex flex-row items-center gap-2">
+              <InvoiceFontSelector form={form} />
               <InvoiceTemplateSelector form={form} />
             </div>
           </div>
