@@ -5,6 +5,7 @@ import { GEIST_MONO_FONT, JETBRAINS_MONO_FONT, QUICKSAND_FONT } from "@/constant
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { Document, Page, Text, View, Image, Font } from "@react-pdf/renderer";
 import { getSubTotalValue, getTotalValue } from "@/constants/pdf-helpers";
+import { resolveBodyFontFamily } from "@/lib/invoice/resolve-pdf-font";
 import { formatCurrencyText } from "@/constants/currency";
 import { createTw } from "react-pdf-tailwind";
 import { toWords } from "number-to-words";
@@ -28,31 +29,36 @@ Font.register({
   fonts: JETBRAINS_MONO_FONT,
 });
 
-const tw = createTw({
-  theme: {
-    fontFamily: {
-      default: ["Quicksand"],
-      geistmono: ["GeistMono"],
-      jetbrainsmono: ["JetBrainsMono"],
-    },
-    extend: {
-      colors: {
-        darkmode: "#181818",
-      },
-      fontSize: {
-        "2xs": "0.625rem",
-        "3xs": "0.5rem",
-      },
-    },
-  },
-});
-
 // Invoice PDF Document component
 const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
   const darkMode = data.invoiceDetails.theme.mode === "dark";
   // Calculate totals
   const subtotal = getSubTotalValue(data);
   const total = getTotalValue(data);
+
+  // Built per-render so the body font follows the selected theme font and so a CJK
+  // fallback is appended only when the invoice actually contains Chinese (issue #48).
+  // Applied as an explicit fontFamily array on the Page below — react-pdf-tailwind only
+  // keeps the first family from a class, which would drop the CJK fallback.
+  const bodyFontFamily = resolveBodyFontFamily(data, "Quicksand");
+  const tw = createTw({
+    theme: {
+      fontFamily: {
+        default: bodyFontFamily,
+        geistmono: ["GeistMono"],
+        jetbrainsmono: ["JetBrainsMono"],
+      },
+      extend: {
+        colors: {
+          darkmode: "#181818",
+        },
+        fontSize: {
+          "2xs": "0.625rem",
+          "3xs": "0.5rem",
+        },
+      },
+    },
+  });
 
   return (
     <Document
@@ -63,7 +69,10 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
     >
       <Page
         size="A4"
-        style={tw(cn("p-6 font-default text-sm", darkMode ? "text-white bg-darkmode" : "text-black bg-white"))}
+        style={{
+          ...tw(cn("p-6 text-sm", darkMode ? "text-white bg-darkmode" : "text-black bg-white")),
+          fontFamily: bodyFontFamily,
+        }}
       >
         <View style={tw("flex flex-row")}>
           <View style={tw("text-2xl font-semibold font-geistmono tracking-tighter")}>

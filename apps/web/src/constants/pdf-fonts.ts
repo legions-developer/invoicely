@@ -177,3 +177,25 @@ export const JETBRAINS_MONO_FONT: PdfFont[] = [
     fontWeight: "light",
   },
 ];
+
+// Noto Sans SC — covers CJK (Mandarin) glyphs that the Latin fonts above lack.
+// Used as an automatic fallback for invoices containing Chinese characters (see issue #48).
+export const NOTO_SANS_SC_FONT: PdfFont[] = [
+  {
+    src: "/fonts/notosanssc/NotoSansSC-Regular.woff2",
+    fontWeight: "normal",
+  },
+];
+
+// Family name of the automatic CJK fallback (not user-selectable).
+export const CJK_FALLBACK_FAMILY = "NotoSansSC";
+
+// User-selectable body fonts for an invoice. The key is persisted on the invoice theme.
+export type InvoiceFontName = "quicksand" | "geist" | "inter" | "jetbrainsmono";
+
+export const INVOICE_BODY_FONTS: Record<InvoiceFontName, { label: string; family: string; fonts: PdfFont[] }> = {
+  quicksand: { label: "Quicksand", family: "Quicksand", fonts: QUICKSAND_FONT },
+  geist: { label: "Geist", family: "Geist", fonts: GEIST_FONT },
+  inter: { label: "Inter", family: "Inter", fonts: INTER_FONT },
+  jetbrainsmono: { label: "JetBrains Mono", family: "JetBrainsMono", fonts: JETBRAINS_MONO_FONT },
+};

@@ -4,6 +4,7 @@
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { Document, Page, Text, View, Image, Font } from "@react-pdf/renderer";
 import { getSubTotalValue, getTotalValue } from "@/constants/pdf-helpers";
+import { resolveBodyFontFamily } from "@/lib/invoice/resolve-pdf-font";
 import { GEIST_FONT, GEIST_MONO_FONT } from "@/constants/pdf-fonts";
 import { formatCurrencyText } from "@/constants/currency";
 import { createTw } from "react-pdf-tailwind";
@@ -23,29 +24,34 @@ Font.register({
   fonts: GEIST_FONT,
 });
 
-const tw = createTw({
-  theme: {
-    fontFamily: {
-      default: ["Geist"],
-      geistmono: ["GeistMono"],
-    },
-    extend: {
-      colors: {
-        background: "#0A0A0A",
-        borderColor: "#1c1c1c",
-      },
-      fontSize: {
-        "2xs": "0.625rem",
-        "3xs": "0.5rem",
-      },
-    },
-  },
-});
-
 // Invoice PDF Document component
 const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
   const subtotal = getSubTotalValue(data);
   const total = getTotalValue(data);
+
+  // Built per-render so the body font follows the selected theme font and so a CJK
+  // fallback is appended only when the invoice actually contains Chinese (issue #48).
+  // Applied as an explicit fontFamily array on the Page below — react-pdf-tailwind only
+  // keeps the first family from a class, which would drop the CJK fallback.
+  const bodyFontFamily = resolveBodyFontFamily(data, "Geist");
+  const tw = createTw({
+    theme: {
+      fontFamily: {
+        default: bodyFontFamily,
+        geistmono: ["GeistMono"],
+      },
+      extend: {
+        colors: {
+          background: "#0A0A0A",
+          borderColor: "#1c1c1c",
+        },
+        fontSize: {
+          "2xs": "0.625rem",
+          "3xs": "0.5rem",
+        },
+      },
+    },
+  });
 
   return (
     <Document
@@ -54,7 +60,13 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
       creator={data.companyDetails.name}
       producer="Invoicely"
     >
-      <Page size="A4" style={tw(cn("font-default text-sm text-black bg-background border border-borderColor"))}>
+      <Page
+        size="A4"
+        style={{
+          ...tw(cn("text-sm text-black bg-background border border-borderColor")),
+          fontFamily: bodyFontFamily,
+        }}
+      >
         <View style={tw("flex flex-row border-b border-borderColor p-4")}>
           <Text style={tw(cn("font-medium text-[40px] leading-[40px] tracking-tighter text-neutral-100"))}>
             {data.invoiceDetails.prefix}
