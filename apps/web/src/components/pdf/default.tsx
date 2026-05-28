@@ -174,6 +174,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
         {/* Items Table */}
         <View style={tw("mt-5 grow")}>
           <View
+            fixed
             style={[
               tw(
                 cn(
@@ -192,6 +193,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             {data.items.map((item, index) => (
               <View
                 key={index}
+                wrap={false}
                 style={tw(
                   cn(
                     "flex-row p-2 text-2xs rounded",
@@ -221,7 +223,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
           </View>
         </View>
         {/* Invoice meta data and pricing */}
-        <View style={tw("flex flex-row gap-[50px]")}>
+        <View wrap={false} style={tw("flex flex-row gap-[50px]")}>
           <View style={tw("flex flex-col gap-[15px] justify-end w-1/2")}>
             {/* Payment Information */}
             {data.metadata.paymentInformation.length ? (

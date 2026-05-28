@@ -148,8 +148,13 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
         {/* Items Table */}
         <View style={tw("grow")}>
           <View
+            fixed
             style={[
-              tw(cn("flex-row flex items-center px-4 py-2.5 text-sm text-neutral-100 border-b border-borderColor")),
+              tw(
+                cn(
+                  "flex-row flex items-center px-4 py-2.5 text-sm text-neutral-100 border-b border-borderColor bg-background",
+                ),
+              ),
             ]}
           >
             <Text style={tw("w-[60%]")}>Item</Text>
@@ -161,6 +166,7 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             {data.items.map((item, index) => (
               <View
                 key={index}
+                wrap={false}
                 style={tw(
                   cn(
                     "flex-row px-4 py-3 text-2xs border-b border-borderColor",
@@ -188,7 +194,7 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
           </View>
         </View>
         {/* Invoice meta data and pricing */}
-        <View style={tw("flex flex-row border-t border-borderColor")}>
+        <View wrap={false} style={tw("flex flex-row border-t border-borderColor")}>
           <View style={tw("flex flex-col w-1/2 border-r border-borderColor")}>
             {/* Payment Information */}
             {data.metadata.paymentInformation.length ? (
