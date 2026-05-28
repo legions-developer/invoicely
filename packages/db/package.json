@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
-    "drizzle-orm": "0.43.1",
+    "drizzle-orm": "0.45.2",
     "postgres": "3.4.5"
   },
   "scripts": {
@@ -19,7 +19,7 @@
     "@invoicely/utilities": "workspace:*",
     "@types/node": "22.13.8",
     "dotenv": "16.4.7",
-    "drizzle-kit": "0.31.1",
+    "drizzle-kit": "0.31.10",
     "typescript": "5.8.2"
   },
   "exports": {

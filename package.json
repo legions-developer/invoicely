@@ -41,23 +41,39 @@
     "prettier": "^3.5.3",
     "prettier-plugin-sort-imports": "^1.8.7",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "turbo": "^2.5.3",
+    "turbo": "^2.9.15",
     "typescript": "5.8.2"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.842.0",
+    "@aws-sdk/client-s3": "^3.1055.0",
     "@t3-oss/env-nextjs": "^0.13.4",
-    "@trpc/react-query": "^11.1.2",
-    "aws-sdk": "^2.1692.0",
+    "@trpc/react-query": "^11.17.0",
     "cookie": "^1.0.2",
     "decimal.js": "^10.5.0",
-    "drizzle-kit": "^0.31.1",
-    "effect": "^3.16.10"
+    "drizzle-kit": "^0.31.10",
+    "effect": "^3.21.2"
   },
   "resolutions": {
     "fast-xml-parser": "^4.5.4",
     "handlebars": "^4.7.9",
     "basic-ftp": "^5.3.1",
-    "form-data": "^4.0.4"
+    "form-data": "^4.0.4",
+    "axios": "^1.16.1",
+    "follow-redirects": "^1.16.0",
+    "kysely": "^0.28.17",
+    "defu": "^6.1.7",
+    "postcss": "^8.5.15",
+    "tar": "^7.5.8",
+    "tmp": "^0.2.6",
+    "flatted": "^3.4.2",
+    "preact": "^10.26.10",
+    "rollup": "^4.59.0",
+    "immutable": "^4.3.8",
+    "mdast-util-to-hast": "^13.2.1",
+    "serialize-javascript": "^7.0.5",
+    "@eslint/plugin-kit": "^0.3.4",
+    "playwright": "^1.55.1",
+    "tar-fs": "^2.1.4",
+    "yaml": "^2.8.3"
   }
 }

@@ -15,7 +15,7 @@
   "devDependencies": {
     "@invoicely/eslint-config": "workspace:*",
     "@invoicely/typescript-config": "workspace:*",
-    "@turbo/gen": "^2.5.0",
+    "@turbo/gen": "^2.9.15",
     "@types/node": "^22.15.3",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
