@@ -16,15 +16,15 @@ import {
 import { createInvoiceItemSchema, ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
 import { BoxIcon, BoxPlusIcon, TrashIcon } from "@/assets/icons";
-import { Reorder } from "motion/react";
 import { FormInput } from "@/components/ui/form/form-input";
+import { GripVerticalIcon, PencilIcon } from "lucide-react";
 import { formatCurrencyText } from "@/constants/currency";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormRow from "@/components/ui/form/form-row";
 import { Form } from "@/components/ui/form/form";
 import { Button } from "@/components/ui/button";
-import { GripVerticalIcon, PencilIcon } from "lucide-react";
 import React, { useState } from "react";
+import { Reorder } from "motion/react";
 
 interface InvoiceItemsSectionProps {
   form: UseFormReturn<ZodCreateInvoiceSchema>;

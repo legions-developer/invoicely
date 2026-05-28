@@ -1,8 +1,8 @@
-import InvoicePage from "./invoice";
+import CreateInvoice from "./createInvoice";
 import React from "react";
 
 const Page = () => {
-  return <InvoicePage />;
+  return <CreateInvoice />;
 };
 
 export default Page;
