@@ -16,13 +16,14 @@ import {
 import { createInvoiceItemSchema, ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
 import { BoxIcon, BoxPlusIcon, TrashIcon } from "@/assets/icons";
+import { Reorder } from "motion/react";
 import { FormInput } from "@/components/ui/form/form-input";
 import { formatCurrencyText } from "@/constants/currency";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormRow from "@/components/ui/form/form-row";
 import { Form } from "@/components/ui/form/form";
 import { Button } from "@/components/ui/button";
-import { PencilIcon } from "lucide-react";
+import { GripVerticalIcon, PencilIcon } from "lucide-react";
 import React, { useState } from "react";
 
 interface InvoiceItemsSectionProps {
@@ -31,19 +32,37 @@ interface InvoiceItemsSectionProps {
 type InvoiceItem = ZodCreateInvoiceSchema["items"][number];
 
 const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
-  const { fields, append, remove, update } = useFieldArray({
+  const { fields, append, remove, update, move } = useFieldArray({
     control: form.control,
     name: "items",
   });
+
+  const onReorder = (newIds: string[]) => {
+    const oldIds = fields.map((field) => field.id);
+    const reorder = getSingleMove(oldIds, newIds);
+    if (reorder) move(reorder.from, reorder.to);
+  };
 
   return (
     <div className="flex flex-col gap-2">
       {/* Rendering the items */}
       {fields.length > 0 && (
-        <div className="flex flex-col gap-2">
+        <Reorder.Group
+          axis="y"
+          values={fields.map((field) => field.id)}
+          onReorder={onReorder}
+          className="flex flex-col gap-2"
+        >
           {fields.map((field, index) => (
-            <div className="bg-muted/50 flex w-full flex-row justify-between gap-2 rounded-md p-3" key={field.id}>
+            <Reorder.Item
+              value={field.id}
+              key={field.id}
+              className="bg-muted/50 flex w-full cursor-grab flex-row justify-between gap-2 rounded-md p-3 active:cursor-grabbing"
+            >
               <div className="flex w-full flex-row gap-2">
+                <div className="text-muted-foreground grid h-full place-items-center">
+                  <GripVerticalIcon className="size-4" />
+                </div>
                 <div className="bg-muted-foreground/20 grid aspect-square h-full place-items-center rounded-md">
                   <BoxIcon />
                 </div>
@@ -88,9 +107,9 @@ const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </Reorder.Item>
           ))}
-        </div>
+        </Reorder.Group>
       )}
       {/* Dialog for adding a new item */}
       <HandleItemModal type="add" append={append} update={update}>
@@ -104,6 +123,20 @@ const InvoiceItemsSection: React.FC<InvoiceItemsSectionProps> = ({ form }) => {
 };
 
 export default InvoiceItemsSection;
+
+// Derives a single move(from, to) from the old vs new id ordering produced by a drag.
+const getSingleMove = (oldIds: string[], newIds: string[]): { from: number; to: number } | null => {
+  let start = 0;
+  while (start < oldIds.length && oldIds[start] === newIds[start]) start++;
+
+  let end = oldIds.length - 1;
+  while (end >= 0 && oldIds[end] === newIds[end]) end--;
+
+  if (start > end) return null;
+
+  // Forward move if the element at `start` slid down to `end`, otherwise backward.
+  return oldIds[start] === newIds[end] ? { from: start, to: end } : { from: end, to: start };
+};
 
 interface AddItemModalProps {
   type: "add" | "edit";
