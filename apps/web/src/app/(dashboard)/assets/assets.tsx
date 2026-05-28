@@ -134,6 +134,25 @@ const AssetsPage = () => {
         defaultValue={[typeOfImages[0].key, typeOfImages[1].key, "details"]}
         className="w-full divide-y border-b"
       >
+        <AccordionItem value="details">
+          <AccordionTrigger>
+            <div className="flex items-center gap-2">
+              <IdBadgeIcon />
+              <span>Default Details</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div>
+              <div className="instrument-serif text-xl font-bold">Default Details</div>
+              <p className="text-muted-foreground text-xs">
+                Save your company and client details once to pre-fill every new invoice. Stored on your device.
+              </p>
+            </div>
+            <div className="mt-4">
+              <DefaultDetails />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
         {typeOfImages.map((type) => (
           <AccordionItem key={type.key} value={type.key}>
             <AccordionTrigger>
@@ -219,25 +238,6 @@ const AssetsPage = () => {
             </AccordionContent>
           </AccordionItem>
         ))}
-        <AccordionItem value="details">
-          <AccordionTrigger>
-            <div className="flex items-center gap-2">
-              <IdBadgeIcon />
-              <span>Default Details</span>
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div>
-              <div className="instrument-serif text-xl font-bold">Default Details</div>
-              <p className="text-muted-foreground text-xs">
-                Save your company and client details once to pre-fill every new invoice. Stored on your device.
-              </p>
-            </div>
-            <div className="mt-4">
-              <DefaultDetails />
-            </div>
-          </AccordionContent>
-        </AccordionItem>
       </Accordion>
     </div>
   );
