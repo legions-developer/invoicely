@@ -48,6 +48,7 @@ Authenticated users can **migrate** local invoices into Postgres via the `invoic
 ### tRPC layer (note: "services", not "routers")
 
 `apps/web/src/trpc`:
+
 - `init.ts` — defines `baseProcedure`, `createTRPCRouter`, `middleware`; uses a superjson transformer.
 - `procedures/authorizedProcedure.ts` — `baseProcedure` + `betterAuthMiddleware`, which injects `ctx.auth` (the Better Auth session) or throws `UNAUTHORIZED`.
 - `middlewares/awsS3Middleware.ts` — injects `ctx.s3` (Cloudflare R2 via the S3 client) for storage procedures.
