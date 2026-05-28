@@ -1,14 +1,15 @@
 "use client";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ImageSparkleIcon, SignatureIcon, TrashIcon, IdBadgeIcon } from "@/assets/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ImageSparkleIcon, SignatureIcon, TrashIcon } from "@/assets/icons";
 import { getImagesWithKey } from "@/lib/manage-assets/getImagesWithKey";
 import { deleteImageFromIDB } from "@/lib/indexdb-queries/deleteImage";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
 import { getAllImages } from "@/lib/indexdb-queries/getAllImages";
 import EmptySection from "@/components/ui/icon-placeholder";
 import UploadSignatureAsset from "./upload-signature.asset";
+import { DefaultDetails } from "./default-details";
 import UploadLogoAsset from "./upload-logo-asset";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/client-auth";
@@ -130,9 +131,28 @@ const AssetsPage = () => {
     <div>
       <Accordion
         type="multiple"
-        defaultValue={[typeOfImages[0].key, typeOfImages[1].key]}
+        defaultValue={[typeOfImages[0].key, typeOfImages[1].key, "details"]}
         className="w-full divide-y border-b"
       >
+        <AccordionItem value="details">
+          <AccordionTrigger>
+            <div className="flex items-center gap-2">
+              <IdBadgeIcon />
+              <span>Default Details</span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div>
+              <div className="instrument-serif text-xl font-bold">Default Details</div>
+              <p className="text-muted-foreground text-xs">
+                Save your company and client details once to pre-fill every new invoice. Stored on your device.
+              </p>
+            </div>
+            <div className="mt-4">
+              <DefaultDetails />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
         {typeOfImages.map((type) => (
           <AccordionItem key={type.key} value={type.key}>
             <AccordionTrigger>

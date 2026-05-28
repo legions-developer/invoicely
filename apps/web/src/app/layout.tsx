@@ -1,12 +1,4 @@
 import {
-  ReactScanProvider,
-  JotaiProvider,
-  PostHogProvider,
-  OneDollarStatsProvider,
-  OpenPanelProvider,
-  TanstackProvider,
-} from "@/providers";
-import {
   Geist,
   Geist_Mono,
   JetBrains_Mono,
@@ -15,6 +7,7 @@ import {
   Urbanist,
   Bricolage_Grotesque,
 } from "next/font/google";
+import { ReactScanProvider, JotaiProvider, PostHogProvider, OpenPanelProvider, TanstackProvider } from "@/providers";
 import { defaultWebsiteMetadata, defaultWebsiteViewport } from "@/constants/meta-data";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { TOAST_ICONS, TOAST_OPTIONS } from "@/constants/toast";
@@ -96,29 +89,27 @@ export default function RootLayout({
           <TRPCProvider>
             <PostHogProvider>
               <OpenPanelProvider>
-                <OneDollarStatsProvider>
-                  <JotaiProvider>
-                    <ThemeProvider
-                      defaultTheme="system"
-                      attribute="class"
-                      scriptProps={{
-                        "data-cfasync": "false",
-                      }}
-                    >
-                      <ReactScanProvider />
-                      <ReactScanProvider />
-                      <VercelAnalytics />
-                      <Toaster
-                        richColors
-                        position="top-center"
-                        toastOptions={TOAST_OPTIONS}
-                        icons={TOAST_ICONS}
-                        visibleToasts={4}
-                      />
-                      {children}
-                    </ThemeProvider>
-                  </JotaiProvider>
-                </OneDollarStatsProvider>
+                <JotaiProvider>
+                  <ThemeProvider
+                    defaultTheme="system"
+                    attribute="class"
+                    scriptProps={{
+                      "data-cfasync": "false",
+                    }}
+                  >
+                    <ReactScanProvider />
+                    <ReactScanProvider />
+                    <VercelAnalytics />
+                    <Toaster
+                      richColors
+                      position="top-center"
+                      toastOptions={TOAST_OPTIONS}
+                      icons={TOAST_ICONS}
+                      visibleToasts={4}
+                    />
+                    {children}
+                  </ThemeProvider>
+                </JotaiProvider>
               </OpenPanelProvider>
             </PostHogProvider>
           </TRPCProvider>
