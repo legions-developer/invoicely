@@ -7,6 +7,8 @@ export const enum SUCCESS_MESSAGES {
   IMAGE_UPLOADED = "Image uploaded successfully",
   FETCHING_INVOICE = "Fetching invoice...",
   FETCHING_INVOICE_DESCRIPTION = "Please wait while we fetch the invoice.",
+  PREPARING_INVOICE = "Preparing invoice...",
+  PREPARING_INVOICE_DESCRIPTION = "Please wait while we set up your next invoice number.",
   INVOICE_EDITED = "Invoice edited successfully",
   INVOICE_EDITED_DESCRIPTION = "Invoice edited successfully in Database",
   INVOICE_SAVED = "Invoice saved successfully",
