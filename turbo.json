@@ -6,7 +6,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
@@ -36,6 +36,10 @@
     "check-types": {
       "dependsOn": ["^check-types"],
       "outputs": [".content-collections/**", "tsconfig.tsbuildinfo"]
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": []
     },
 
     "db:check": {

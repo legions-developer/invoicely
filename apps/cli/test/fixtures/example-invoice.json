@@ -1,0 +1,40 @@
+{
+  "companyDetails": {
+    "name": "Example Studio",
+    "address": "100 Example Avenue, Sample City",
+    "metadata": [{ "label": "Tax ID", "value": "EXAMPLE-100" }]
+  },
+  "clientDetails": {
+    "name": "Sample Customer",
+    "address": "200 Demo Street, Fixture Town",
+    "metadata": [{ "label": "Reference", "value": "SYNTHETIC-42" }]
+  },
+  "invoiceDetails": {
+    "theme": {
+      "baseColor": "#635CFF",
+      "mode": "light",
+      "template": "default",
+      "font": "quicksand"
+    },
+    "currency": "USD",
+    "prefix": "EX-",
+    "serialNumber": "0042",
+    "date": "2026-02-03T00:00:00.000Z",
+    "dueDate": "2026-02-17T00:00:00.000Z",
+    "paymentTerms": "Due within 14 days",
+    "billingDetails": [{ "label": "Tax", "value": 10, "type": "percentage" }]
+  },
+  "items": [
+    {
+      "name": "Design service",
+      "description": "Synthetic fixture line item",
+      "quantity": 2,
+      "unitPrice": 125.5
+    }
+  ],
+  "metadata": {
+    "notes": "Synthetic fixture invoice",
+    "terms": "Synthetic fixture terms",
+    "paymentInformation": [{ "label": "Method", "value": "Test transfer" }]
+  }
+}

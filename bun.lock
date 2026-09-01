@@ -19,6 +19,26 @@
         "typescript": "5.8.2",
       },
     },
+    "apps/cli": {
+      "name": "@invoicely/cli",
+      "version": "0.0.1",
+      "bin": {
+        "invoicely": "./src/bin.ts",
+      },
+      "dependencies": {
+        "@invoicely/db": "workspace:*",
+        "@invoicely/invoice-core": "workspace:*",
+        "@invoicely/invoice-pdf": "workspace:*",
+      },
+      "devDependencies": {
+        "@invoicely/eslint-config": "workspace:*",
+        "@invoicely/typescript-config": "workspace:*",
+        "@types/bun": "^1.4.0",
+        "@types/node": "^22.15.3",
+        "eslint": "^9.25.0",
+        "typescript": "5.8.2",
+      },
+    },
     "apps/web": {
       "name": "web",
       "version": "0.1.0",
@@ -560,6 +580,8 @@
     "@inquirer/select": ["@inquirer/select@4.4.2", "", { "dependencies": { "@inquirer/ansi": "1.0.2", "@inquirer/core": "10.3.2", "@inquirer/figures": "1.0.15", "@inquirer/type": "3.0.10", "yoctocolors-cjs": "2.1.3" }, "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-l4xMuJo55MAe+N7Qr4rX90vypFwCajSakx59qe/tMaC1aEHWLyw68wF4o0A4SLAY4E0nd+Vt+EyskeDIqu1M6w=="],
 
     "@inquirer/type": ["@inquirer/type@3.0.10", "", { "peerDependencies": { "@types/node": ">=18" }, "optionalPeers": ["@types/node"] }, "sha512-BvziSRxfz5Ov8ch0z/n3oijRSEcEsHnhggm4xFZe93DHcUCTlutlq9Ox4SVENAfcRD22UQq7T/atg9Wr3k09eA=="],
+
+    "@invoicely/cli": ["@invoicely/cli@workspace:apps/cli"],
 
     "@invoicely/db": ["@invoicely/db@workspace:packages/db"],
 

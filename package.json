@@ -25,6 +25,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "invoice": "bun run apps/cli/src/bin.ts",
     "db:check": "dotenv -- turbo run db:check",
     "db:generate": "dotenv -- turbo run db:generate",
     "db:migrate": "dotenv -- turbo run db:migrate",

@@ -1,0 +1,16 @@
+{
+  "clientDetails": {
+    "name": "Sample Customer",
+    "address": "Fixture Town",
+    "metadata": []
+  },
+  "items": [
+    {
+      "name": "Invalid service",
+      "description": "Negative prices are rejected",
+      "quantity": 1,
+      "unitPrice": -1
+    }
+  ],
+  "date": "not-a-date"
+}

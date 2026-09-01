@@ -1,0 +1,28 @@
+{
+  "name": "@invoicely/cli",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "invoicely": "./src/bin.ts"
+  },
+  "scripts": {
+    "build": "bun build src/bin.ts --target=bun --outdir=dist",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@invoicely/db": "workspace:*",
+    "@invoicely/invoice-core": "workspace:*",
+    "@invoicely/invoice-pdf": "workspace:*"
+  },
+  "devDependencies": {
+    "@invoicely/eslint-config": "workspace:*",
+    "@invoicely/typescript-config": "workspace:*",
+    "@types/bun": "^1.4.0",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.25.0",
+    "typescript": "5.8.2"
+  }
+}

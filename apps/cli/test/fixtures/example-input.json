@@ -1,0 +1,17 @@
+{
+  "clientDetails": {
+    "name": "Sample Customer",
+    "address": "200 Demo Street, Fixture Town",
+    "metadata": [{ "label": "Reference", "value": "SYNTHETIC-42" }]
+  },
+  "items": [
+    {
+      "name": "Design service",
+      "description": "Synthetic fixture line item",
+      "quantity": 2,
+      "unitPrice": 125.5
+    }
+  ],
+  "date": "2026-02-03T00:00:00.000Z",
+  "dueDate": "2026-02-17T00:00:00.000Z"
+}
