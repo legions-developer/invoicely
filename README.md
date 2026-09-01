@@ -14,7 +14,7 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 ### Prerequisites
 
 - **Node.js**: Version 20 or higher
-- **Yarn**: Version 4.9.1 or higher (automatically managed via `packageManager` field)
+- **Bun**: Version 1.4.0 (pinned by the `packageManager` field)
 - **PostgreSQL**: Database for storing application data
 
 ### Installation
@@ -29,7 +29,7 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 2. **Install dependencies**
 
    ```bash
-   yarn install
+   bun install --frozen-lockfile
    ```
 
 3. **Set up environment variables**
@@ -39,22 +39,22 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
    cp .env.example .env
 
    # Create symlinks for environment variables across apps
-   yarn sys-link
+   bun run sys-link
    ```
 
 4. **Set up the database**
 
    ```bash
    # Generate database schema
-   yarn db:generate
+   bun run db:generate
 
    # Run database migrations
-   yarn db:migrate
+   bun run db:migrate
    ```
 
 5. **Start development server**
    ```bash
-   yarn dev
+   bun run dev
    ```
 
 ## 🛠️ Tech Stack
@@ -149,7 +149,7 @@ invoicely/
 ├── env-links.sh            # Environment symlink script
 ├── turbo.json             # Turbo configuration
 ├── package.json           # Root package configuration
-└── yarn.lock             # Dependency lock file
+└── bun.lock              # Dependency lock file
 ```
 
 ## 🔧 Environment Variables
@@ -186,7 +186,7 @@ NEXT_PUBLIC_TRPC_BASE_URL="http://localhost:3000/api/trpc"
 
 The project uses a symlink-based approach for environment management:
 
-- Run `yarn sys-link` to create symlinks from the root `.env` file to all apps
+- Run `bun run sys-link` to create symlinks from the root `.env` file to all apps
 - This ensures consistent environment variables across the monorepo
 - Environment variables are validated using `@t3-oss/env-nextjs` and Zod
 
@@ -195,32 +195,32 @@ The project uses a symlink-based approach for environment management:
 ### Root Level Scripts
 
 ```bash
-yarn dev              # Start development servers for all apps
-yarn build            # Build all apps for production
-yarn start            # Start production servers
-yarn lint             # Lint all packages
-yarn lint:fix         # Fix linting issues
-yarn format           # Format code with Prettier
-yarn check-types      # Type check all packages
+bun run dev              # Start development servers for all apps
+bun run build            # Build all apps for production
+bun run start            # Start production servers
+bun run lint             # Lint all packages
+bun run lint:fix         # Fix linting issues
+bun run format           # Format code with Prettier
+bun run check-types      # Type check all packages
 
 # Database Operations
-yarn db:generate      # Generate database schema
-yarn db:migrate       # Run database migrations
-yarn db:push          # Push schema changes to database
-yarn db:studio        # Open Drizzle Studio
+bun run db:generate      # Generate database schema
+bun run db:migrate       # Run database migrations
+bun run db:push          # Push schema changes to database
+bun run db:studio        # Open Drizzle Studio
 
 # Utility Scripts
-yarn sys-link         # Create environment symlinks
-yarn reset-repo       # Clean all build artifacts
+bun run sys-link         # Create environment symlinks
+bun run reset-repo       # Clean all build artifacts
 ```
 
 ### App-Specific Scripts (apps/web)
 
 ```bash
-yarn dev              # Start Next.js development server
-yarn build            # Build for production
-yarn start            # Start production server
-yarn lint             # Lint the web app
+bun run dev              # Start Next.js development server
+bun run build            # Build for production
+bun run start            # Start production server
+bun run lint             # Lint the web app
 ```
 
 ## 🎯 Naming Conventions
