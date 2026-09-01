@@ -19,6 +19,7 @@ bun run check-types    # Type-check via turbo
 bun run db:up          # Start local PostgreSQL 17 + Adminer and wait for health
 bun run db:down        # Stop local database services without deleting data
 bun run db:logs        # Follow local PostgreSQL logs
+bun run db:check       # Verify application-level database connectivity
 bun run db:generate    # Generate SQL migrations from schema changes
 bun run db:migrate     # Apply migrations
 bun run db:push        # Push schema directly (dev only)
@@ -36,7 +37,7 @@ Environment variables live in a single root `.env`. Run `bun run sys-link` to sy
 Bun 1.4 workspaces + Turborepo monorepo:
 
 - `apps/web` — the Next.js 15 App Router application (the only app)
-- `packages/db` — Drizzle ORM schema, migrations, and the Neon Postgres client (`@invoicely/db`)
+- `packages/db` — Drizzle ORM schema, migrations, and the Postgres.js client (`@invoicely/db`)
 - `packages/utilities` — shared env config (`@invoicely/utilities`)
 - `packages/eslint-config`, `packages/typescript-config` — shared config
 

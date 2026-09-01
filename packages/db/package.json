@@ -3,13 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.0",
-    "@invoicely/utilities": "workspace:*",
     "decimal.js": "^10.5.0",
     "drizzle-orm": "0.45.2",
     "postgres": "3.4.5"
   },
   "scripts": {
+    "db:check": "bun run scripts/check-connection.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",

@@ -37,6 +37,11 @@
       "outputs": [".content-collections/**", "tsconfig.tsbuildinfo"]
     },
 
+    "db:check": {
+      "cache": false,
+      "env": ["DATABASE_URL"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
     "db:generate": {
       "cache": false,
       "env": ["DATABASE_URL"],

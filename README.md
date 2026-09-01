@@ -207,6 +207,7 @@ bun run check-types      # Type check all packages
 bun run db:up            # Start PostgreSQL and Adminer and wait for health
 bun run db:down          # Stop local services without deleting data
 bun run db:logs          # Follow PostgreSQL logs
+bun run db:check         # Verify application-level database connectivity
 bun run db:generate      # Generate database schema
 bun run db:migrate       # Run database migrations
 bun run db:push          # Push schema changes to database
