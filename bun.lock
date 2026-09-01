@@ -133,6 +133,7 @@
         "@types/node": "22.13.8",
         "dotenv": "16.4.7",
         "drizzle-kit": "0.31.10",
+        "eslint": "^9.25.0",
         "typescript": "5.8.2",
       },
     },

@@ -1,0 +1,9 @@
+{
+  "extends": "@invoicely/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "scripts/**/*.ts"]
+}

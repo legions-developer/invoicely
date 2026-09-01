@@ -1,5 +1,6 @@
 {
   "$schema": "https://turborepo.com/schema.json",
+  "globalEnv": ["INVOICELY_ALLOW_REMOTE_TEMPLATES", "NODE_ENV"],
   "ui": "tui",
   "tasks": {
     "build": {

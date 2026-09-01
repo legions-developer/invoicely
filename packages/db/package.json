@@ -9,11 +9,13 @@
     "postgres": "3.4.5"
   },
   "scripts": {
+    "check-types": "tsc --noEmit",
     "db:check": "bun run scripts/check-connection.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@invoicely/eslint-config": "workspace:*",
@@ -21,10 +23,12 @@
     "@types/node": "22.13.8",
     "dotenv": "16.4.7",
     "drizzle-kit": "0.31.10",
+    "eslint": "^9.25.0",
     "typescript": "5.8.2"
   },
   "exports": {
     ".": "./src/index.ts",
+    "./local-invoice-templates": "./src/local-invoice-templates.ts",
     "./schema/*": "./src/schema/*.ts"
   }
 }
