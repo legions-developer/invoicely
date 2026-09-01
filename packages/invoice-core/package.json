@@ -1,0 +1,26 @@
+{
+  "name": "@invoicely/invoice-core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "decimal.js": "^10.5.0",
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "@invoicely/eslint-config": "workspace:*",
+    "@invoicely/typescript-config": "workspace:*",
+    "@types/bun": "^1.4.0",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.25.0",
+    "typescript": "5.8.2"
+  }
+}

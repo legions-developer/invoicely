@@ -1,4 +1,5 @@
 import { createInvoiceSchemaDefaultValues } from "@/zod-schemas/invoice/create-invoice";
+import { incrementSerialNumber } from "@invoicely/invoice-core";
 
 interface InvoiceSerialSource {
   createdAt: Date;
@@ -14,23 +15,6 @@ export interface NextInvoiceNumber {
   prefix: string;
   serialNumber: string;
 }
-
-/**
- * Increment the trailing run of digits in a serial number while preserving any
- * leading text and the zero-padding width, e.g. "0001" -> "0002",
- * "2025-009" -> "2025-010", "INV-0099" -> "INV-0100".
- */
-const incrementSerialNumber = (serialNumber: string): string => {
-  const match = serialNumber.match(/^(.*?)(\d+)(\D*)$/);
-
-  // Non-numeric serial number ~ start a fresh sequence from the default.
-  if (!match) return createInvoiceSchemaDefaultValues.invoiceDetails.serialNumber;
-
-  const [, leading, digits, trailing] = match;
-  const next = (Number(digits) + 1).toString().padStart(digits.length, "0");
-
-  return `${leading}${next}${trailing}`;
-};
 
 /**
  * Derive the invoice number for a new invoice from the most recently created
@@ -52,6 +36,6 @@ export const getNextInvoiceNumber = (invoices: InvoiceSerialSource[]): NextInvoi
 
   return {
     prefix: latest.invoiceFields.invoiceDetails.prefix,
-    serialNumber: incrementSerialNumber(latest.invoiceFields.invoiceDetails.serialNumber),
+    serialNumber: incrementSerialNumber(latest.invoiceFields.invoiceDetails.serialNumber, defaults.serialNumber),
   };
 };

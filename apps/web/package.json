@@ -14,6 +14,7 @@
     "@aws-sdk/client-s3": "^3.1055.0",
     "@hookform/resolvers": "^5.0.1",
     "@invoicely/db": "workspace:*",
+    "@invoicely/invoice-core": "workspace:*",
     "@invoicely/utilities": "workspace:*",
     "@mantine/hooks": "^8.0.1",
     "@number-flow/react": "^0.5.9",
