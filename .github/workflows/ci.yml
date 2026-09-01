@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BETTER_AUTH_SECRET: ci-only-secret-at-least-32-characters
+      BETTER_AUTH_URL: http://localhost:3000
+      CF_R2_ACCESS_KEY_ID: ci-access-key
+      CF_R2_BUCKET_NAME: invoicely-ci
+      CF_R2_ENDPOINT: https://example.invalid
+      CF_R2_PUBLIC_DOMAIN: https://example.invalid
+      CF_R2_SECRET_ACCESS_KEY: ci-secret-key
+      DATABASE_URL: postgresql://invoicely:invoicely@127.0.0.1:55432/invoicely
+      GOOGLE_CLIENT_ID: ci-client
+      GOOGLE_CLIENT_SECRET: ci-secret
+      NEXT_PUBLIC_BASE_URL: http://localhost:3000
+      NEXT_PUBLIC_POSTHOG_HOST: https://example.invalid
+      NEXT_PUBLIC_POSTHOG_KEY: ci-key
+      NEXT_PUBLIC_TRPC_BASE_URL: http://localhost:3000/api/trpc
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.0
+
+      - name: Install dependencies
+        run: bun ci
+        env:
+          HUSKY: 0
+
+      - name: Check types
+        run: bun run check-types
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Build
+        run: bun run build
