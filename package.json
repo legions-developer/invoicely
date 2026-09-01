@@ -28,7 +28,10 @@
     "db:generate": "dotenv -- turbo run db:generate",
     "db:migrate": "dotenv -- turbo run db:migrate",
     "db:push": "dotenv -- turbo run db:push",
-    "db:studio": "dotenv -- turbo run db:studio"
+    "db:studio": "dotenv -- turbo run db:studio",
+    "db:up": "docker compose up --detach --wait postgres adminer",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs --follow postgres"
   },
   "devDependencies": {
     "@effect/language-service": "^0.23.3",

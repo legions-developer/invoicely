@@ -3,6 +3,9 @@
 # Dependencies
 node_modules
 
+# Local Docker data
+.docker-container-volumes/
+
 # Local env files
 .env
 .env.local

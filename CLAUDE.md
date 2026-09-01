@@ -15,7 +15,10 @@ bun run lint:fix       # eslint . --fix
 bun run format         # prettier --write across the repo
 bun run check-types    # Type-check via turbo
 
-# Database (Drizzle + Neon Postgres) — all read DATABASE_URL via dotenv-cli
+# Database (Drizzle + PostgreSQL) — all read DATABASE_URL via dotenv-cli
+bun run db:up          # Start local PostgreSQL 17 + Adminer and wait for health
+bun run db:down        # Stop local database services without deleting data
+bun run db:logs        # Follow local PostgreSQL logs
 bun run db:generate    # Generate SQL migrations from schema changes
 bun run db:migrate     # Apply migrations
 bun run db:push        # Push schema directly (dev only)

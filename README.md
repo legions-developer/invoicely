@@ -15,7 +15,7 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 
 - **Node.js**: Version 20 or higher
 - **Bun**: Version 1.4.0 (pinned by the `packageManager` field)
-- **PostgreSQL**: Database for storing application data
+- **Docker**: Current Docker Desktop, OrbStack, or another Compose-compatible engine
 
 ### Installation
 
@@ -45,10 +45,8 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 4. **Set up the database**
 
    ```bash
-   # Generate database schema
-   bun run db:generate
-
-   # Run database migrations
+   # Start PostgreSQL 17 and Adminer, then run the committed migrations
+   bun run db:up
    bun run db:migrate
    ```
 
@@ -84,7 +82,7 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 ### Database & Authentication
 
 - **Drizzle ORM 0.43.1** - Type-safe database ORM
-- **Neon Database** - Serverless PostgreSQL
+- **PostgreSQL 17** - Local Docker development and hosted PostgreSQL support
 - **Better Auth 1.2.8** - Modern authentication library
 - **Google OAuth** - Social authentication
 
@@ -157,8 +155,8 @@ invoicely/
 Create a `.env` file in the root directory with the following variables:
 
 ```bash
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/invoicely"
+# Local database from docker-compose.yml
+DATABASE_URL="postgresql://invoicely:invoicely@127.0.0.1:55432/invoicely"
 
 # Authentication
 BETTER_AUTH_SECRET="your-secret-key"
@@ -189,6 +187,8 @@ The project uses a symlink-based approach for environment management:
 - Run `bun run sys-link` to create symlinks from the root `.env` file to all apps
 - This ensures consistent environment variables across the monorepo
 - Environment variables are validated using `@t3-oss/env-nextjs` and Zod
+- PostgreSQL listens on `127.0.0.1:55432`; Adminer is available at `http://localhost:58080`
+- In Adminer, use system `PostgreSQL`, server `postgres`, username/password `invoicely`, and database `invoicely`
 
 ## 📜 Available Scripts
 
@@ -204,6 +204,9 @@ bun run format           # Format code with Prettier
 bun run check-types      # Type check all packages
 
 # Database Operations
+bun run db:up            # Start PostgreSQL and Adminer and wait for health
+bun run db:down          # Stop local services without deleting data
+bun run db:logs          # Follow PostgreSQL logs
 bun run db:generate      # Generate database schema
 bun run db:migrate       # Run database migrations
 bun run db:push          # Push schema changes to database
