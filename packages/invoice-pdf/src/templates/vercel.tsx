@@ -1,31 +1,23 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 
-import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { Document, Page, Text, View, Image, Font } from "@react-pdf/renderer";
-import { getSubTotalValue, getTotalValue } from "@/constants/pdf-helpers";
-import { resolveBodyFontFamily } from "@/lib/invoice/resolve-pdf-font";
-import { GEIST_FONT, GEIST_MONO_FONT } from "@/constants/pdf-fonts";
-import { formatCurrencyText } from "@/constants/currency";
+import { getSubTotalValue, getTotalValue } from "@invoicely/invoice-core";
+import type { ZodCreateInvoiceSchema } from "@invoicely/invoice-core";
+import { resolveBodyFontFamily } from "../resolve-pdf-font";
+import { GEIST_FONT, GEIST_MONO_FONT } from "../fonts";
+import { formatCurrencyText } from "../currency";
 import { createTw } from "react-pdf-tailwind";
 import { toWords } from "number-to-words";
+import { cn } from "../class-names";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import React from "react";
-
-// Register fonts
-Font.register({
-  family: "GeistMono",
-  fonts: GEIST_MONO_FONT,
-});
-
-Font.register({
-  family: "Geist",
-  fonts: GEIST_FONT,
-});
+import type { FC } from "react";
 
 // Invoice PDF Document component
-const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
+const VercelPDF: FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
+  Font.register({ family: "GeistMono", fonts: GEIST_MONO_FONT });
+  Font.register({ family: "Geist", fonts: GEIST_FONT });
+
   const subtotal = getSubTotalValue(data);
   const total = getTotalValue(data);
 
@@ -288,4 +280,4 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
   );
 };
 
-export default VercelPdf;
+export { VercelPDF };

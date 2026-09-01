@@ -1,12 +1,12 @@
+import { DefaultPDF, VercelPDF, type InvoicePdfTemplateName } from "@invoicely/invoice-pdf";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { FormSelect } from "@/components/ui/form/form-select";
-import { DefaultPDF, VercelPDF } from "@/components/pdf";
 import { SelectItem } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { TriangleIcon } from "lucide-react";
 import { BoxIcon } from "@/assets/icons";
 
-export type PdfTemplateName = "default" | "vercel" | undefined;
+export type PdfTemplateName = InvoicePdfTemplateName;
 
 interface PdfTemplate {
   name: PdfTemplateName;

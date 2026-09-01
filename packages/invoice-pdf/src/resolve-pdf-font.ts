@@ -1,5 +1,5 @@
-import { CJK_FALLBACK_FAMILY, INVOICE_BODY_FONTS, NOTO_SANS_SC_FONT } from "@/constants/pdf-fonts";
-import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
+import { CJK_FALLBACK_FAMILY, INVOICE_BODY_FONTS, NOTO_SANS_SC_FONT } from "./fonts";
+import type { ZodCreateInvoiceSchema } from "@invoicely/invoice-core";
 import { Font } from "@react-pdf/renderer";
 
 // CJK radicals/symbols through Unified Ideographs (+ Ext A), compatibility ideographs,

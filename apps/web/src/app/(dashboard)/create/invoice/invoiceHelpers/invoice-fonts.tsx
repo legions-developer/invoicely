@@ -1,5 +1,5 @@
+import { INVOICE_BODY_FONTS, type InvoiceFontName } from "@invoicely/invoice-pdf";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
-import { INVOICE_BODY_FONTS, InvoiceFontName } from "@/constants/pdf-fonts";
 import { FormSelect } from "@/components/ui/form/form-select";
 import { SelectItem } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";

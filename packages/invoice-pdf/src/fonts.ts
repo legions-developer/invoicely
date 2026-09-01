@@ -1,3 +1,4 @@
+import type { InvoiceFontName } from "@invoicely/invoice-core";
 import type { FontSource$1 as PdfFont } from "@react-pdf/font";
 
 export const INTER_FONT: PdfFont[] = [
@@ -191,11 +192,35 @@ export const NOTO_SANS_SC_FONT: PdfFont[] = [
 export const CJK_FALLBACK_FAMILY = "NotoSansSC";
 
 // User-selectable body fonts for an invoice. The key is persisted on the invoice theme.
-export type InvoiceFontName = "quicksand" | "geist" | "inter" | "jetbrainsmono";
-
 export const INVOICE_BODY_FONTS: Record<InvoiceFontName, { label: string; family: string; fonts: PdfFont[] }> = {
   quicksand: { label: "Quicksand", family: "Quicksand", fonts: QUICKSAND_FONT },
   geist: { label: "Geist", family: "Geist", fonts: GEIST_FONT },
   inter: { label: "Inter", family: "Inter", fonts: INTER_FONT },
   jetbrainsmono: { label: "JetBrains Mono", family: "JetBrainsMono", fonts: JETBRAINS_MONO_FONT },
 };
+
+const allFontSources = [
+  ...INTER_FONT,
+  ...GEIST_MONO_FONT,
+  ...GEIST_FONT,
+  ...QUICKSAND_FONT,
+  ...JETBRAINS_MONO_FONT,
+  ...NOTO_SANS_SC_FONT,
+];
+const fontRelativeSources = new Map(
+  allFontSources.map((font) => [font, typeof font.src === "string" ? font.src : undefined]),
+);
+
+export function configureInvoicePdfFontDirectory(directory: string): void {
+  const normalizedDirectory = directory.replace(/\/$/, "");
+
+  for (const font of allFontSources) {
+    const relativeSource = fontRelativeSources.get(font);
+
+    if (relativeSource?.startsWith("/fonts/")) {
+      font.src = `${normalizedDirectory}/${relativeSource.slice("/fonts/".length)}`;
+    }
+  }
+}
+
+export type { InvoiceFontName } from "@invoicely/invoice-core";

@@ -1,0 +1,34 @@
+{
+  "name": "@invoicely/invoice-pdf",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browser": "./src/browser.tsx",
+    "./node": "./src/node.tsx"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@invoicely/invoice-core": "workspace:*",
+    "@react-pdf/font": "4.0.2",
+    "@react-pdf/renderer": "^4.3.0",
+    "currency-symbol-map": "^5.1.0",
+    "date-fns": "^4.1.0",
+    "number-to-words": "^1.2.4",
+    "react": "19.1.4",
+    "react-pdf-tailwind": "^2.3.0"
+  },
+  "devDependencies": {
+    "@invoicely/eslint-config": "workspace:*",
+    "@invoicely/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "@types/number-to-words": "^1",
+    "@types/react": "^19",
+    "eslint": "^9.25.0",
+    "typescript": "5.8.2"
+  }
+}
