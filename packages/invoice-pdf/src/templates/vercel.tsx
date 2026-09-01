@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 "use client";
 
 import { Document, Page, Text, View, Image, Font } from "@react-pdf/renderer";
