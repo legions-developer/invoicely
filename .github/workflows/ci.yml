@@ -40,6 +40,9 @@ jobs:
         env:
           HUSKY: 0
 
+      - name: Test
+        run: bun run test
+
       - name: Check types
         run: bun run check-types
 
