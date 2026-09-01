@@ -17,13 +17,11 @@
     "@invoicely/typescript-config": "workspace:*",
     "@turbo/gen": "^2.9.15",
     "@types/node": "^22.15.3",
-    "@types/react": "19.1.0",
-    "@types/react-dom": "19.1.1",
     "eslint": "^9.25.0",
     "typescript": "5.8.2"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "@t3-oss/env-nextjs": "^0.13.4",
+    "zod": "^3.25.7"
   }
 }

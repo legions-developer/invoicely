@@ -33,7 +33,8 @@
       "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^check-types"],
+      "outputs": [".content-collections/**", "tsconfig.tsbuildinfo"]
     },
 
     "db:generate": {

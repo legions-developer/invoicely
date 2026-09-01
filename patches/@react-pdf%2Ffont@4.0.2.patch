@@ -1,7 +1,7 @@
-diff --git a/node_modules/@react-pdf/font/lib/index.d.ts b/node_modules/@react-pdf/font/lib/index.d.ts
+diff --git a/lib/index.d.ts b/lib/index.d.ts
 index 5a2ecfc..319d708 100644
---- a/node_modules/@react-pdf/font/lib/index.d.ts
-+++ b/node_modules/@react-pdf/font/lib/index.d.ts
+--- a/lib/index.d.ts
++++ b/lib/index.d.ts
 @@ -19,7 +19,7 @@ type RemoteOptions = {
  type FontSourceOptions = {
      postscriptName?: string;

@@ -1,4 +1,4 @@
 #!/bin/sh
 
 turbo run lint -- --fix
-yarn format
+bun run format
