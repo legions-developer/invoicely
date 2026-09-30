@@ -5,7 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": [".next/**", "!.next/cache/**", ".content-collections/**"],
       "env": [
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
@@ -17,7 +17,8 @@
         "CF_R2_ENDPOINT",
         "CF_R2_ACCESS_KEY_ID",
         "CF_R2_SECRET_ACCESS_KEY",
-        "SENTRY_AUTH_TOKEN"
+        "SENTRY_AUTH_TOKEN",
+        "NEXT_PUBLIC_*"
       ]
     },
     "dev": {
@@ -35,7 +36,6 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
-
     "db:generate": {
       "cache": false,
       "env": ["DATABASE_URL"],
@@ -56,6 +56,36 @@
       "cache": false,
       "env": ["DATABASE_URL"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
+    "build:cloudflare": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", ".content-collections/**", ".open-next/**"],
+      "env": [
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "DATABASE_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "CF_R2_BUCKET_NAME",
+        "CF_R2_PUBLIC_DOMAIN",
+        "CF_R2_ENDPOINT",
+        "CF_R2_ACCESS_KEY_ID",
+        "CF_R2_SECRET_ACCESS_KEY",
+        "SENTRY_AUTH_TOKEN",
+        "NEXT_PUBLIC_*"
+      ],
+      "cache": false
+    },
+    "preview:cloudflare": {
+      "dependsOn": ["build:cloudflare"],
+      "cache": false,
+      "persistent": true
+    },
+    "deploy:cloudflare": {
+      "dependsOn": ["build:cloudflare"],
+      "cache": false,
+      "passThroughEnv": ["CLOUDFLARE_ACCOUNT_ID", "CLOUDFLARE_API_TOKEN"]
     }
   }
 }

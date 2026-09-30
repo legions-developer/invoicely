@@ -1,10 +1,8 @@
-<a href="https://vercel.com/oss">
-  <img alt="Vercel OSS Program" src="https://vercel.com/oss/program-badge.svg" />
-</a>
-
 # Invoicely - (Contributions Accepted)
 
 Modern, open-source invoice generation platform built with Next.js, tRPC, and TypeScript.
+
+Production hosting uses Cloudflare Workers with OpenNext. See the [Cloudflare deployment guide](docs/cloudflare.md) for local previews, environment setup, staging, and production cutover.
 
 > [!CAUTION]
 > We do not allow vibe coding. Your PR will be rejected if the code quality is poor and vibe coded.

@@ -1,6 +1,9 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import { withContentCollections } from "@content-collections/next";
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
+
+initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -46,6 +49,8 @@ const configWithSentry = withSentryConfig(nextConfig, {
 
   org: "invoicely-q2",
   project: "invoicely",
+  // Honor an explicit build token, including an empty value for local checks.
+  authToken: process.env.SENTRY_AUTH_TOKEN,
 
   // Only print logs for uploading source maps in CI
   silent: true,
@@ -65,12 +70,6 @@ const configWithSentry = withSentryConfig(nextConfig, {
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,
   telemetry: false,
-
-  // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
-  // See the following for more information:
-  // https://docs.sentry.io/product/crons/
-  // https://vercel.com/docs/cron-jobs
-  automaticVercelMonitors: true,
 });
 
 // Exporting the config with Sentry and Content Collections

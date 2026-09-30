@@ -1,0 +1,2 @@
+# OpenNext reads the app's Next.js .env files for local Worker previews.
+NEXTJS_ENV=development
