@@ -46,9 +46,11 @@ yarn workspace web wrangler r2 bucket create invoicely-next-cache-staging
 
 `NEXT_INC_CACHE_R2_BUCKET` stores Next.js prerender/data cache entries. Keep it separate from the existing invoice image bucket. `WORKER_SELF_REFERENCE` must refer to the Worker for the selected environment. The `NEXT_CACHE_DO_QUEUE` Durable Object binding and `v1` migration support background revalidation, including cached blog 404s; Wrangler provisions those objects on deployment. `IMAGES` enables Cloudflare Images transformations for `next/image`; enable that product on the account and review its pricing.
 
-Check the compressed size reported by Wrangler against the account's Worker limit. The free plan allows 3 MiB and the paid plan 10 MiB; a full Next.js server with monitoring may require the paid plan. The application currently uses static blog generation and dynamic API routes; adding `revalidatePath` or `revalidateTag` requires the corresponding OpenNext tag-cache configuration as well.
+Check Wrangler's uncompressed `Total Upload` against the [64 MiB Worker limit](https://developers.cloudflare.com/workers/platform/limits/#worker-size), which applies to both Free and Paid plans. Cloudflare removed the compressed size limits on September 4, 2026; the `gzip` value is now informational. The migration build measured approximately 24.3 MiB uncompressed and 5.5 MiB compressed, so bundle size alone does not require Workers Paid. Choose the plan after checking staging CPU usage and request volume against the account limits, and review R2 and Images usage separately. Workers Free allows 10 ms of CPU time per request; local response times do not establish production CPU usage.
 
-The migration build measured approximately 5.5 MiB compressed, so this configuration requires the Workers Paid plan. The GitHub Actions workflow builds and boots the Worker with inert credentials and checks public routes, all generated blogs, missing pages, logged-out sessions, protected APIs, static cache headers, optimized images, and OG generation. OAuth and authenticated database/R2 mutations still need the staging checks below. To check an already-running preview, set `CLOUDFLARE_PREVIEW_URL=http://localhost:8787` when running `smoke:cloudflare`.
+The application currently uses static blog generation and dynamic API routes; adding `revalidatePath` or `revalidateTag` requires the corresponding OpenNext tag-cache configuration as well.
+
+The GitHub Actions workflow builds and boots the Worker with inert credentials and checks public routes, all generated blogs, missing pages, logged-out sessions, protected APIs, static cache headers, optimized images, and OG generation. OAuth and authenticated database/R2 mutations still need the staging checks below. To check an already-running preview, set `CLOUDFLARE_PREVIEW_URL=http://localhost:8787` when running `smoke:cloudflare`.
 
 ## Build variables and runtime configuration
 
@@ -84,7 +86,7 @@ Dashboard-managed variables are retained by `keep_vars: true` in Wrangler. Do no
 
    In Workers Builds, use these commands for the staging Worker. Bindings in the staging configuration use the staging cache bucket and self-reference.
 
-3. Verify landing/blog pages and missing-page handling; Google sign-in, session refresh and logout; invoice saving/loading; logo/signature upload, listing and deletion; PDF preview/download, CJK fonts and multi-page invoices; optimized images; OG images; PostHog `/ingest` rewrites; and Sentry error/source-map reporting. Check Worker logs, compressed bundle size, and CPU usage.
+3. Verify landing/blog pages and missing-page handling; Google sign-in, session refresh and logout; invoice saving/loading; logo/signature upload, listing and deletion; PDF preview/download, CJK fonts and multi-page invoices; optimized images; OG images; PostHog `/ingest` rewrites; and Sentry error/source-map reporting. Check Worker logs, uncompressed bundle size, and CPU usage against the selected plan's limits.
 4. Build with production values and run `yarn deploy:cloudflare`. Keep the Vercel deployment available during validation.
 5. Attach the production custom domain/route only after staging passes. Preserve the `https://invoicely.gg` origin: IndexedDB invoices are browser-origin-scoped, and auth cookies rely on consistent origin/secret settings.
 6. Verify production and disable Vercel's automatic production deployments after the cutover is confirmed. To roll back, restore the previous domain routing to the retained Vercel deployment, using the same database and storage.
