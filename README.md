@@ -11,7 +11,7 @@ Production hosting uses Cloudflare Workers with OpenNext. See the [Cloudflare de
 
 ### Prerequisites
 
-- **Node.js**: Version 20 or higher
+- **Node.js**: Version 22 or higher
 - **Yarn**: Version 4.9.1 or higher (automatically managed via `packageManager` field)
 - **PostgreSQL**: Database for storing application data
 
