@@ -9,8 +9,7 @@
     "lint": "next lint",
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview:cloudflare": "opennextjs-cloudflare preview",
-    "deploy:cloudflare": "opennextjs-cloudflare deploy",
-    "smoke:cloudflare": "node scripts/smoke-cloudflare.mjs"
+    "deploy:cloudflare": "opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

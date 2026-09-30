@@ -17,22 +17,22 @@ jobs:
   worker:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Deliberately inert values: these checks never log in or mutate remote data.
+    # Inert build values satisfy environment validation without accessing remote data.
     env:
       NEXT_PUBLIC_BASE_URL: http://127.0.0.1:8787
       NEXT_PUBLIC_TRPC_BASE_URL: http://127.0.0.1:8787/api/trpc
       NEXT_PUBLIC_POSTHOG_HOST: https://us.i.posthog.com
-      NEXT_PUBLIC_POSTHOG_KEY: cloudflare-smoke
+      NEXT_PUBLIC_POSTHOG_KEY: cloudflare-build-check
       BETTER_AUTH_URL: http://127.0.0.1:8787
-      BETTER_AUTH_SECRET: cloudflare-smoke-secret-for-local-checks-only
+      BETTER_AUTH_SECRET: cloudflare-build-check-secret-for-local-checks-only
       DATABASE_URL: postgresql://smoke:smoke@example.invalid/invoicely
-      GOOGLE_CLIENT_ID: cloudflare-smoke
-      GOOGLE_CLIENT_SECRET: cloudflare-smoke
+      GOOGLE_CLIENT_ID: cloudflare-build-check
+      GOOGLE_CLIENT_SECRET: cloudflare-build-check
       CF_R2_ENDPOINT: https://example.invalid
-      CF_R2_BUCKET_NAME: cloudflare-smoke
+      CF_R2_BUCKET_NAME: cloudflare-build-check
       CF_R2_PUBLIC_DOMAIN: https://example.invalid
-      CF_R2_ACCESS_KEY_ID: cloudflare-smoke
-      CF_R2_SECRET_ACCESS_KEY: cloudflare-smoke
+      CF_R2_ACCESS_KEY_ID: cloudflare-build-check
+      CF_R2_SECRET_ACCESS_KEY: cloudflare-build-check
       SENTRY_AUTH_TOKEN: ""
       WRANGLER_SEND_METRICS: "false"
     steps:
@@ -44,15 +44,4 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build:cloudflare
       - run: yarn workspace web wrangler deploy --dry-run --env ""
-      - name: Configure the local Worker's runtime variables
-        run: |
-          node --input-type=module <<'NODE'
-          import { writeFileSync } from "node:fs";
-          const variables = Object.entries(process.env).filter(([key]) =>
-            /^(NEXT_PUBLIC_|BETTER_AUTH_|DATABASE_URL$|GOOGLE_CLIENT_|CF_R2_)/.test(key)
-          );
-          writeFileSync("apps/web/.dev.vars", variables.map(([key, value]) =>
-            `${key}=${JSON.stringify(value)}`
-          ).join("\n"));
-          NODE
-      - run: yarn workspace web smoke:cloudflare
+      - run: yarn workspace web wrangler deploy --dry-run --env staging

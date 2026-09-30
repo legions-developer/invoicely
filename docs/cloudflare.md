@@ -30,7 +30,6 @@ Other commands:
 ```sh
 yarn build:cloudflare                       # Build .open-next/worker.js and assets
 yarn workspace web preview:cloudflare       # Preview an already-built Worker
-yarn workspace web smoke:cloudflare         # Start a local preview and run HTTP regression checks
 yarn workspace web wrangler deploy --dry-run --env "" # Validate production bundling without deploying
 yarn build                                  # Ordinary Next.js build for rollback/self-hosting
 ```
@@ -50,7 +49,7 @@ Check Wrangler's uncompressed `Total Upload` against the [64 MiB Worker limit](h
 
 The application currently uses static blog generation and dynamic API routes; adding `revalidatePath` or `revalidateTag` requires the corresponding OpenNext tag-cache configuration as well.
 
-The GitHub Actions workflow builds and boots the Worker with inert credentials and checks public routes, all generated blogs, missing pages, logged-out sessions, protected APIs, static cache headers, optimized images, and OG generation. OAuth and authenticated database/R2 mutations still need the staging checks below. To check an already-running preview, set `CLOUDFLARE_PREVIEW_URL=http://localhost:8787` when running `smoke:cloudflare`.
+The GitHub Actions workflow validates dependency installation, the Cloudflare build, and dry-run bundling for production and staging using inert build credentials. Verify runtime behavior and authenticated database/R2 mutations with the staging checks below.
 
 ## Build variables and runtime configuration
 
