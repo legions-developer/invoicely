@@ -22,11 +22,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { clientAuth, useSession } from "@/lib/client-auth";
-import { usePathname, useRouter } from "next/navigation";
 import LogoIcon from "@/components/assets/logo-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MiniSwitch } from "@/components/ui/switch";
+import { useDataSync } from "@/hooks/use-data-sync";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 import { useMounted } from "@mantine/hooks";
 import { useState } from "react";
 import Image from "next/image";
@@ -59,7 +60,7 @@ export function NavigationUser() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <AllowDataSync defaultChecked={session.data.user.allowedSavingData ?? false} />
+        <AllowDataSync />
       </SidebarMenuItem>
       <SidebarMenuItem>
         <DropdownMenu>
@@ -177,26 +178,8 @@ const LoginButtonModal = () => {
   );
 };
 
-const AllowDataSync = ({ defaultChecked }: { defaultChecked: boolean }) => {
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isChecked, setIsChecked] = useState(defaultChecked);
-  const router = useRouter();
-
-  const handleChange = (checked: boolean) => {
-    setIsDisabled(true);
-
-    clientAuth.updateUser({
-      allowedSavingData: checked,
-      fetchOptions: {
-        onSuccess: () => {
-          setIsChecked(checked);
-          setIsDisabled(false);
-          // refetch page
-          router.refresh();
-        },
-      },
-    });
-  };
+const AllowDataSync = () => {
+  const { isSyncEnabled, isUpdating, sessionError, setDataSync } = useDataSync();
 
   return (
     <div className="bg-muted-foreground/10 mb-2 flex w-full flex-row items-center justify-between rounded-md p-2">
@@ -216,7 +199,12 @@ const AllowDataSync = ({ defaultChecked }: { defaultChecked: boolean }) => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <MiniSwitch disabled={isDisabled} defaultChecked={isChecked} onCheckedChange={handleChange} />
+      <MiniSwitch
+        aria-label="Allow data sync"
+        disabled={isUpdating || !!sessionError}
+        checked={isSyncEnabled}
+        onCheckedChange={setDataSync}
+      />
     </div>
   );
 };

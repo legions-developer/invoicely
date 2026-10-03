@@ -1,71 +1,28 @@
 "use client";
 
-import { uploadImage as uploadImageToIndexedDB } from "@/lib/indexdb-queries/uploadImage";
-import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/issues";
-import type { InvoiceTypeType } from "@invoicely/db/schema/invoice";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ImageInput from "@/components/ui/image/image-input";
-import { asyncTryCatch } from "@/lib/neverthrow/tryCatch";
-import { useSession } from "@/lib/client-auth";
-import { useTRPC } from "@/trpc/client";
-import { toast } from "sonner";
-import React from "react";
+import { useAssetUpload } from "@/hooks/use-asset-upload";
 
-const UploadLogoAsset = ({ disableIcon = false, type }: { disableIcon?: boolean; type: InvoiceTypeType }) => {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const { data: session } = useSession();
+interface UploadLogoAssetProps {
+  disableIcon?: boolean;
+  compact?: boolean;
+  className?: string;
+}
 
-  const uploadImage = useMutation({
-    ...trpc.cloudflare.uploadImageFile.mutationOptions(),
-    onSuccess: () => {
-      toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
-        description: SUCCESS_MESSAGES.IMAGE_UPLOADED,
-      });
-
-      queryClient.invalidateQueries({ queryKey: trpc.cloudflare.listImages.queryKey() });
-    },
-    onError: (error) => {
-      toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
-        description: `${ERROR_MESSAGES.UPLOADING_IMAGE}: ${error.message}`,
-      });
-    },
-  });
-
-  const handleBase64Change = async (base64: string | undefined) => {
-    if (!base64) return;
-
-    if (type === "server" && session && session.user.allowedSavingData) {
-      uploadImage.mutate({
-        type: "logo",
-        base64: base64,
-      });
-    } else {
-      // Upload images to indexedDB
-      const { success } = await asyncTryCatch(uploadImageToIndexedDB(base64, "logo"));
-
-      if (!success) {
-        toast.error(ERROR_MESSAGES.TOAST_DEFAULT_TITLE, {
-          description: ERROR_MESSAGES.UPLOADING_IMAGE,
-        });
-      } else {
-        toast.success(SUCCESS_MESSAGES.TOAST_DEFAULT_TITLE, {
-          description: SUCCESS_MESSAGES.IMAGE_UPLOADED,
-        });
-        queryClient.invalidateQueries({ queryKey: ["idb-images"] });
-      }
-    }
-  };
+export default function UploadLogoAsset({ disableIcon = false, compact = false, className }: UploadLogoAssetProps) {
+  const { uploadAsset, isLoading, loadingLabel } = useAssetUpload("logo");
 
   return (
     <ImageInput
-      isLoading={uploadImage.isPending}
+      title="Add a logo"
+      className={className}
+      compact={compact}
+      isLoading={isLoading}
+      loadingLabel={loadingLabel}
       allowPreview={false}
-      onBase64Change={handleBase64Change}
+      onBase64Change={uploadAsset}
       maxSizeMB={0.4}
       disableIcon={disableIcon}
     />
   );
-};
-
-export default UploadLogoAsset;
+}

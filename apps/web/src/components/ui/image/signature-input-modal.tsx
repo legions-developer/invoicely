@@ -16,15 +16,13 @@ import {
 import { CreatePngFromBase64 } from "@/lib/invoice/create-png-from-base64";
 import { AlertCircleIcon, LoaderCircleIcon, XIcon } from "lucide-react";
 import { ImageSparkleIcon, SignatureIcon } from "@/assets/icons";
-import { createBlobUrl } from "@/lib/invoice/create-blob-url";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import SignatureCanvas from "react-signature-canvas";
-import { useRef, useState } from "react";
+import { readFileAsBase64 } from "./image-input";
+import { useId, useRef, useState } from "react";
 import { MiniSwitch } from "../switch";
-import { motion } from "motion/react";
 import { Button } from "../button";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 interface SignatureInputModalProps {
   title?: string;
@@ -32,268 +30,277 @@ interface SignatureInputModalProps {
   defaultUrl?: string;
   isDarkMode?: boolean;
   maxSizeMB?: number;
+  compact?: boolean;
   allowPreview?: boolean;
   isLoading?: boolean;
+  loadingLabel?: string;
   disableIcon?: boolean;
-  onBase64Change?: (base64: string | undefined) => void;
+  onBase64Change?: (base64: string | undefined) => void | Promise<void>;
   onFileRemove?: () => void;
   onSignatureChange?: (signature: string) => void;
 }
 
 export default function SignatureInputModal({
-  title = "Click here to draw your signature",
-  //   className,
+  title = "Draw a signature",
+  className,
   defaultUrl,
   isDarkMode = false,
   maxSizeMB = 5,
+  compact = false,
   allowPreview = true,
   isLoading = false,
+  loadingLabel = "Saving…",
   disableIcon = false,
   onSignatureChange,
   onBase64Change,
   onFileRemove,
 }: SignatureInputModalProps) {
-  const [darkMode, setDarkMode] = useState<boolean>(isDarkMode);
-  const [type, setType] = useState<"signature" | "upload" | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [darkMode, setDarkMode] = useState(isDarkMode);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSignatureEmpty, setIsSignatureEmpty] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [saveError, setSaveError] = useState<string>();
   const signaturePadRef = useRef<SignatureCanvas>(null);
-  const [isSignatureEmpty, setIsSignatureEmpty] = useState<boolean>(true);
-
-  const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
+  const drawButtonRef = useRef<HTMLButtonElement>(null);
+  const uploadContainerRef = useRef<HTMLDivElement>(null);
+  const processingRef = useRef(false);
+  const darkModeId = useId();
+  const uploadDescriptionId = useId();
+  const maxSize = maxSizeMB * 1_000_000;
+  const sizeLabel = maxSizeMB < 1 ? `${maxSizeMB * 1000} KB` : `${maxSizeMB} MB`;
+  const isBusy = isLoading || isProcessing;
 
   const [
     { files, isDragging, errors },
-    { handleDragEnter, handleDragLeave, handleDragOver, handleDrop, openFileDialog, removeFile, getInputProps },
+    { handleDragEnter, handleDragLeave, handleDragOver, handleDrop, openFileDialog, clearFiles, getInputProps },
   ] = useFileUpload({
-    accept: "image/png, image/jpeg, image/jpg",
+    accept: "image/png, image/jpeg",
     maxSize,
-    onFilesAdded: (files) => {
-      // if no file is added, return
-      if (!files[0]) return;
-
-      // if signature change is not provided, return
-      if (onSignatureChange) {
-        onSignatureChange(files[0].preview || "");
-      }
-
-      // if base64 change is not provided, return
-      if (onBase64Change) {
-        // converting the file to base64
-        const reader = new FileReader();
-        reader.onload = () => {
-          onBase64Change(reader.result as string);
-        };
-        reader.readAsDataURL(files[0].file as File);
+    onFilesAdded: async (addedFiles) => {
+      const addedFile = addedFiles[0];
+      if (!addedFile || isLoading || processingRef.current) return;
+      processingRef.current = true;
+      setIsProcessing(true);
+      setSaveError(undefined);
+      try {
+        if (onBase64Change) await onBase64Change(await readFileAsBase64(addedFile.file as File));
+        onSignatureChange?.(addedFile.preview || "");
+        if (!allowPreview && !onSignatureChange) clearFiles();
+      } catch (error) {
+        setSaveError(error instanceof Error ? error.message : "Couldn't save this signature. Please try again.");
+        clearFiles();
+      } finally {
+        processingRef.current = false;
+        setIsProcessing(false);
       }
     },
   });
 
-  const previewUrl = defaultUrl || "";
+  const previewUrl = defaultUrl || files[0]?.preview || "";
+  const error = saveError || errors[0];
 
-  // Handle Clear signature
   const handleClear = () => {
     signaturePadRef.current?.clear();
-  };
-
-  // Handle and Save signature
-  const handleSave = () => {
-    if (type !== "signature") return;
-    //   get the signature canvas
-    const signatureCanvasUri = signaturePadRef.current?.toDataURL("image/png");
-
-    if (!signatureCanvasUri) {
-      toast.error("No signature found", {
-        description: "Please draw your signature and try again",
-      });
-      return;
-    }
-
-    // set it to onBase64Change
-    if (onBase64Change && signatureCanvasUri) {
-      onBase64Change(signatureCanvasUri);
-    }
-
-    // Convert to blob
-    const signatureBlob = CreatePngFromBase64(signatureCanvasUri);
-
-    if (!signatureBlob) {
-      toast.error("No signature found", {
-        description: "Please draw your signature and try again",
-      });
-      return;
-    }
-
-    const signatureBlobUrl = createBlobUrl({ blob: signatureBlob });
-
-    // set it to onSignatureChange
-    if (onSignatureChange && signatureBlob) {
-      onSignatureChange(signatureBlobUrl);
-    }
-
-    // set modal to close
-    setIsModalOpen(false);
-    // reset signature
-    signaturePadRef.current?.clear();
     setIsSignatureEmpty(true);
+    setSaveError(undefined);
   };
 
-  // Handle and Reset states when modal is closed
-  const handleModalChange = (open: boolean) => {
-    setIsModalOpen(open);
+  const handleSave = async () => {
+    const canvas = signaturePadRef.current;
+    if (isBusy || processingRef.current || !canvas || canvas.isEmpty()) return;
 
-    if (!open) {
-      //   reset signature
-      signaturePadRef.current?.clear();
-      setIsSignatureEmpty(true);
+    processingRef.current = true;
+    setIsProcessing(true);
+    setSaveError(undefined);
+    try {
+      const base64 = canvas.toDataURL("image/png");
+      const blob = CreatePngFromBase64(base64);
+      if (!blob) throw new Error("Please draw your signature and try again.");
+      if (blob.size > maxSize) throw new Error(`This signature is too large. Please keep it under ${sizeLabel}.`);
+
+      await onBase64Change?.(base64);
+      if (onSignatureChange) onSignatureChange(URL.createObjectURL(blob));
+      setIsModalOpen(false);
+      handleClear();
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Couldn't save this signature. Please try again.");
+    } finally {
+      processingRef.current = false;
+      setIsProcessing(false);
     }
+  };
+
+  const handleModalChange = (open: boolean) => {
+    // A settings refresh can fail while the dialog is open. Only an active
+    // save should prevent dismissal; users still need access to account retry.
+    if (isProcessing || processingRef.current) return;
+    setIsModalOpen(open);
+    if (!open) handleClear();
   };
 
   return (
     <>
-      <div className="relative">
-        {/* Drop area */}
-        <div className="border-input relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none">
-          {previewUrl && allowPreview && !isLoading ? (
-            <div className="absolute inset-0">
-              <img src={previewUrl} alt="user signature" className="size-full object-cover" />
-            </div>
-          ) : isLoading ? (
-            <div className="flex flex-col items-center justify-center gap-2">
-              <LoaderCircleIcon size={20} className={cn("animate-spin")} />
-              <span className="text-muted-foreground text-xs">Uploading...</span>
-            </div>
-          ) : (
-            <div className="flex h-full w-full flex-col">
-              {/* Custom Signature */}
-              <div
-                role="button"
-                onClick={() => {
-                  setType("signature");
-                  setIsModalOpen(true);
-                }}
-                className="hover:bg-accent/50 flex h-full flex-col items-center justify-center border-b border-dashed text-center"
-              >
-                {!disableIcon && (
-                  <div
-                    className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
-                    aria-hidden="true"
-                  >
-                    <SignatureIcon className="size-4 rotate-12" />
-                  </div>
-                )}
-                <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">{title}</p>
-                <p className="text-muted-foreground text-[10px]">Canvas size: 330x330px</p>
+      <div ref={uploadContainerRef} tabIndex={-1} className={cn("flex w-full flex-col gap-1.5", className)}>
+        <div className="relative">
+          <input {...getInputProps({ disabled: isBusy, tabIndex: -1 })} hidden aria-label="Upload signature image" />
+          <div
+            aria-busy={isBusy}
+            className={cn(
+              "border-input bg-muted/15 relative flex w-full flex-col overflow-hidden rounded-xl border border-dashed",
+              compact ? "min-h-[180px]" : "aspect-square",
+            )}
+          >
+            {isBusy ? (
+              <div className="flex flex-1 flex-col items-center justify-center gap-2 p-6" role="status">
+                <LoaderCircleIcon className="size-5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
+                <span className="text-muted-foreground text-xs">{loadingLabel}</span>
               </div>
-              {/* Image Input for signature */}
-              <div
-                role="button"
-                onClick={() => {
-                  setType("upload");
-                  openFileDialog();
-                }}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                data-dragging={isDragging || undefined}
-                className="hover:bg-accent/50 data-[dragging=true]:bg-accent/50 flex h-full flex-col items-center justify-center text-center"
-              >
-                <input {...getInputProps()} className="sr-only" aria-label="Upload file" />
-                {!disableIcon && (
-                  <div
-                    className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
-                    aria-hidden="true"
-                  >
-                    <ImageSparkleIcon className="size-4" />
-                  </div>
-                )}
-                <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">Upload Signature</p>
-                {errors.length > 0 ? (
-                  <div className="flex items-center gap-1 text-[10px] text-red-500" role="alert">
-                    {!disableIcon && <AlertCircleIcon className="size-3 shrink-0" />}
-                    <span>{errors[0]}</span>
-                  </div>
-                ) : (
-                  <p className="text-muted-foreground text-[10px]">Max size: {maxSizeMB * 1000}Kb (PNG, JPG)</p>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-        {previewUrl && allowPreview && !isLoading && (
-          <div className="absolute top-4 right-4">
+            ) : previewUrl && allowPreview ? (
+              <img src={previewUrl} alt="Your signature" className="absolute inset-0 size-full object-contain p-3" />
+            ) : (
+              <>
+                <button
+                  ref={drawButtonRef}
+                  type="button"
+                  disabled={isBusy}
+                  onClick={() => {
+                    setSaveError(undefined);
+                    setIsModalOpen(true);
+                  }}
+                  className="hover:bg-accent/50 focus-visible:ring-ring flex flex-1 cursor-pointer flex-col items-center justify-center gap-1.5 border-b border-dashed px-3 py-3 text-center outline-none focus-visible:ring-2 focus-visible:ring-inset disabled:opacity-60"
+                >
+                  {!disableIcon && <SignatureIcon className="text-primary size-5" aria-hidden="true" />}
+                  <span className="text-sm font-medium">{title}</span>
+                  <span className="text-muted-foreground text-[11px]">Use your mouse or finger</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={isBusy}
+                  onClick={openFileDialog}
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop}
+                  data-dragging={isDragging || undefined}
+                  aria-describedby={uploadDescriptionId}
+                  className="hover:bg-accent/50 data-[dragging=true]:bg-accent focus-visible:ring-ring flex flex-1 cursor-pointer flex-col items-center justify-center gap-1.5 px-3 py-3 text-center outline-none focus-visible:ring-2 focus-visible:ring-inset disabled:opacity-60"
+                >
+                  {!disableIcon && <ImageSparkleIcon className="text-muted-foreground size-5" aria-hidden="true" />}
+                  <span className="text-sm font-medium">Upload a signature</span>
+                  <span id={uploadDescriptionId} className="text-muted-foreground text-[11px]">
+                    PNG or JPG · up to {sizeLabel}
+                  </span>
+                </button>
+              </>
+            )}
+          </div>
+          {previewUrl && allowPreview && !isBusy && (
             <button
               type="button"
-              className="focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-5 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]"
-              onClick={(e) => {
-                e.preventDefault();
-
-                removeFile(files[0]?.id);
-
-                if (onFileRemove) {
-                  onFileRemove();
-                }
-                if (onBase64Change) {
-                  onBase64Change(undefined);
+              className="bg-background/90 text-foreground focus-visible:ring-ring absolute top-2 right-2 flex size-8 cursor-pointer items-center justify-center rounded-full border shadow-sm outline-none focus-visible:ring-2"
+              onClick={async () => {
+                clearFiles();
+                onFileRemove?.();
+                try {
+                  await onBase64Change?.(undefined);
+                } catch (error) {
+                  setSaveError(error instanceof Error ? error.message : "Couldn't remove this signature.");
                 }
               }}
-              aria-label="Remove image"
+              aria-label="Remove signature"
             >
-              <XIcon className="size-3" aria-hidden="true" />
+              <XIcon className="size-4" aria-hidden="true" />
             </button>
-          </div>
+          )}
+        </div>
+        {error && !isModalOpen && (
+          <p className="text-destructive flex items-start gap-1.5 text-xs" role="alert">
+            <AlertCircleIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+            {error}
+          </p>
         )}
       </div>
-      {/* Signature Input Modal */}
       <Dialog open={isModalOpen} onOpenChange={handleModalChange}>
-        <DialogContent className="w-fit">
+        <DialogContent
+          className="sm:max-w-sm"
+          hideCloseButton={isProcessing}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            (drawButtonRef.current ?? uploadContainerRef.current)?.focus();
+          }}
+        >
           <DialogHeaderContainer>
             <DialogIcon>
-              <SignatureIcon className="size-4 rotate-12" />
+              <SignatureIcon className="size-5" aria-hidden="true" />
             </DialogIcon>
             <DialogHeader>
-              <DialogTitle>Company Signature</DialogTitle>
-              <DialogDescription>Draw your signature here</DialogDescription>
+              <DialogTitle>Draw your signature</DialogTitle>
+              <DialogDescription>Use your mouse or finger on the canvas below.</DialogDescription>
             </DialogHeader>
           </DialogHeaderContainer>
           <DialogContentContainer>
-            <div className="relative overflow-hidden rounded-md border">
-              {!isSignatureEmpty && (
-                <motion.div
-                  key="signature-clear-btn"
-                  initial={{ filter: "blur(1px)", top: -24 }}
-                  animate={{ filter: "blur(0px)", top: 6 }}
-                  exit={{ filter: "blur(1px)", top: -24 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="absolute right-1.5 z-10 flex items-center justify-center"
-                >
-                  <Button variant="destructive" size="xs" onClick={handleClear}>
-                    Clear
-                  </Button>
-                </motion.div>
-              )}
+            <div
+              className={cn("relative overflow-hidden rounded-lg border", isBusy && "pointer-events-none opacity-60")}
+            >
               <SignatureCanvas
                 key={`signature-canvas-${darkMode}`}
                 ref={signaturePadRef}
-                onBegin={() => setIsSignatureEmpty(false)}
+                onEnd={() => setIsSignatureEmpty(signaturePadRef.current?.isEmpty() ?? true)}
                 penColor={darkMode ? "white" : "black"}
                 backgroundColor={darkMode ? "#181818" : "#ffffff"}
                 canvasProps={{
-                  className:
-                    "signature-canvas w-full h-full max-w-[330px] max-h-[330px] min-w-[200px] min-h-[200px] aspect-square",
+                  "aria-label": "Signature drawing canvas",
+                  className: "signature-canvas aspect-square w-full max-w-[330px] touch-none",
                 }}
               />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="absolute top-2 right-2"
+                onClick={handleClear}
+                disabled={isBusy || isSignatureEmpty}
+              >
+                Clear
+              </Button>
             </div>
+            <div className="flex items-center gap-2">
+              <MiniSwitch
+                id={darkModeId}
+                checked={darkMode}
+                disabled={isBusy}
+                onCheckedChange={(checked) => {
+                  setDarkMode(checked);
+                  setIsSignatureEmpty(true);
+                  setSaveError(undefined);
+                }}
+              />
+              <label htmlFor={darkModeId} className="text-muted-foreground text-xs">
+                Dark background
+              </label>
+            </div>
+            {saveError && (
+              <p className="text-destructive text-xs" role="alert">
+                {saveError}
+              </p>
+            )}
           </DialogContentContainer>
           <DialogFooter>
-            <div className="flex w-full items-center gap-2">
-              <MiniSwitch checked={darkMode} onCheckedChange={setDarkMode} />
-              <span className="text-muted-foreground text-xs">Dark Mode</span>
-            </div>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button type="button" variant="outline" disabled={isProcessing}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button onClick={handleSave}>Save</Button>
+            <Button type="button" onClick={handleSave} disabled={isBusy || isSignatureEmpty}>
+              {isBusy && (
+                <LoaderCircleIcon
+                  data-icon="inline-start"
+                  className="animate-spin motion-reduce:animate-none"
+                  aria-hidden="true"
+                />
+              )}
+              {isBusy ? "Saving…" : "Save signature"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
