@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:amount-in-words": "node --test tests/amount-in-words.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

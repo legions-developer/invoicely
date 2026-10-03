@@ -12,6 +12,12 @@ interface InvoiceTheme {
   font?: InvoiceFontName;
 }
 
+interface InvoiceAmountInWords {
+  prefix?: string;
+  singularSuffix?: string;
+  pluralSuffix?: string;
+}
+
 // Enums
 export const invoiceStatusEnum = pgEnum("invoice_status", ["pending", "success", "error", "expired", "refunded"]);
 export const invoiceTypeEnum = pgEnum("invoice_type", ["local", "server"]);
@@ -83,6 +89,7 @@ export const invoiceDetails = pgTable("invoice_details", {
   id: uuid("id").primaryKey().defaultRandom(),
   theme: jsonb("theme").$type<InvoiceTheme>().notNull(),
   currency: text("currency").notNull(),
+  amountInWords: jsonb("amount_in_words").$type<InvoiceAmountInWords>(),
   prefix: text("prefix").notNull(),
   serialNumber: text("serial_number").notNull(),
   date: timestamp("date").notNull(),

@@ -117,6 +117,7 @@ export const insertInvoiceQuery = async (
     .values({
       id: uuidv4(),
       currency: invoice.invoiceDetails.currency,
+      amountInWords: invoice.invoiceDetails.amountInWords,
       prefix: invoice.invoiceDetails.prefix,
       serialNumber: invoice.invoiceDetails.serialNumber,
       date: invoice.invoiceDetails.date,

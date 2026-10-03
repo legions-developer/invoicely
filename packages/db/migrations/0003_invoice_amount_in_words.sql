@@ -1,0 +1,1 @@
+ALTER TABLE "invoice_details" ADD COLUMN "amount_in_words" jsonb;
