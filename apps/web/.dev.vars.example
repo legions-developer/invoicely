@@ -1,0 +1,2 @@
+# Load the local Next.js .env files when using the Workers preview.
+NEXTJS_ENV=development

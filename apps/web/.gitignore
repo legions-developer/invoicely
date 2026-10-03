@@ -46,7 +46,8 @@ next-env.d.ts
 # cloudflare
 
 .open-next/
-.dev.vars
+.dev.vars*
+!.dev.vars.example
 .wrangler/
 # Sentry Config File
 .env.sentry-build-plugin

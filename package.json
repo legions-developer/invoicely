@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "packageManager": "yarn@4.9.1",
   "workspaces": [
@@ -28,7 +28,10 @@
     "db:generate": "dotenv -- turbo run db:generate",
     "db:migrate": "dotenv -- turbo run db:migrate",
     "db:push": "dotenv -- turbo run db:push",
-    "db:studio": "dotenv -- turbo run db:studio"
+    "db:studio": "dotenv -- turbo run db:studio",
+    "build:cloudflare": "turbo run build:cloudflare --filter=web",
+    "preview:cloudflare": "turbo run preview:cloudflare --filter=web",
+    "deploy:cloudflare": "turbo run deploy:cloudflare --filter=web"
   },
   "devDependencies": {
     "@effect/language-service": "^0.23.3",
