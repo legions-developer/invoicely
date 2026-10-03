@@ -17,7 +17,9 @@ yarn sys-link
 cp apps/web/.dev.vars.example apps/web/.dev.vars
 ```
 
-Run `yarn dev` for the Next.js development server. Run `yarn preview:cloudflare` to build the application and preview it in the Workers runtime. Local cache bindings are emulated, but the application's Neon and S3 clients still connect to the services selected by `.env`; use a development database and asset bucket.
+Run `yarn dev` for the Next.js development server. The app uses Neon and the S3-compatible R2 client directly, so this mode does not initialize Cloudflare bindings. Run `yarn preview:cloudflare` to build the application and preview it in the Workers runtime, including its cache bindings. The application's Neon and S3 clients still connect to the services selected by `.env` in both modes; use a development database and asset bucket.
+
+`initOpenNextCloudflareForDev` is intentionally omitted from `next.config.ts`: its binding proxy cannot run the internal `DOQueueHandler` from the production Wrangler configuration, causing a missing Durable Object export warning during `yarn dev`. If application code starts using `getCloudflareContext` directly, configure the helper with bindings suitable for Next.js development. Use `yarn preview:cloudflare` to test the generated Worker and its revalidation queue.
 
 Before the preview build, set `NEXT_PUBLIC_BASE_URL` and `BETTER_AUTH_URL` to `http://localhost:8787`, and `NEXT_PUBLIC_TRPC_BASE_URL` to `http://localhost:8787/api/trpc`. Rebuild whenever public values or the origin change. `.dev.vars` selects `NEXTJS_ENV=development`; OpenNext reads application values from the Next.js `.env` files. See [environment variable loading](https://opennext.js.org/cloudflare/howtos/env-vars).
 
