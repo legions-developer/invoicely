@@ -12,6 +12,11 @@ import { useState } from "react";
 
 let clientQueryClientSingleton: QueryClient;
 
+function getTRPCUrl() {
+  // Browser requests must stay on the current deployment, including PR previews.
+  return typeof window === "undefined" ? env.NEXT_PUBLIC_TRPC_BASE_URL : "/api/trpc";
+}
+
 function getQueryClient() {
   if (typeof window === "undefined") {
     // Server: always make a new query client
@@ -38,7 +43,7 @@ export function TRPCProvider(props: Readonly<TRPCProviderProps>) {
     createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: env.NEXT_PUBLIC_TRPC_BASE_URL,
+          url: getTRPCUrl(),
           transformer: superjsonTransformer,
         }),
       ],
@@ -55,5 +60,5 @@ export function TRPCProvider(props: Readonly<TRPCProviderProps>) {
 
 // Trpc Proxy Client
 export const trpcProxyClient = createTRPCClient<AppRouter>({
-  links: [httpBatchLink({ url: env.NEXT_PUBLIC_TRPC_BASE_URL, transformer: superjsonTransformer })],
+  links: [httpBatchLink({ url: getTRPCUrl(), transformer: superjsonTransformer })],
 });

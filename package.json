@@ -31,7 +31,8 @@
     "db:studio": "dotenv -- turbo run db:studio",
     "build:cloudflare": "turbo run build:cloudflare --filter=web",
     "preview:cloudflare": "turbo run preview:cloudflare --filter=web",
-    "deploy:cloudflare": "turbo run deploy:cloudflare --filter=web"
+    "deploy:cloudflare": "turbo run deploy:cloudflare --filter=web",
+    "deploy:cloudflare:preview": "CLOUDFLARE_PREVIEW=true turbo run deploy:cloudflare:preview --filter=web"
   },
   "devDependencies": {
     "@effect/language-service": "^0.23.3",
