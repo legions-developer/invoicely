@@ -1,9 +1,14 @@
-import { FolderFeatherIcon, ReceiptIcon, VersionsIcon } from "@/assets/icons";
+import { DashboardIcon, FolderFeatherIcon, ReceiptIcon, VersionsIcon } from "@/assets/icons";
 import type { ISidebar } from "@/types";
 import { LINKS } from "./links";
 
 export const SIDEBAR_ITEMS: ISidebar = {
   Navigation: [
+    {
+      name: "Dashboard",
+      url: LINKS.DASHBOARD,
+      icon: <DashboardIcon />,
+    },
     {
       name: "Invoices",
       url: LINKS.INVOICES,
