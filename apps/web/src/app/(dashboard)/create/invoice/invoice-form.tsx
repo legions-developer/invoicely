@@ -5,7 +5,6 @@ import InvoiceFieldKeyNumberValuesSection from "./invoiceHelpers/invoice-field-k
 import { Accordion, AccordionItem, AccordionContent, AccordionTrigger } from "@/components/ui/accordion";
 import SheetImageSelectorTrigger from "@/components/ui/image/sheet-image-selector-trigger";
 import { InvoiceImageSelectorSheet } from "./invoiceHelpers/invoice-image-selector-sheet";
-import { InvoiceAmountInWords } from "./invoiceHelpers/invoice-amount-in-words";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { InvoiceTemplateSelector } from "./invoiceHelpers/invoice-templates";
 import { FormColorPicker } from "@/components/ui/form/form-color-picker";
@@ -246,12 +245,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form }) => {
                   name="invoiceDetails.billingDetails"
                   label="Billing Details"
                 />
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="amount-in-words">
-              <AccordionTrigger>Amount in Words</AccordionTrigger>
-              <AccordionContent>
-                <InvoiceAmountInWords form={form} />
               </AccordionContent>
             </AccordionItem>
             {/* Invoice Items */}

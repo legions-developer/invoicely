@@ -47,12 +47,6 @@ export const createInvoiceFieldKeyNumberValuesSchema = z.object(
   { invalid_type_error: "Field key number values must be an object" },
 );
 
-export const invoiceAmountInWordsSchema = z.object({
-  prefix: z.string({ invalid_type_error: "Amount in words prefix must be a string" }).optional(),
-  singularSuffix: z.string({ invalid_type_error: "Singular currency suffix must be a string" }).optional(),
-  pluralSuffix: z.string({ invalid_type_error: "Plural currency suffix must be a string" }).optional(),
-});
-
 export const createInvoiceSchema = z.object({
   companyDetails: z.object(
     {
@@ -128,7 +122,6 @@ export const createInvoiceSchema = z.object({
       currency: z
         .string({ invalid_type_error: "Currency must be a string" })
         .min(1, { message: "Currency cannot be empty" }),
-      amountInWords: invoiceAmountInWordsSchema.nullable().optional(),
       prefix: z.string({ invalid_type_error: "Prefix must be a string" }),
       serialNumber: z
         .string({ invalid_type_error: "Serial number must be a string" })

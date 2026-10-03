@@ -328,9 +328,7 @@ const DefaultPDF: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             </View>
             <View style={tw("flex flex-col gap-0.5 mt-1")}>
               <Text style={tw("text-3xs font-normal text-neutral-500")}>Invoice Total (in words)</Text>
-              <Text style={tw("text-2xs font-normal")}>
-                {formatAmountInWords(total, data.invoiceDetails.currency, data.invoiceDetails.amountInWords)}
-              </Text>
+              <Text style={tw("text-2xs font-normal")}>{formatAmountInWords(total, data.invoiceDetails.currency)}</Text>
             </View>
           </View>
         </View>

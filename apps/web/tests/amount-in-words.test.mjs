@@ -33,22 +33,11 @@ const { createInvoiceSchema, createInvoiceSchemaDefaultValues } = loadTypeScript
   "../src/zod-schemas/invoice/create-invoice.ts",
 );
 
-function invoiceWithSettings(settings) {
-  return {
-    ...createInvoiceSchemaDefaultValues,
-    invoiceDetails: {
-      ...createInvoiceSchemaDefaultValues.invoiceDetails,
-      amountInWords: settings,
-    },
-  };
-}
-
-test("issue #78: title case, spaces, and custom singular/plural suffixes", () => {
-  const options = { singularSuffix: "Dollar Only", pluralSuffix: "Dollars Only" };
-  assert.equal(formatAmountInWords(85, "USD", options), "Eighty Five Dollars Only");
-  assert.equal(formatAmountInWords(1, "USD", options), "One Dollar Only");
-  assert.equal(formatAmountInWords(0, "USD", options), "Zero Dollars Only");
-  assert.equal(formatAmountInWords(1085, "USD", options), "One Thousand Eighty Five Dollars Only");
+test("issue #78: title case and spaces use the invoice currency's wording", () => {
+  assert.equal(formatAmountInWords(85, "USD"), "Eighty Five US Dollars Only");
+  assert.equal(formatAmountInWords(1, "USD"), "One US Dollar Only");
+  assert.equal(formatAmountInWords(0, "USD"), "Zero US Dollars Only");
+  assert.equal(formatAmountInWords(1085, "USD"), "One Thousand Eighty Five US Dollars Only");
 });
 
 test("automatic currency names handle singular, plural, and irregular forms", () => {
@@ -83,12 +72,11 @@ test("decimal rounding agrees with the two-place numeric invoice total", () => {
   assert.equal(formatAmountInWords(85.999, "USD"), "Eighty Six US Dollars Only");
 });
 
-test("suffix selection uses the rounded full amount, including fractions and negative amounts", () => {
-  const options = { singularSuffix: "Dollar Only", pluralSuffix: "Dollars Only" };
-  assert.equal(formatAmountInWords(1.01, "USD", options), "One Point Zero One Dollars Only");
-  assert.equal(formatAmountInWords(1.004, "USD", options), "One Dollar Only");
-  assert.equal(formatAmountInWords(-1, "USD", options), "Minus One Dollar Only");
-  assert.equal(formatAmountInWords(-1.01, "USD", options), "Minus One Point Zero One Dollars Only");
+test("currency wording uses the rounded full amount, including fractions and negative amounts", () => {
+  assert.equal(formatAmountInWords(1.01, "USD"), "One Point Zero One US Dollars Only");
+  assert.equal(formatAmountInWords(1.004, "USD"), "One US Dollar Only");
+  assert.equal(formatAmountInWords(-1, "USD"), "Minus One US Dollar Only");
+  assert.equal(formatAmountInWords(-1.01, "USD"), "Minus One Point Zero One US Dollars Only");
   assert.equal(formatAmountInWords(-2, "USD"), "Minus Two US Dollars Only");
 });
 
@@ -98,30 +86,23 @@ test("rounded negative zero is rendered as zero", () => {
   assert.equal(formatAmountInWords(-0.005, "USD"), "Minus Zero Point Zero One US Dollars Only");
 });
 
-test("custom affixes preserve the user's casing and trim surrounding whitespace", () => {
-  const options = {
-    prefix: "  Amount payable:  ",
-    singularSuffix: "  Dollar ONLY  ",
-    pluralSuffix: "  DOLLARS only  ",
-  };
-  assert.equal(formatAmountInWords(1, "USD", options), "Amount payable: One Dollar ONLY");
-  assert.equal(formatAmountInWords(85, "USD", options), "Amount payable: Eighty Five DOLLARS only");
+test("changing currency updates the wording for the same invoice total", () => {
+  const amount = 85;
+  assert.equal(formatAmountInWords(amount, "USD"), "Eighty Five US Dollars Only");
+  assert.equal(formatAmountInWords(amount, "INR"), "Eighty Five Indian Rupees Only");
+  assert.equal(formatAmountInWords(amount, "EUR"), "Eighty Five Euros Only");
+  assert.equal(formatAmountInWords(amount, "JPY"), "Eighty Five Japanese Yen Only");
 });
 
-test("omitted, null, and blank settings retain automatic currency suffixes", () => {
-  const expected = "Eighty Five US Dollars Only";
-  assert.equal(formatAmountInWords(85, "USD"), expected);
-  assert.equal(formatAmountInWords(85, "USD", null), expected);
-  assert.equal(formatAmountInWords(85, "USD", {}), expected);
-  assert.equal(formatAmountInWords(85, "USD", { prefix: "  ", pluralSuffix: "\t  " }), expected);
-  assert.equal(formatAmountInWords(1, "USD", { singularSuffix: "" }), "One US Dollar Only");
+test("currency codes are case-insensitive and tolerate surrounding whitespace", () => {
+  assert.equal(formatAmountInWords(85, " usd "), "Eighty Five US Dollars Only");
+  assert.equal(formatAmountInWords(1, "\tinr\n"), "One Indian Rupee Only");
 });
 
 test("currency fallback handles unknown and malformed codes", () => {
   assert.equal(formatAmountInWords(85, "BTC"), "Eighty Five BTC Only");
-  assert.doesNotThrow(() => formatAmountInWords(85, "INVALID"));
-  assert.match(formatAmountInWords(85, "INVALID"), /^Eighty Five .+ Only$/);
-  assert.doesNotThrow(() => formatAmountInWords(85, ""));
+  assert.equal(formatAmountInWords(85, "INVALID"), "Eighty Five INVALID Only");
+  assert.equal(formatAmountInWords(85, ""), "Eighty Five Only");
 });
 
 test("all currencies offered by the selector can render whole and fractional totals", () => {
@@ -145,20 +126,19 @@ test("amounts beyond safe integer precision retain numeric text without crashing
 test("nonfinite totals do not produce misleading amount-in-words text", () => {
   for (const amount of [NaN, Infinity, -Infinity]) {
     assert.equal(formatAmountInWords(amount, "USD"), "");
-    assert.equal(formatAmountInWords(amount, "USD", { prefix: "Amount:" }), "");
   }
 });
 
-test("old invoices and nullable settings remain valid", () => {
-  const legacy = createInvoiceSchema.parse(createInvoiceSchemaDefaultValues);
-  assert.equal(legacy.invoiceDetails.amountInWords, undefined);
-  assert.equal(createInvoiceSchema.parse(invoiceWithSettings(null)).invoiceDetails.amountInWords, null);
-  assert.deepEqual(createInvoiceSchema.parse(invoiceWithSettings({})).invoiceDetails.amountInWords, {});
-});
-
-test("invoice validation preserves custom settings and rejects invalid affix types", () => {
-  const settings = { prefix: "Amount:", singularSuffix: "Dollar Only", pluralSuffix: "Dollars Only" };
-  assert.deepEqual(createInvoiceSchema.parse(invoiceWithSettings(settings)).invoiceDetails.amountInWords, settings);
-  assert.equal(createInvoiceSchema.safeParse(invoiceWithSettings({ prefix: 123 })).success, false);
-  assert.equal(createInvoiceSchema.safeParse(invoiceWithSettings({ pluralSuffix: false })).success, false);
+test("existing invoices need only their existing currency code to produce wording", () => {
+  for (const [currency, expected] of [
+    ["USD", "Eighty Five US Dollars Only"],
+    ["INR", "Eighty Five Indian Rupees Only"],
+    ["BTC", "Eighty Five BTC Only"],
+  ]) {
+    const legacy = createInvoiceSchema.parse({
+      ...createInvoiceSchemaDefaultValues,
+      invoiceDetails: { ...createInvoiceSchemaDefaultValues.invoiceDetails, currency },
+    });
+    assert.equal(formatAmountInWords(85, legacy.invoiceDetails.currency), expected);
+  }
 });

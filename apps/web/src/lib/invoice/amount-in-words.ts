@@ -1,4 +1,3 @@
-import type { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { toWords } from "number-to-words";
 
 // Match the two decimal places used by formatCurrencyText, including its rounding.
@@ -32,11 +31,7 @@ export const getAmountInWordsSuffix = (currency: string, amount: number) => {
   return `${titleCase(name)} Only`.trim();
 };
 
-export const formatAmountInWords = (
-  amount: number,
-  currency: string,
-  options?: ZodCreateInvoiceSchema["invoiceDetails"]["amountInWords"],
-) => {
+export const formatAmountInWords = (amount: number, currency: string) => {
   if (!Number.isFinite(amount)) return "";
 
   const parts = amountFormatter.formatToParts(Math.abs(amount));
@@ -54,8 +49,5 @@ export const formatAmountInWords = (
     .filter(Boolean)
     .join(" ")
     .replace(/\s+/g, " ");
-  const customSuffix = roundedAmount === 1 ? options?.singularSuffix : options?.pluralSuffix;
-  const suffix = customSuffix?.trim() || getAmountInWordsSuffix(currency, roundedAmount);
-
-  return [options?.prefix?.trim(), titleCase(words), suffix].filter(Boolean).join(" ");
+  return `${titleCase(words)} ${getAmountInWordsSuffix(currency, roundedAmount)}`;
 };

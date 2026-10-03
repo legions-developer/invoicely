@@ -280,7 +280,7 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             <View style={tw("flex flex-col gap-0.5 p-4 border-t border-borderColor")}>
               <Text style={tw("text-3xs font-normal text-neutral-500")}>Invoice Total (in words)</Text>
               <Text style={tw("text-2xs font-normal text-neutral-300")}>
-                {formatAmountInWords(total, data.invoiceDetails.currency, data.invoiceDetails.amountInWords)}
+                {formatAmountInWords(total, data.invoiceDetails.currency)}
               </Text>
             </View>
           </View>
