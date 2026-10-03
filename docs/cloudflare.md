@@ -47,8 +47,10 @@ Configure values separately in Workers **Build variables and secrets** and Worke
 | `BETTER_AUTH_SECRET`                                         | Set for auth initialization               | Required           | Secret          |
 | `CF_R2_ENDPOINT`, `CF_R2_BUCKET_NAME`, `CF_R2_PUBLIC_DOMAIN` | Required                                  | Required           | Variables       |
 | `CF_R2_ACCESS_KEY_ID`, `CF_R2_SECRET_ACCESS_KEY`             | Required                                  | Required           | Secrets         |
-| `NEXT_PUBLIC_SENTRY_DSN`                                     | Optional; enables browser error reporting | Unused after build | Public variable |
+| `NEXT_PUBLIC_SENTRY_DSN`                                     | Optional; enables error reporting         | Uses compiled DSN  | Public variable |
 | `SENTRY_AUTH_TOKEN`                                          | Optional, for source-map uploads          | Unused             | Build secret    |
+
+Browser, server, and edge Sentry configurations use the same `NEXT_PUBLIC_SENTRY_DSN`. Set it before building and rebuild after changing it; runtime-only changes do not replace the compiled DSN.
 
 The Google OAuth callback is `<origin>/api/auth/callback/google`; authorize the staging callback separately. Use staging credentials and storage for staging. Do not disable environment validation for a real deployment or commit local environment files.
 
