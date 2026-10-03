@@ -5,16 +5,18 @@ import { betterAuth } from "better-auth";
 import { db } from "@invoicely/db";
 
 const isCloudflarePreview = process.env.CLOUDFLARE_PREVIEW === "true";
-const cloudflarePreviewHost = "*-invoicely-web.lucky-fire-9341.workers.dev";
+const cloudflarePreviewHosts = isCloudflarePreview
+  ? [`*.preview.${new URL(process.env.BETTER_AUTH_URL ?? "").hostname}`]
+  : [];
 
 export const serverAuth = betterAuth({
   ...(isCloudflarePreview && {
     // Sessions and API routes stay on this Worker's own preview hostname.
     baseURL: {
-      allowedHosts: [cloudflarePreviewHost],
+      allowedHosts: cloudflarePreviewHosts,
       protocol: "https" as const,
     },
-    trustedOrigins: () => [`https://${cloudflarePreviewHost}`],
+    trustedOrigins: () => cloudflarePreviewHosts.map((host) => `https://${host}`),
   }),
   plugins: [
     oAuthProxy({

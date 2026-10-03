@@ -5,6 +5,17 @@
   "compatibility_date": "2026-10-03",
   "compatibility_flags": ["nodejs_compat"],
   "keep_vars": true,
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "invoicely.gg", "custom_domain": true },
+    {
+      "pattern": "preview.invoicely.gg",
+      "custom_domain": true,
+      "enabled": false,
+      "previews_enabled": true,
+    },
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
@@ -24,6 +35,8 @@
   "env": {
     "staging": {
       "name": "invoicely-web-staging",
+      "routes": [],
+      "workers_dev": true,
       "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "invoicely-web-staging" }],
       "r2_buckets": [{ "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "invoicely-next-cache-staging" }],
       "durable_objects": {
