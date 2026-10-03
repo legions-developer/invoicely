@@ -6,6 +6,8 @@
 
 Modern, open-source invoice generation platform built with Next.js, tRPC, and TypeScript.
 
+For Cloudflare Workers hosting with OpenNext, follow the [deployment guide](docs/cloudflare.md), including staging validation and domain cutover.
+
 > [!CAUTION]
 > We do not allow vibe coding. Your PR will be rejected if the code quality is poor and vibe coded.
 
@@ -13,7 +15,7 @@ Modern, open-source invoice generation platform built with Next.js, tRPC, and Ty
 
 ### Prerequisites
 
-- **Node.js**: Version 20 or higher
+- **Node.js**: Version 22 or higher
 - **Yarn**: Version 4.9.1 or higher (automatically managed via `packageManager` field)
 - **PostgreSQL**: Database for storing application data
 

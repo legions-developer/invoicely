@@ -35,7 +35,6 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
-
     "db:generate": {
       "cache": false,
       "env": ["DATABASE_URL"],
@@ -56,6 +55,56 @@
       "cache": false,
       "env": ["DATABASE_URL"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"]
+    },
+    "build:cloudflare": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", ".dev.vars*"],
+      "outputs": [".open-next/**", ".next/**", "!.next/cache/**"],
+      "cache": false,
+      "env": [
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "DATABASE_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "CF_R2_BUCKET_NAME",
+        "CF_R2_PUBLIC_DOMAIN",
+        "CF_R2_ENDPOINT",
+        "CF_R2_ACCESS_KEY_ID",
+        "CF_R2_SECRET_ACCESS_KEY",
+        "SENTRY_AUTH_TOKEN",
+        "NEXT_PUBLIC_*"
+      ],
+      "passThroughEnv": ["WRANGLER_SEND_METRICS", "CI", "NEXT_TELEMETRY_DISABLED"]
+    },
+    "preview:cloudflare": {
+      "dependsOn": ["build:cloudflare"],
+      "cache": false,
+      "persistent": true,
+      "env": [
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "DATABASE_URL",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
+        "CF_R2_BUCKET_NAME",
+        "CF_R2_PUBLIC_DOMAIN",
+        "CF_R2_ENDPOINT",
+        "CF_R2_ACCESS_KEY_ID",
+        "CF_R2_SECRET_ACCESS_KEY",
+        "SENTRY_AUTH_TOKEN",
+        "NEXT_PUBLIC_*"
+      ],
+      "passThroughEnv": ["WRANGLER_SEND_METRICS", "NEXTJS_ENV"]
+    },
+    "deploy:cloudflare": {
+      "dependsOn": ["build:cloudflare"],
+      "cache": false,
+      "passThroughEnv": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "WRANGLER_SEND_METRICS"]
+    },
+    "test:cloudflare": {
+      "cache": false,
+      "env": ["BASE_URL", "SMOKE_TIMEOUT_MS"]
     }
   }
 }
