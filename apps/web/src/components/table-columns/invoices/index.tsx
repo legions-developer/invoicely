@@ -17,6 +17,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -34,6 +35,7 @@ import MigrateToDbModal from "./migrateToDbModal";
 import { Invoice } from "@/types/common/invoice";
 import { CalendarPenIcon } from "@/assets/icons";
 import { Button } from "@/components/ui/button";
+import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 
 const columnHelper = createColumnHelper<Invoice>();
@@ -132,24 +134,34 @@ export const columns = [
 
       return (
         <div key={id} className="flex flex-row items-center gap-2">
+          <Button asChild variant="secondary" size="xs" className="focus-visible:ring-ring focus-visible:ring-2">
+            <Link href={`/edit/${type}/${id}`}>View</Link>
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="xs">
-                View
+              <Button
+                variant="ghost"
+                size="icon"
+                className="focus-visible:ring-ring focus-visible:ring-2"
+                aria-label={`Actions for invoice ${invoiceFields.invoiceDetails.prefix}${invoiceFields.invoiceDetails.serialNumber}`}
+              >
+                <Ellipsis aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <UpdateStatusModal invoiceId={id} type={type} currentStatus={status} />
-              <Link href={`/edit/${type}/${id}`}>
-                <DropdownMenuItem>
-                  <FilePenIcon />
-                  <span>Edit</span>
+              <DropdownMenuGroup>
+                <UpdateStatusModal invoiceId={id} type={type} currentStatus={status} />
+                <DropdownMenuItem asChild>
+                  <Link href={`/edit/${type}/${id}`}>
+                    <FilePenIcon />
+                    <span>Edit</span>
+                  </Link>
                 </DropdownMenuItem>
-              </Link>
-              {type === "local" && (
-                <MigrateToDbModal invoiceId={id} invoiceFields={invoiceFields} status={status} paidAt={paidAt} />
-              )}
-              <DeleteInvoiceModal invoiceId={id} type={type} />
+                {type === "local" && (
+                  <MigrateToDbModal invoiceId={id} invoiceFields={invoiceFields} status={status} paidAt={paidAt} />
+                )}
+                <DeleteInvoiceModal invoiceId={id} type={type} />
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

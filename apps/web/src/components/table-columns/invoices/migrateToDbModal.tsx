@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { moveInvoiceToServer } from "@/lib/invoice/move-invoice-to-server";
 import { deleteInvoiceFromIDB } from "@/lib/indexdb-queries/deleteInvoice";
 import type { InvoiceStatusType } from "@invoicely/db/schema/invoice";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -49,19 +50,12 @@ type MigrateSchema = z.infer<typeof migrateSchema>;
 
 const MigrateToDbModal = ({ invoiceId, invoiceFields, status, paidAt }: MigrateToDbModalProps) => {
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, isPending: isSessionPending } = useSession();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const migrateMutation = useMutation(
-    trpc.invoice.migrateToDb.mutationOptions({
-      onError: (error) => {
-        toast.error("Failed to migrate invoice!", {
-          description: parseCatchError(error),
-        });
-      },
-    }),
-  );
+  const migrateMutation = useMutation(trpc.invoice.migrateToDb.mutationOptions());
+  const canMove = !isSessionPending && !!session?.user?.allowedSavingData;
 
   const form = useForm<MigrateSchema>({
     resolver: zodResolver(migrateSchema),
@@ -71,44 +65,49 @@ const MigrateToDbModal = ({ invoiceId, invoiceFields, status, paidAt }: MigrateT
   });
 
   const onSubmit = async () => {
-    const result = await migrateMutation.mutateAsync({
-      invoiceFields,
-      status,
-      paidAt,
-    });
+    if (!canMove) return;
 
-    if (!result.success) return;
-
+    let result: Awaited<ReturnType<typeof moveInvoiceToServer>>;
     try {
-      await deleteInvoiceFromIDB(invoiceId);
-    } catch {
-      toast.warning("Invoice saved to database, but failed to remove from local storage.", {
-        description: "You may see a duplicate until you manually delete the local copy.",
+      result = await moveInvoiceToServer(
+        { invoiceId, invoiceFields, status, paidAt },
+        { saveInvoice: migrateMutation.mutateAsync, deleteLocalInvoice: deleteInvoiceFromIDB },
+      );
+    } catch (error) {
+      toast.error("Could not move invoice to server", {
+        description: `${parseCatchError(error)} Your local invoice has been kept.`,
+      });
+      return;
+    }
+
+    if (result.localCopyRemoved) {
+      toast.success("Invoice moved to server", {
+        description: "The invoice is saved to your account and its local copy has been removed.",
+      });
+    } else {
+      toast.warning("Invoice saved to server; local copy still exists", {
+        description: "The local copy could not be removed. Delete it manually instead of moving it again.",
       });
     }
 
-    toast.success("Invoice migrated successfully!", {
-      description: "Your local invoice has been saved to the database.",
-    });
-
-    queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() });
-    queryClient.invalidateQueries({ queryKey: ["idb-invoices"] });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: trpc.invoice.list.queryKey() }),
+      queryClient.invalidateQueries({ queryKey: ["idb-invoices"] }),
+    ]);
     setOpen(false);
   };
 
-  if (!session?.user?.allowedSavingData) {
-    return null;
-  }
+  const { isSubmitting } = form.formState;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(nextOpen) => !isSubmitting && setOpen(nextOpen)}>
       <DialogTrigger asChild>
         <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
           <DatabaseIcon />
-          <span>Migrate to Database</span>
+          <span>Move to server</span>
         </DropdownMenuItem>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent hideCloseButton={isSubmitting}>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeaderContainer>
@@ -116,18 +115,31 @@ const MigrateToDbModal = ({ invoiceId, invoiceFields, status, paidAt }: MigrateT
                 <DatabaseIcon />
               </DialogIcon>
               <DialogHeader>
-                <DialogTitle>Migrate to Database</DialogTitle>
+                <DialogTitle>Move to server</DialogTitle>
                 <DialogDescription>
-                  This will save your local invoice to the server database and remove it from local storage.
+                  Save this invoice to your account and remove it from this browser.
                 </DialogDescription>
               </DialogHeader>
             </DialogHeaderContainer>
             <DialogContentContainer>
               <Alert>
-                <AlertTitle>What will happen?</AlertTitle>
+                <AlertTitle>
+                  {isSessionPending
+                    ? "Checking your account"
+                    : !session?.user
+                      ? "Sign in to continue"
+                      : !canMove
+                        ? "Allow Data Sync is off"
+                        : "Your local copy stays safe"}
+                </AlertTitle>
                 <AlertDescription>
-                  Your invoice will be uploaded to the server database. Once saved successfully, the local copy will be
-                  automatically removed. The invoice status and all data will be preserved.
+                  {isSessionPending
+                    ? "Please wait while we check whether server storage is enabled."
+                    : !session?.user
+                      ? "Sign in from the sidebar, then enable Allow Data Sync to move this invoice to your account."
+                      : !canMove
+                        ? "Enable Allow Data Sync in the sidebar to move this invoice to your account."
+                        : "The local copy is removed only after the server confirms it has saved your invoice, including its images, status, and payment date."}
                 </AlertDescription>
               </Alert>
               <div className="flex flex-col gap-1.5">
@@ -137,9 +149,13 @@ const MigrateToDbModal = ({ invoiceId, invoiceFields, status, paidAt }: MigrateT
             </DialogContentContainer>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" disabled={isSubmitting}>
+                  Cancel
+                </Button>
               </DialogClose>
-              <FormButton type="submit">Migrate</FormButton>
+              <FormButton type="submit" disabled={!canMove}>
+                Move to server
+              </FormButton>
             </DialogFooter>
           </form>
         </Form>
