@@ -101,10 +101,6 @@
       "dependsOn": ["build:cloudflare"],
       "cache": false,
       "passThroughEnv": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "WRANGLER_SEND_METRICS"]
-    },
-    "test:cloudflare": {
-      "cache": false,
-      "env": ["BASE_URL", "SMOKE_TIMEOUT_MS"]
     }
   }
 }

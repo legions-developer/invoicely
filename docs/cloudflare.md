@@ -26,7 +26,6 @@ Run commands from the repository root:
 ```sh
 yarn build:cloudflare        # Create the Worker and static assets
 yarn preview:cloudflare      # Build, then start a local Worker preview
-yarn test:cloudflare         # Check an already-running local preview
 yarn deploy:cloudflare       # Build, then deploy the production Worker
 yarn build                   # Build ordinary Next.js output
 ```
@@ -96,7 +95,7 @@ Use `--env staging` for both steps. Rebuild with production values before deploy
 
 ## Required staging checks
 
-A successful build, local HTTP smoke check, or Wrangler dry run does not establish that authenticated application flows work on Cloudflare. Validate these on the deployed staging Worker before switching the production domain:
+A successful build or Wrangler dry run does not establish that authenticated application flows work on Cloudflare. Validate these on the deployed staging Worker before switching the production domain:
 
 - Landing pages, blog pages, unknown blog slugs, and missing-page responses.
 - Google login, session persistence/refresh, and logout.
