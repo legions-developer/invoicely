@@ -5,10 +5,10 @@ import { ZodCreateInvoiceSchema } from "@/zod-schemas/invoice/create-invoice";
 import { Document, Page, Text, View, Image, Font } from "@react-pdf/renderer";
 import { getSubTotalValue, getTotalValue } from "@/constants/pdf-helpers";
 import { resolveBodyFontFamily } from "@/lib/invoice/resolve-pdf-font";
+import { formatAmountInWords } from "@/lib/invoice/amount-in-words";
 import { GEIST_FONT, GEIST_MONO_FONT } from "@/constants/pdf-fonts";
 import { formatCurrencyText } from "@/constants/currency";
 import { createTw } from "react-pdf-tailwind";
-import { toWords } from "number-to-words";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import React from "react";
@@ -279,7 +279,9 @@ const VercelPdf: React.FC<{ data: ZodCreateInvoiceSchema }> = ({ data }) => {
             </View>
             <View style={tw("flex flex-col gap-0.5 p-4 border-t border-borderColor")}>
               <Text style={tw("text-3xs font-normal text-neutral-500")}>Invoice Total (in words)</Text>
-              <Text style={tw("text-2xs font-normal text-neutral-300")}>{toWords(total)}</Text>
+              <Text style={tw("text-2xs font-normal text-neutral-300")}>
+                {formatAmountInWords(total, data.invoiceDetails.currency)}
+              </Text>
             </View>
           </View>
         </View>
