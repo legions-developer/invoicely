@@ -9,8 +9,8 @@
     "lint": "next lint",
     "build:cloudflare": "opennextjs-cloudflare build",
     "preview:cloudflare": "opennextjs-cloudflare preview",
-    "deploy:cloudflare": "opennextjs-cloudflare deploy",
-    "deploy:cloudflare:preview": "CLOUDFLARE_PREVIEW=true opennextjs-cloudflare populateCache local && wrangler preview"
+    "deploy:cloudflare": "node ../../scripts/production.mjs deploy",
+    "deploy:cloudflare:preview": "node ../../scripts/preview.mjs deploy"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
