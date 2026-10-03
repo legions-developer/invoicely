@@ -62,6 +62,7 @@
       "outputs": [".open-next/**", ".next/**", "!.next/cache/**"],
       "cache": false,
       "env": [
+        "CLOUDFLARE_PREVIEW",
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
         "DATABASE_URL",
@@ -101,6 +102,18 @@
       "dependsOn": ["build:cloudflare"],
       "cache": false,
       "passThroughEnv": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "WRANGLER_SEND_METRICS"]
+    },
+    "deploy:cloudflare:preview": {
+      "dependsOn": ["build:cloudflare"],
+      "cache": false,
+      "passThroughEnv": [
+        "CLOUDFLARE_PREVIEW",
+        "CLOUDFLARE_API_TOKEN",
+        "CLOUDFLARE_ACCOUNT_ID",
+        "WRANGLER_SEND_METRICS",
+        "WORKERS_CI*",
+        "CI"
+      ]
     }
   }
 }

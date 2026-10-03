@@ -17,6 +17,10 @@
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }],
   "images": { "binding": "IMAGES" },
   "observability": { "enabled": true },
+  "previews": {
+    "vars": { "CLOUDFLARE_PREVIEW": "true" },
+    "images": { "binding": "IMAGES" },
+  },
   "env": {
     "staging": {
       "name": "invoicely-web-staging",

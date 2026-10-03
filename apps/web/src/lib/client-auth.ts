@@ -4,7 +4,8 @@ import { env } from "@invoicely/utilities";
 import type { serverAuth } from "./auth";
 
 export const clientAuth = createAuthClient({
-  baseURL: env.NEXT_PUBLIC_BASE_URL,
+  // Preview deployments serve their own auth routes even when sharing production credentials.
+  baseURL: typeof window === "undefined" ? env.NEXT_PUBLIC_BASE_URL : window.location.origin,
   plugins: [inferAdditionalFields<typeof serverAuth>()],
 });
 

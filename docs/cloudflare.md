@@ -36,19 +36,21 @@ The root Cloudflare scripts use Turbo; preview and deploy depend on the Cloudfla
 
 Configure values separately in Workers **Build variables and secrets** and Worker **Variables and Secrets**. Build settings do not become runtime settings. This application's environment validator also loads server configuration during the build, so configure the server values in both places.
 
-| Name                                                         | Build                                     | Runtime            | Store as        |
-| ------------------------------------------------------------ | ----------------------------------------- | ------------------ | --------------- |
-| `NEXT_PUBLIC_BASE_URL`, `NEXT_PUBLIC_TRPC_BASE_URL`          | Required; compiled into browser code      | Required           | Variables       |
-| `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_POSTHOG_KEY`        | Required; compiled into browser code      | Required           | Variables       |
-| `DATABASE_URL`                                               | Required                                  | Required           | Secret          |
-| `GOOGLE_CLIENT_ID`                                           | Required                                  | Required           | Variable        |
-| `GOOGLE_CLIENT_SECRET`                                       | Required                                  | Required           | Secret          |
-| `BETTER_AUTH_URL`                                            | Set to the selected origin                | Required           | Variable        |
-| `BETTER_AUTH_SECRET`                                         | Set for auth initialization               | Required           | Secret          |
-| `CF_R2_ENDPOINT`, `CF_R2_BUCKET_NAME`, `CF_R2_PUBLIC_DOMAIN` | Required                                  | Required           | Variables       |
-| `CF_R2_ACCESS_KEY_ID`, `CF_R2_SECRET_ACCESS_KEY`             | Required                                  | Required           | Secrets         |
-| `NEXT_PUBLIC_SENTRY_DSN`                                     | Optional; enables browser error reporting | Unused after build | Public variable |
-| `SENTRY_AUTH_TOKEN`                                          | Optional, for source-map uploads          | Unused             | Build secret    |
+| Name                                                         | Build                                | Runtime           | Store as        |
+| ------------------------------------------------------------ | ------------------------------------ | ----------------- | --------------- |
+| `NEXT_PUBLIC_BASE_URL`, `NEXT_PUBLIC_TRPC_BASE_URL`          | Required; compiled into browser code | Required          | Variables       |
+| `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_POSTHOG_KEY`        | Required; compiled into browser code | Required          | Variables       |
+| `DATABASE_URL`                                               | Required                             | Required          | Secret          |
+| `GOOGLE_CLIENT_ID`                                           | Required                             | Required          | Variable        |
+| `GOOGLE_CLIENT_SECRET`                                       | Required                             | Required          | Secret          |
+| `BETTER_AUTH_URL`                                            | Set to the selected origin           | Required          | Variable        |
+| `BETTER_AUTH_SECRET`                                         | Set for auth initialization          | Required          | Secret          |
+| `CF_R2_ENDPOINT`, `CF_R2_BUCKET_NAME`, `CF_R2_PUBLIC_DOMAIN` | Required                             | Required          | Variables       |
+| `CF_R2_ACCESS_KEY_ID`, `CF_R2_SECRET_ACCESS_KEY`             | Required                             | Required          | Secrets         |
+| `NEXT_PUBLIC_SENTRY_DSN`                                     | Optional; enables error reporting    | Uses compiled DSN | Public variable |
+| `SENTRY_AUTH_TOKEN`                                          | Optional, for source-map uploads     | Unused            | Build secret    |
+
+Browser, server, and edge Sentry configurations use the same `NEXT_PUBLIC_SENTRY_DSN`. Set it before building and rebuild after changing it; runtime-only changes do not replace the compiled DSN.
 
 The Google OAuth callback is `<origin>/api/auth/callback/google`; authorize the staging callback separately. Use staging credentials and storage for staging. Do not disable environment validation for a real deployment or commit local environment files.
 
@@ -92,6 +94,31 @@ yarn workspace web deploy:cloudflare --env staging
 ```
 
 Use `--env staging` for both steps. Rebuild with production values before deploying production; public URLs are embedded during the build. To check bundling without deploying, run `yarn workspace web wrangler deploy --dry-run --env staging` after the staging build, or `yarn workspace web wrangler deploy --dry-run --env ""` after the production build. Use the OpenNext deployment script for real deployments so it also populates the incremental cache.
+
+## Automatic branch and pull request previews
+
+Enable **Preview builds** in the `invoicely-web` Worker's Git build settings. Cloudflare builds non-production branches and posts their Preview URLs on associated pull requests. This uses [native Worker Previews](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/), separately from the named `staging` Worker above.
+
+Keep the repository root as the build root and configure:
+
+| Setting                   | Value                                          |
+| ------------------------- | ---------------------------------------------- |
+| Build command             | `yarn build:cloudflare`                        |
+| Production deploy command | `yarn workspace web deploy:cloudflare`         |
+| Preview command           | `yarn workspace web deploy:cloudflare:preview` |
+| Preview build variable    | `CLOUDFLARE_PREVIEW=true`                      |
+
+Set `CLOUDFLARE_PREVIEW=true` in preview build settings, starting with **Build variables and secrets → Previews Base**; leave it unset for production. The checked-in `previews.vars` configuration also supplies it at runtime. Copy the required application values into both build and runtime **Previews Base** settings before creating previews. The selected setup reuses the existing database, uploaded-asset bucket, Google client, and auth secret, so changes made through a preview affect that shared data. [Preview Base settings](https://developers.cloudflare.com/workers/previews/configuration/) initialize new previews; changes to Base secrets do not update already-created previews.
+
+An existing branch Preview has its own build settings. Select its branch from the environment dropdown beside the Worker name, then open **Settings → Builds** and update its build command, Preview command, root directory, and build variables and secrets, including `CLOUDFLARE_PREVIEW=true`. Also check its runtime **Variables and Secrets**. Updating **Previews Base** alone can leave that existing branch with the original command and an empty variable list. Save the branch settings before retrying its build.
+
+Browser auth and tRPC requests use the current preview origin. Preview server auth accepts only HTTPS hosts matching `*-invoicely-web.lucky-fire-9341.workers.dev`; update this account-specific allowlist if the Worker or account subdomain changes. Keep `BETTER_AUTH_URL=https://invoicely.gg` in preview build and runtime settings. The public production URL variables can remain the canonical metadata and server fallback URLs.
+
+Google login uses Better Auth's [OAuth proxy](https://better-auth.com/docs/plugins/oauth-proxy) through the existing authorized `https://invoicely.gg/api/auth/callback/google` callback, then creates the session on the preview origin. Deploy this auth version to the application serving `https://invoicely.gg` before testing preview sign-in, even if that application is still hosted on Vercel. Production and previews must use the same Better Auth version and `BETTER_AUTH_SECRET`, along with the existing Google credentials. No per-preview Google callback registration is needed after the production proxy is available. Keep automatic builds limited to trusted repository branches because these previews use shared application credentials and data.
+
+The hosted Preview command populates the build-time Next.js cache into the Preview's own static assets, then runs `wrangler preview`. New previews start with dashboard Preview Base settings; existing previews retain their own settings. Unlike production, this cache is read-only: previews support the current static pages and dynamic request handling, but do not perform ISR or background revalidation. Revisit this configuration if server-side timed revalidation or `revalidatePath`/`revalidateTag` is added. Preview caches have no R2 or Durable Object queue bindings; a [Preview service binding targets production](https://developers.cloudflare.com/workers/previews/resources/#service-bindings), so the production self-reference must not be copied into the preview configuration.
+
+For a manual hosted branch preview, use `yarn deploy:cloudflare:preview` from the repository root; it sets the preview flag, builds, and uploads. `yarn preview:cloudflare` remains the local Workers development command. Do not use the local command as the dashboard Preview command.
 
 ## Required staging checks
 
