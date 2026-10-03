@@ -1,10 +1,11 @@
+// Image Component by OriginUI.com
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { AlertCircleIcon, LoaderCircleIcon, XIcon } from "lucide-react";
+
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { ImageSparkleIcon } from "@/assets/icons";
-import { useId, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ImageInputProps {
@@ -12,172 +13,131 @@ interface ImageInputProps {
   maxSizeMB?: number;
   className?: string;
   defaultUrl?: string;
-  compact?: boolean;
   allowPreview?: boolean;
   isLoading?: boolean;
-  loadingLabel?: string;
   disableIcon?: boolean;
   onFileUpload?: (file: string) => void;
-  onBase64Change?: (base64: string | undefined) => void | Promise<void>;
+  onBase64Change?: (base64: string | undefined) => void;
   onFileRemove?: (file: string) => void;
   onFileChange?: (file: File) => void;
 }
 
-export function readFileAsBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(new Error("This image couldn't be read. Please choose it again."));
-    reader.onabort = () => reject(new Error("Reading the image was cancelled."));
-    reader.readAsDataURL(file);
-  });
-}
-
 export default function ImageInput({
-  title = "Upload an image",
+  title = "Drag & Drop or Click to Upload",
   maxSizeMB = 5,
   className,
   defaultUrl,
-  compact = false,
   allowPreview = true,
   isLoading = false,
-  loadingLabel = "Saving…",
   disableIcon = false,
   onFileUpload,
   onBase64Change,
   onFileRemove,
   onFileChange,
 }: ImageInputProps) {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [uploadError, setUploadError] = useState<string>();
-  const processingRef = useRef(false);
-  const descriptionId = useId();
-  const isBusy = isLoading || isProcessing;
-  const maxSize = maxSizeMB * 1_000_000;
-  const sizeLabel = maxSizeMB < 1 ? `${maxSizeMB * 1000} KB` : `${maxSizeMB} MB`;
+  const maxSize = maxSizeMB * 1024 * 1024; // 5MB default
 
   const [
     { files, isDragging, errors },
-    {
-      handleDragEnter,
-      handleDragLeave,
-      handleDragOver,
-      handleDrop,
-      openFileDialog,
-      removeFile,
-      clearFiles,
-      getInputProps,
-    },
+    { handleDragEnter, handleDragLeave, handleDragOver, handleDrop, openFileDialog, removeFile, getInputProps },
   ] = useFileUpload({
-    accept: "image/png, image/jpeg",
+    accept: "image/png, image/jpeg, image/jpg",
     maxSize,
-    onFilesAdded: async (addedFiles) => {
-      const addedFile = addedFiles[0];
-      if (!addedFile || isLoading || processingRef.current) return;
-      processingRef.current = true;
-      setIsProcessing(true);
-      setUploadError(undefined);
-      try {
-        const file = addedFile.file as File;
-        if (onBase64Change) await onBase64Change(await readFileAsBase64(file));
-        onFileChange?.(file);
-        onFileUpload?.(addedFile.preview || "");
-        if (!allowPreview) clearFiles();
-      } catch (error) {
-        setUploadError(error instanceof Error ? error.message : "Couldn't save this image. Please try again.");
-        clearFiles();
-      } finally {
-        processingRef.current = false;
-        setIsProcessing(false);
+    onFilesAdded: (files) => {
+      // if no file is added, return
+      if (!files[0]) return;
+
+      // onFileChange is the function that is called when the file is changed
+      if (onFileChange) {
+        onFileChange(files[0].file as File);
+      }
+
+      // preview url is the url of the image
+      if (onFileUpload) {
+        onFileUpload(files[0].preview || "");
+      }
+
+      // if base64 change is not provided, return
+      if (onBase64Change) {
+        // converting the file to base64
+        const reader = new FileReader();
+        reader.onload = () => {
+          onBase64Change(reader.result as string);
+        };
+        reader.readAsDataURL(files[0].file as File);
       }
     },
   });
 
   const previewUrl = files[0]?.preview || defaultUrl || "";
-  const error = uploadError || errors[0];
 
   return (
     <div className={cn("flex w-full flex-col gap-1.5", className)}>
       <div className="relative">
-        <input {...getInputProps({ disabled: isBusy, tabIndex: -1 })} hidden aria-label={title} />
-        <button
-          type="button"
-          disabled={isBusy}
-          aria-label={previewUrl && allowPreview ? "Replace image" : title}
-          aria-describedby={descriptionId}
-          aria-busy={isBusy}
+        {/* Drop area */}
+        <div
+          role="button"
           onClick={openFileDialog}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           data-dragging={isDragging || undefined}
-          className={cn(
-            "border-input bg-muted/15 hover:border-primary/50 hover:bg-accent/50 data-[dragging=true]:border-primary data-[dragging=true]:bg-accent focus-visible:ring-ring relative flex w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed p-4 text-center outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-60",
-            compact ? "min-h-[180px]" : "aspect-square",
-          )}
+          className="border-input hover:bg-accent/50 data-[dragging=true]:bg-accent/50 relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-md border border-dashed p-4 transition-colors has-disabled:pointer-events-none has-disabled:opacity-50 has-[img]:border-none"
         >
-          {isBusy ? (
-            <span className="flex flex-col items-center justify-center gap-2" role="status">
-              <LoaderCircleIcon className="size-5 animate-spin motion-reduce:animate-none" aria-hidden="true" />
-              <span className="text-muted-foreground text-xs">{loadingLabel}</span>
-            </span>
-          ) : previewUrl && allowPreview ? (
-            <img
-              src={previewUrl}
-              alt={files[0]?.file?.name || "Uploaded image"}
-              className="absolute inset-0 size-full object-contain p-3"
-            />
+          <input {...getInputProps()} className="sr-only" aria-label="Upload file" />
+          {previewUrl && allowPreview && !isLoading ? (
+            <div className="absolute inset-0">
+              <img src={previewUrl} alt={files[0]?.file?.name || "Uploaded image"} className="size-full object-cover" />
+            </div>
+          ) : isLoading ? (
+            <div className="flex flex-col items-center justify-center gap-2">
+              <LoaderCircleIcon size={20} className={cn("animate-spin")} />
+              <span className="text-muted-foreground text-xs">Uploading...</span>
+            </div>
           ) : (
-            <span className="flex flex-col items-center justify-center gap-2">
+            <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
               {!disableIcon && (
-                <span
-                  className="bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl"
+                <div
+                  className="bg-muted mb-2 flex size-7 shrink-0 items-center justify-center rounded-full sm:size-9"
                   aria-hidden="true"
                 >
-                  <ImageSparkleIcon className="size-5" />
-                </span>
+                  <ImageSparkleIcon className="size-4" />
+                </div>
               )}
-              <span className="text-sm font-medium">{title}</span>
-              <span className="text-muted-foreground text-xs">Click to browse or drop here</span>
-            </span>
+              <p className="text-[10px] font-medium sm:mb-1.5 sm:text-xs">{title}</p>
+              {errors.length > 0 ? (
+                <div className="flex items-center gap-1 text-[10px] text-red-500" role="alert">
+                  {!disableIcon && <AlertCircleIcon className="size-3 shrink-0" />}
+                  <span>{errors[0]}</span>
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-[10px]">Max size: {maxSizeMB * 1000}Kb (PNG, JPG)</p>
+              )}
+            </div>
           )}
-          <span
-            id={descriptionId}
-            className={cn(
-              "text-muted-foreground mt-2 text-[11px]",
-              (isBusy || (previewUrl && allowPreview)) && "sr-only",
-            )}
-          >
-            PNG or JPG · up to {sizeLabel}
-          </span>
-        </button>
-        {previewUrl && allowPreview && !isBusy && (
-          <button
-            type="button"
-            className="bg-background/90 text-foreground focus-visible:ring-ring absolute top-2 right-2 flex size-8 cursor-pointer items-center justify-center rounded-full border shadow-sm outline-none focus-visible:ring-2"
-            onClick={async () => {
-              const fileId = files[0]?.id;
-              if (fileId) removeFile(fileId);
-              onFileRemove?.(fileId || "");
-              try {
-                await onBase64Change?.(undefined);
-              } catch (error) {
-                setUploadError(error instanceof Error ? error.message : "Couldn't remove this image.");
-              }
-            }}
-            aria-label="Remove image"
-          >
-            <XIcon className="size-4" aria-hidden="true" />
-          </button>
+        </div>
+        {previewUrl && allowPreview && !isLoading && (
+          <div className="absolute top-4 right-4">
+            <button
+              type="button"
+              className="focus-visible:border-ring focus-visible:ring-ring/50 z-50 flex size-5 cursor-pointer items-center justify-center rounded-full bg-black/60 text-white transition-[color,box-shadow] outline-none hover:bg-black/80 focus-visible:ring-[3px]"
+              onClick={() => {
+                removeFile(files[0]?.id);
+                if (onFileRemove) {
+                  onFileRemove(files[0]?.id);
+                }
+                if (onBase64Change) {
+                  onBase64Change(undefined);
+                }
+              }}
+              aria-label="Remove image"
+            >
+              <XIcon className="size-3" aria-hidden="true" />
+            </button>
+          </div>
         )}
       </div>
-      {error && (
-        <p className="text-destructive flex items-start gap-1.5 text-xs" role="alert">
-          <AlertCircleIcon className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-          {error}
-        </p>
-      )}
     </div>
   );
 }
