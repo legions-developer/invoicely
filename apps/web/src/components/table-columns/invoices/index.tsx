@@ -52,13 +52,6 @@ export const columns = [
     enableSorting: false,
   }),
 
-  columnHelper.accessor((row) => row.id, {
-    id: "id",
-    header: ({ column }) => <HeaderColumnButton column={column}>ID</HeaderColumnButton>,
-    cell: ({ row }) => <div className="text-muted-foreground text-xs">{row.original.id}</div>,
-    enableSorting: false,
-  }),
-
   columnHelper.accessor(
     (row) => `${row.invoiceFields.invoiceDetails.prefix}${row.invoiceFields.invoiceDetails.serialNumber}`,
     {
@@ -239,14 +232,6 @@ export const columnConfig = [
       { label: "", value: "local", icon: <Badge variant="default">Local</Badge> },
       { label: "", value: "server", icon: <Badge variant="rose">Server</Badge> },
     ])
-    .build(),
-  // Id
-  columnConfigHelper
-    .text()
-    .id("id")
-    .displayName("ID")
-    .accessor((row) => row.id)
-    .icon(IdBadgeIcon)
     .build(),
   // Invoice Date
   columnConfigHelper
