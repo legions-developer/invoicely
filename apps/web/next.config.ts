@@ -1,9 +1,6 @@
-import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import { withContentCollections } from "@content-collections/next";
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
-
-initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   /* config options here */
