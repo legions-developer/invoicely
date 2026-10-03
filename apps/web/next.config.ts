@@ -7,6 +7,15 @@ initOpenNextCloudflareForDev();
 
 const nextConfig: NextConfig = {
   /* config options here */
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "^[^.]+\\.preview\\.invoicely\\.gg$" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
