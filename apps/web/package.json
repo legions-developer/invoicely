@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test:amount-in-words": "node --test tests/amount-in-words.test.mjs"
+    "test:amount-in-words": "node --test tests/amount-in-words.test.mjs",
+    "test:font-loader": "node --test tests/google-font-loader.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
