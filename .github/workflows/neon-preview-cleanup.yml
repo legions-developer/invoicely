@@ -1,0 +1,61 @@
+name: Clean up Neon preview database
+
+on:
+  delete:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: neon-preview-cleanup-${{ github.event.ref }}
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    if: github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      # Native Workers Builds time out after 20 minutes. Let builds already
+      # running at branch deletion finish before removing their databases.
+      - name: Allow in-flight Cloudflare builds to finish
+        run: sleep 1200
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "22"
+      - name: Check that the git branch is still deleted
+        id: branch
+        env:
+          PREVIEW_BRANCH: ${{ github.event.ref }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFile } from "node:fs/promises";
+          const ref = encodeURIComponent(process.env.PREVIEW_BRANCH);
+          const response = await fetch(`${process.env.GITHUB_API_URL}/repos/${process.env.GITHUB_REPOSITORY}/git/ref/heads/${ref}`, {
+            headers: {
+              Authorization: `Bearer ${process.env.GH_TOKEN}`,
+              Accept: "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+            },
+            signal: AbortSignal.timeout(30_000),
+          });
+          if (![200, 404].includes(response.status)) {
+            throw new Error(`GitHub branch check failed (HTTP ${response.status}); no databases will be deleted.`);
+          }
+          const deleted = response.status === 404;
+          await appendFile(process.env.GITHUB_OUTPUT, `deleted=${deleted}\n`);
+          if (!deleted) console.log("The git branch was recreated; keeping its preview databases.");
+          NODE
+      - name: Delete only this branch's preview database
+        if: steps.branch.outputs.deleted == 'true'
+        run: node scripts/preview.mjs cleanup
+        env:
+          PREVIEW_BRANCH: ${{ github.event.ref }}
+          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          NEON_PARENT_BRANCH_ID: ${{ vars.NEON_PARENT_BRANCH_ID }}
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}

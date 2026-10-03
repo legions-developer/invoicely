@@ -29,7 +29,7 @@
     "db:migrate": "dotenv -- turbo run db:migrate",
     "db:push": "dotenv -- turbo run db:push",
     "db:studio": "dotenv -- turbo run db:studio",
-    "build:cloudflare": "turbo run build:cloudflare --filter=web",
+    "build:cloudflare": "node scripts/preview.mjs build",
     "preview:cloudflare": "turbo run preview:cloudflare --filter=web",
     "deploy:cloudflare": "turbo run deploy:cloudflare --filter=web",
     "deploy:cloudflare:preview": "CLOUDFLARE_PREVIEW=true turbo run deploy:cloudflare:preview --filter=web"
