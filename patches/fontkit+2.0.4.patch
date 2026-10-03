@@ -1,0 +1,55 @@
+diff --git a/node_modules/fontkit/dist/browser-module.mjs b/node_modules/fontkit/dist/browser-module.mjs
+--- a/node_modules/fontkit/dist/browser-module.mjs
++++ b/node_modules/fontkit/dist/browser-module.mjs
+@@ -3215,7 +3215,6 @@
+  **********************/ let $1a47b0c45c1c22fe$var$ConditionTable = new $6uUbQ$VersionedStruct($6uUbQ$uint16, {
+     1: {
+         axisIndex: $6uUbQ$uint16,
+-        axisIndex: $6uUbQ$uint16,
+         filterRangeMinValue: $1a47b0c45c1c22fe$var$F2DOT14,
+         filterRangeMaxValue: $1a47b0c45c1c22fe$var$F2DOT14
+     }
+diff --git a/node_modules/fontkit/dist/browser.cjs b/node_modules/fontkit/dist/browser.cjs
+--- a/node_modules/fontkit/dist/browser.cjs
++++ b/node_modules/fontkit/dist/browser.cjs
+@@ -3232,7 +3232,6 @@
+  **********************/ let $2e4adcda047b3383$var$ConditionTable = new $gfJaN$restructure.VersionedStruct($gfJaN$restructure.uint16, {
+     1: {
+         axisIndex: $gfJaN$restructure.uint16,
+-        axisIndex: $gfJaN$restructure.uint16,
+         filterRangeMinValue: $2e4adcda047b3383$var$F2DOT14,
+         filterRangeMaxValue: $2e4adcda047b3383$var$F2DOT14
+     }
+diff --git a/node_modules/fontkit/dist/main.cjs b/node_modules/fontkit/dist/main.cjs
+--- a/node_modules/fontkit/dist/main.cjs
++++ b/node_modules/fontkit/dist/main.cjs
+@@ -3253,7 +3253,6 @@
+  **********************/ let $2e4adcda047b3383$var$ConditionTable = new $elh9A$restructure.VersionedStruct($elh9A$restructure.uint16, {
+     1: {
+         axisIndex: $elh9A$restructure.uint16,
+-        axisIndex: $elh9A$restructure.uint16,
+         filterRangeMinValue: $2e4adcda047b3383$var$F2DOT14,
+         filterRangeMaxValue: $2e4adcda047b3383$var$F2DOT14
+     }
+diff --git a/node_modules/fontkit/dist/module.mjs b/node_modules/fontkit/dist/module.mjs
+--- a/node_modules/fontkit/dist/module.mjs
++++ b/node_modules/fontkit/dist/module.mjs
+@@ -3236,7 +3236,6 @@
+  **********************/ let $1a47b0c45c1c22fe$var$ConditionTable = new $52ZIf$VersionedStruct($52ZIf$uint16, {
+     1: {
+         axisIndex: $52ZIf$uint16,
+-        axisIndex: $52ZIf$uint16,
+         filterRangeMinValue: $1a47b0c45c1c22fe$var$F2DOT14,
+         filterRangeMaxValue: $1a47b0c45c1c22fe$var$F2DOT14
+     }
+diff --git a/node_modules/fontkit/src/tables/variations.js b/node_modules/fontkit/src/tables/variations.js
+--- a/node_modules/fontkit/src/tables/variations.js
++++ b/node_modules/fontkit/src/tables/variations.js
+@@ -46,7 +46,6 @@
+ let ConditionTable = new r.VersionedStruct(r.uint16, {
+   1: {
+     axisIndex: r.uint16,
+-    axisIndex: r.uint16,
+     filterRangeMinValue: F2DOT14,
+     filterRangeMaxValue: F2DOT14
+   }
