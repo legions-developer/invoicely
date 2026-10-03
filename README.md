@@ -59,6 +59,17 @@ For Cloudflare Workers hosting with OpenNext, follow the [deployment guide](docs
    yarn dev
    ```
 
+## Financial Dashboard
+
+Open **Dashboard** in the sidebar to view local invoices and, when signed in, your saved server invoices. Select a currency to see collected, outstanding, and overdue totals, six- or twelve-month trends, and the top five clients by all-time billed amount. Currencies are never combined or converted.
+
+- Collected includes invoices marked `success`. Monthly collections use the recorded payment date; paid invoices without one remain in all-time totals.
+- Outstanding includes `pending`, `error`, and `expired` invoices. Overdue is the subset past its due date or marked `expired`; an invoice due today is not overdue.
+- Refunded invoices are excluded from amounts. Monthly billed amounts use the invoice date, and clients are grouped by normalized name and address.
+- Amounts use decimal arithmetic and round each invoice to two decimals, matching invoice display precision. Partial payments and a payment ledger are not supported.
+
+The dashboard uses existing invoice fields and requires **no new database migration**, environment variable, or dependency.
+
 ## 🛠️ Tech Stack
 
 ### Core Framework

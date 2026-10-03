@@ -1,4 +1,5 @@
 // Follow the naming convention: NameIcon
+export { DashboardIcon } from "./dashboard";
 export { default as SidebarMenuIcon } from "./sidebar-menu";
 export { default as SquareWandSparkleIcon } from "./square-wand-sparkle";
 export { default as ReceiptIcon } from "./recipt";
