@@ -14,9 +14,8 @@ export const serverAuth = betterAuth({
       allowedHosts: [cloudflarePreviewHost],
       protocol: "https" as const,
     },
+    trustedOrigins: () => [`https://${cloudflarePreviewHost}`],
   }),
-  // Keep the resolved primary origin trusted as well as this Worker's previews.
-  trustedOrigins: () => [`https://${cloudflarePreviewHost}`],
   plugins: [
     oAuthProxy({
       // Google uses the existing registered callback; the preview creates its own session.
