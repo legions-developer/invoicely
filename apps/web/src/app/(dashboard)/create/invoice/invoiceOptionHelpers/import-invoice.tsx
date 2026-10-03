@@ -74,7 +74,7 @@ const ImportInvoice = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }
           <span>Import</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-full">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] grid-cols-1 grid-rows-[auto_minmax(0,1fr)] sm:max-w-3xl">
         <DialogHeaderContainer>
           <DialogIcon>
             <InboxArrowDownIcon />
@@ -84,7 +84,7 @@ const ImportInvoice = ({ form }: { form: UseFormReturn<ZodCreateInvoiceSchema> }
             <DialogDescription>Click on an invoice to import the data</DialogDescription>
           </DialogHeader>
         </DialogHeaderContainer>
-        <DialogContentContainer>
+        <DialogContentContainer className="min-w-0 overflow-y-auto">
           <DataTable
             isLoading={isLoading}
             data={data}
