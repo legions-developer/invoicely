@@ -44,7 +44,7 @@ function DashboardView({
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 p-4 sm:p-6 lg:p-8">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b pb-5">
+      <header className="flex flex-wrap items-center justify-between gap-4 pb-5">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-foreground/65 mt-1 text-sm">Collections, outstanding invoices, and client activity.</p>
