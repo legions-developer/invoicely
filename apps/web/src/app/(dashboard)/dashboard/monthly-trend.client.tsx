@@ -1,14 +1,35 @@
 "use client";
 
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDashboardAmount, type DashboardCurrency } from "@/lib/dashboard/financial-dashboard";
+import { EvilComposedChart } from "@/components/evilcharts/charts/recharts-composed-chart";
+import { type ChartConfig } from "@/components/evilcharts/ui/recharts-chart";
+import { ChevronDown } from "lucide-react";
+import { ReferenceLine } from "recharts";
 import Decimal from "decimal.js";
 import { useId } from "react";
+
+const Money = Decimal.clone({ precision: 64, rounding: Decimal.ROUND_HALF_UP });
+
+const chartConfig = {
+  billed: {
+    label: "Billed",
+    colors: {
+      light: ["color-mix(in oklch, var(--light-primary) 52%, var(--background))"],
+      dark: ["color-mix(in oklch, var(--light-primary) 42%, var(--background))"],
+    },
+  },
+  collected: {
+    label: "Collected",
+    colors: { light: ["var(--primary)"], dark: ["var(--light-primary)"] },
+  },
+} satisfies ChartConfig;
 
 function monthLabel(month: string, short = false) {
   const [year, monthNumber] = month.split("-").map(Number);
   return new Intl.DateTimeFormat("en-US", {
     month: short ? "short" : "long",
-    year: short ? "2-digit" : "numeric",
+    ...(short ? {} : { year: "numeric" as const }),
   }).format(new Date(year, monthNumber - 1, 1));
 }
 
@@ -25,138 +46,166 @@ function compactAmount(value: Decimal) {
 }
 
 function MonthlyTrend({ data }: { data: DashboardCurrency }) {
-  const chartId = useId();
-  const values = data.monthly.flatMap((month) => [new Decimal(month.billed), new Decimal(month.collected)]);
-  const maximum = Decimal.max(0, ...values);
-  const minimum = Decimal.min(0, ...values);
-  const range = maximum.minus(minimum);
-  const hasActivity = !range.isZero();
-  const scale = hasActivity ? range : new Decimal(1);
-  const chartTop = 16;
-  const chartHeight = 200;
-  const chartLeft = 64;
-  const plotWidth = 736;
-  const step = plotWidth / data.monthly.length;
-  const barWidth = Math.min(26, step * 0.28);
+  const descriptionId = useId();
+  const values = data.monthly.flatMap((month) => [new Money(month.billed), new Money(month.collected)]);
+  const magnitude = Money.max(1, ...values.map((value) => value.abs()));
+  const hasActivity = values.some((value) => !value.isZero());
+  const hasNegativeValues = values.some((value) => value.isNegative());
+  const hasPositiveValues = values.some((value) => value.isPositive() && !value.isZero());
 
-  function yPosition(value: Decimal) {
-    // Only chart coordinates use JS numbers. Money stays in Decimal/string form.
-    return chartTop + maximum.minus(value).div(scale).toNumber() * chartHeight;
-  }
-
-  const zeroY = hasActivity ? yPosition(new Decimal(0)) : chartTop + chartHeight;
+  // Recharts only receives normalized drawing coordinates. Exact source strings
+  // stay untouched for totals, tooltips, and the accessible figures table.
+  const chartData = data.monthly.map((month) => ({
+    month: month.month,
+    billed: new Money(month.billed).div(magnitude).toNumber(),
+    collected: new Money(month.collected).div(magnitude).toNumber(),
+  }));
+  const periodTotals = {
+    billed: data.monthly.reduce((total, month) => total.plus(month.billed), new Money(0)).toFixed(),
+    collected: data.monthly.reduce((total, month) => total.plus(month.collected), new Money(0)).toFixed(),
+  };
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap gap-5 text-xs">
-        <span className="inline-flex items-center gap-2">
-          <span className="bg-primary/40 size-2.5 rounded-sm" />
-          Billed
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="size-2.5 rounded-sm bg-emerald-600 dark:bg-emerald-400" />
-          Collected
-        </span>
+    <div className="min-w-0">
+      <div className="mb-4 flex flex-wrap gap-x-6 gap-y-2">
+        {(["billed", "collected"] as const).map((series) => (
+          <div key={series} className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+            <div className="text-muted-foreground flex items-center gap-2 text-xs">
+              {series === "billed" ? (
+                <span className="bg-light-primary/60 size-2.5 rounded-[2px]" aria-hidden="true" />
+              ) : (
+                <span className="bg-primary h-0.5 w-3" aria-hidden="true" />
+              )}
+              {chartConfig[series].label}
+              <span className="sr-only">in this period</span>
+            </div>
+            <p className="text-sm font-medium break-words tabular-nums">
+              {formatDashboardAmount(periodTotals[series], data.currency)}
+            </p>
+          </div>
+        ))}
       </div>
-      {!hasActivity ? (
-        <div className="bg-muted/30 text-muted-foreground mb-4 rounded-md p-3 text-xs">
-          No billed or collected amounts in this period.
-        </div>
-      ) : null}
-      <div className="overflow-x-auto">
-        <svg
-          viewBox="0 0 816 264"
-          className="w-full min-w-[540px]"
-          role="img"
-          aria-labelledby={`${chartId}-title`}
-          aria-describedby={`${chartId}-description`}
+      <div
+        className="relative"
+        role="group"
+        aria-label={`Monthly billed and collected amounts in ${data.currency}`}
+        aria-describedby={descriptionId}
+      >
+        <p id={descriptionId} className="sr-only">
+          Comparison for the last {data.monthly.length} months. Use the arrow keys to explore the chart, or open the
+          monthly figures table below for exact amounts.
+        </p>
+        <EvilComposedChart
+          data={chartData}
+          config={chartConfig}
+          xDataKey="month"
+          animationType="none"
+          className="[&_.recharts-surface:focus-visible]:outline-ring aspect-auto h-60 w-full flex-none [&_.recharts-surface:focus-visible]:outline-2 [&_.recharts-surface:focus-visible]:outline-offset-2"
+          chartProps={{
+            margin: { top: 8, right: 8, bottom: 0, left: 0 },
+          }}
         >
-          <title id={`${chartId}-title`}>Monthly billed and collected amounts in {data.currency}</title>
-          <desc id={`${chartId}-description`}>
-            Comparison for the last {data.monthly.length} months. Exact amounts are available in the monthly figures
-            table below.
-          </desc>
-          {[0, 0.5, 1].map((fraction) => {
-            const amount = maximum.minus(scale.times(fraction));
-            const y = chartTop + chartHeight * fraction;
-            return (
-              <g key={fraction}>
-                <line x1={chartLeft} x2="808" y1={y} y2={y} className="stroke-border" strokeDasharray="3 4" />
-                <text x="52" y={y + 4} textAnchor="end" className="fill-muted-foreground font-mono text-[10px]">
-                  {hasActivity ? compactAmount(amount) : fraction === 1 ? "0" : ""}
-                </text>
-              </g>
-            );
-          })}
-          <line x1={chartLeft} x2="808" y1={zeroY} y2={zeroY} className="stroke-border" />
-          {data.monthly.map((month, index) => {
-            const center = chartLeft + step * (index + 0.5);
-            return (
-              <g key={month.month}>
-                {(["billed", "collected"] as const).map((key, seriesIndex) => {
-                  const amount = new Decimal(month[key]);
-                  const valueY = hasActivity ? yPosition(amount) : zeroY;
-                  return (
-                    <rect
-                      key={key}
-                      x={center + (seriesIndex === 0 ? -barWidth - 2 : 2)}
-                      y={Math.min(zeroY, valueY)}
-                      width={barWidth}
-                      height={Math.abs(valueY - zeroY)}
-                      rx="3"
-                      className={key === "billed" ? "fill-primary/40" : "fill-emerald-600 dark:fill-emerald-400"}
-                    >
-                      <title>
-                        {monthLabel(month.month)} — {key === "billed" ? "Billed" : "Collected"}:{" "}
-                        {formatDashboardAmount(month[key], data.currency)}
-                      </title>
-                    </rect>
-                  );
-                })}
-                <text x={center} y="246" textAnchor="middle" className="fill-muted-foreground text-[10px]">
-                  {monthLabel(month.month, true)}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+          <EvilComposedChart.Grid stroke="var(--border)" strokeDasharray="3 4" />
+          <EvilComposedChart.XAxis
+            dataKey="month"
+            tickFormatter={(month: string) => monthLabel(month, true)}
+            tickMargin={12}
+            minTickGap={20}
+            height={34}
+            tick={{ fontSize: 11 }}
+          />
+          <EvilComposedChart.YAxis
+            width={52}
+            tickCount={5}
+            tickMargin={10}
+            tick={{ fontSize: 10 }}
+            tickFormatter={(value: number) => compactAmount(magnitude.times(value))}
+            domain={hasActivity ? [hasNegativeValues ? "auto" : 0, hasPositiveValues ? "auto" : 0] : [0, 1]}
+            ticks={hasActivity ? undefined : [0]}
+          />
+          {hasNegativeValues ? <ReferenceLine y={0} stroke="var(--muted-foreground)" strokeOpacity={0.45} /> : null}
+          <EvilComposedChart.Tooltip
+            isAnimationActive={false}
+            content={({ active, label }) => {
+              const month = active ? data.monthly.find((entry) => entry.month === String(label)) : undefined;
+              if (!month) return null;
+
+              return (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="bg-popover text-popover-foreground grid min-w-52 gap-3 rounded-md border px-3 py-3 text-xs shadow-md"
+                >
+                  <p className="font-medium">{monthLabel(month.month)}</p>
+                  <dl className="grid gap-2">
+                    {(["billed", "collected"] as const).map((series) => (
+                      <div key={series} className="flex items-center justify-between gap-5">
+                        <dt className="text-muted-foreground flex items-center gap-2">
+                          <span
+                            className="size-2 rounded-[2px]"
+                            style={{ background: `var(--color-${series}-0)` }}
+                            aria-hidden="true"
+                          />
+                          {chartConfig[series].label}
+                        </dt>
+                        <dd className="font-medium tabular-nums">
+                          {formatDashboardAmount(month[series], data.currency)}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              );
+            }}
+          />
+          <EvilComposedChart.Bar dataKey="billed" radius={2} barProps={{ maxBarSize: 32 }} />
+          <EvilComposedChart.Line
+            dataKey="collected"
+            curveType="linear"
+            strokeVariant="solid"
+            lineProps={{ stroke: "var(--color-collected-0)" }}
+          >
+            <EvilComposedChart.ActiveDot variant="colored-border" />
+          </EvilComposedChart.Line>
+        </EvilComposedChart>
+        {!hasActivity ? (
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center px-12 pb-8">
+            <p className="bg-background/95 text-muted-foreground rounded px-3 py-2 text-center text-xs">
+              No billed or collected amounts in this period.
+            </p>
+          </div>
+        ) : null}
       </div>
-      <details className="mt-3 border-t pt-4">
-        <summary className="focus-visible:ring-ring w-fit cursor-pointer rounded-sm text-xs font-medium outline-none focus-visible:ring-2">
-          View monthly figures
+      <details className="group mt-4 border-t pt-3">
+        <summary className="text-muted-foreground hover:text-foreground focus-visible:ring-ring flex w-fit cursor-pointer list-none items-center gap-1.5 rounded-sm text-xs outline-none focus-visible:ring-2 [&::-webkit-details-marker]:hidden">
+          <ChevronDown className="size-3 group-open:rotate-180" aria-hidden="true" />
+          Monthly figures
         </summary>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full text-left text-xs tabular-nums">
-            <caption className="sr-only">Monthly figures in {data.currency}</caption>
-            <thead className="text-muted-foreground">
-              <tr>
-                <th scope="col" className="py-2 font-medium">
-                  Month
-                </th>
-                <th scope="col" className="px-3 py-2 text-right font-medium">
+        <div className="mt-3">
+          <Table className="tabular-nums">
+            <TableCaption className="sr-only">Monthly figures in {data.currency}</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead scope="col">Month</TableHead>
+                <TableHead scope="col" className="text-right">
                   Billed
-                </th>
-                <th scope="col" className="py-2 text-right font-medium">
+                </TableHead>
+                <TableHead scope="col" className="text-right">
                   Collected
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {data.monthly.map((month) => (
-                <tr key={month.month}>
-                  <th scope="row" className="py-3 font-normal whitespace-nowrap">
-                    {monthLabel(month.month)}
-                  </th>
-                  <td className="px-3 py-3 text-right whitespace-nowrap">
-                    {formatDashboardAmount(month.billed, data.currency)}
-                  </td>
-                  <td className="py-3 text-right whitespace-nowrap">
-                    {formatDashboardAmount(month.collected, data.currency)}
-                  </td>
-                </tr>
+                <TableRow key={month.month}>
+                  <TableHead scope="row">{monthLabel(month.month)}</TableHead>
+                  <TableCell className="text-right">{formatDashboardAmount(month.billed, data.currency)}</TableCell>
+                  <TableCell className="text-right">{formatDashboardAmount(month.collected, data.currency)}</TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </details>
     </div>
