@@ -67,7 +67,7 @@ The Yarn patch in `.yarn/patches/braces-npm-3.0.3-security.patch` mitigates [GHS
 
 The `node-gyp` resolution removes the vulnerable `make-fetch-happen` → `http-cache-semantics` dependency chain. Retain Node.js 22.9.0 or newer for this build tool.
 
-The Sentry resolution pins `@sentry/nextjs@10.76.0` to `.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch`. Its server entry imports a build helper that eagerly calls `createRequire(__filename)`; OpenNext's Worker bundle supplies an empty filename, causing instrumentation startup and auth requests to fail. The patch defers that call until the build helper is used. Remove the patch and resolution when an upstream fix passes `yarn test:security` and auth requests against the built Worker, including `/api/auth/ok` and an unauthenticated `/api/auth/get-session`.
+The Sentry resolution pins `@sentry/nextjs@10.76.0` to `.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch`. Its server entry imports a build helper that eagerly calls `createRequire(__filename)`; OpenNext's Worker bundle supplies an empty filename, causing instrumentation startup and auth requests to fail. The patch defers that call until the build helper is used. Remove the patch, resolution, and `sentryRuntimePatch` cache dependency in `apps/web/next.config.ts` when an upstream fix passes `yarn test:security` and auth requests against the built Worker, including `/api/auth/ok` and an unauthenticated `/api/auth/get-session`.
 
 ## Financial Dashboard
 
