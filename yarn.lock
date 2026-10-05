@@ -6132,7 +6132,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/nextjs@npm:^10.76.0":
+"@sentry/nextjs@npm:10.76.0":
   version: 10.76.0
   resolution: "@sentry/nextjs@npm:10.76.0"
   dependencies:
@@ -6153,6 +6153,30 @@ __metadata:
   peerDependencies:
     next: ^13.2.0 || ^14.0 || ^15.0.0-rc.0 || ^16.0.0-0
   checksum: 10c0/a991bb06fc08e7b6d7f169bcc2f3ad7ae182f009ef9b98d1b4be3b23661e750fefd84fc7d58916e5e53e8f42cf0ae8ced9c00520207745f3614ef1c1ff8d3de4
+  languageName: node
+  linkType: hard
+
+"@sentry/nextjs@patch:@sentry/nextjs@npm%3A10.76.0#./.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch::locator=invoicely%40workspace%3A.":
+  version: 10.76.0
+  resolution: "@sentry/nextjs@patch:@sentry/nextjs@npm%3A10.76.0#./.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch::version=10.76.0&hash=3718fa&locator=invoicely%40workspace%3A."
+  dependencies:
+    "@opentelemetry/api": "npm:^1.9.1"
+    "@rollup/plugin-commonjs": "npm:28.0.1"
+    "@sentry/browser-utils": "npm:10.76.0"
+    "@sentry/bundler-plugin-core": "npm:^5.3.0"
+    "@sentry/conventions": "npm:^0.16.0"
+    "@sentry/core": "npm:10.76.0"
+    "@sentry/node": "npm:10.76.0"
+    "@sentry/opentelemetry": "npm:10.76.0"
+    "@sentry/react": "npm:10.76.0"
+    "@sentry/server-utils": "npm:10.76.0"
+    "@sentry/vercel-edge": "npm:10.76.0"
+    "@sentry/webpack-plugin": "npm:^5.3.0"
+    rollup: "npm:^4.60.3"
+    stacktrace-parser: "npm:^0.1.11"
+  peerDependencies:
+    next: ^13.2.0 || ^14.0 || ^15.0.0-rc.0 || ^16.0.0-0
+  checksum: 10c0/25c183aec6db12cd96bc0fc85ddb1a5dc9c3935d56b43d011e576137735fc25feea7296a26d065a801faa708948fc7c35255583d727f383156f0ffaedaf87b26
   languageName: node
   linkType: hard
 

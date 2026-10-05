@@ -25,7 +25,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "test:security": "node --test scripts/security-dependencies.test.mjs scripts/security-braces.test.mjs",
+    "test:security": "node --test scripts/security-dependencies.test.mjs scripts/security-braces.test.mjs scripts/sentry-worker-compat.test.mjs",
     "db:generate": "dotenv -- turbo run db:generate",
     "db:migrate": "dotenv -- turbo run db:migrate",
     "db:push": "dotenv -- turbo run db:push",
@@ -82,6 +82,7 @@
     "remark-mdx-frontmatter/toml": "^4.3.0",
     "mdx-bundler/uuid": "^11.1.1",
     "node-gyp": "12.4.0",
-    "braces": "patch:braces@npm%3A3.0.3#./.yarn/patches/braces-npm-3.0.3-security.patch"
+    "braces": "patch:braces@npm%3A3.0.3#./.yarn/patches/braces-npm-3.0.3-security.patch",
+    "@sentry/nextjs": "patch:@sentry/nextjs@npm%3A10.76.0#./.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch"
   }
 }
