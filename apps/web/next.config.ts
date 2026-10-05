@@ -1,5 +1,5 @@
 import { withContentCollections } from "@content-collections/next";
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
   },
   // This is required to support PostHog trailing slash API requests
   skipTrailingSlashRedirect: true,
-  serverExternalPackages: ["@react-pdf/renderer", "jotai-devtools"],
+  serverExternalPackages: ["@react-pdf/renderer"],
   productionBrowserSourceMaps: true,
   devIndicators: false,
   reactStrictMode: true,
@@ -73,7 +73,11 @@ const configWithSentry = withSentryConfig(nextConfig, {
   // tunnelRoute: "/monitoring",
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
-  disableLogger: true,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+  },
   telemetry: false,
 });
 

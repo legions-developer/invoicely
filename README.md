@@ -15,7 +15,7 @@ For Cloudflare Workers hosting with OpenNext, follow the [deployment guide](docs
 
 ### Prerequisites
 
-- **Node.js**: Version 22 or higher
+- **Node.js**: Version 22.9.0 or higher
 - **Yarn**: Version 4.9.1 or higher (automatically managed via `packageManager` field)
 - **PostgreSQL**: Database for storing application data
 
@@ -58,6 +58,14 @@ For Cloudflare Workers hosting with OpenNext, follow the [deployment guide](docs
    ```bash
    yarn dev
    ```
+
+## Dependency security checks
+
+Run `yarn test:security` to check dependency compatibility and the local security patch. Run `yarn npm audit --all --recursive --no-deprecations` to check published vulnerability advisories across all workspaces.
+
+The Yarn patch in `.yarn/patches/braces-npm-3.0.3-security.patch` mitigates [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) by rejecting brace/parenthesis and AST nesting beyond 100 levels. No upstream patched release is available as of October 5, 2026, so version-based scanners can still flag `braces@3.0.3`. Yarn's audit returns no advisories for this patched tree; that result must be paired with the patch regression tests. Keep the upstream warning visible and replace the patch with a fixed release when available.
+
+The `node-gyp` resolution removes the vulnerable `make-fetch-happen` → `http-cache-semantics` dependency chain. Retain Node.js 22.9.0 or newer for this build tool.
 
 ## Financial Dashboard
 

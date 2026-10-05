@@ -6,7 +6,7 @@ The application continues to use Neon PostgreSQL and the existing S3-compatible 
 
 ## Local setup
 
-Use Node.js 22 or newer and Yarn 4.9.1, as selected by the root `packageManager` field. Install from the repository root so workspace packages and the repository's dependency patch are included:
+Use Node.js 22.9.0 or newer and Yarn 4.9.1, as selected by the root `packageManager` field. Install from the repository root so workspace packages and the repository's dependency patches are included:
 
 ```sh
 corepack enable
@@ -77,7 +77,7 @@ yarn workspace web wrangler r2 bucket create invoicely-next-cache
 
 ## Workers Builds
 
-Connect the repository to Workers Builds. Use the repository root (`/`) as the root directory so Yarn sees `yarn.lock` and all workspaces. Configure Node.js 22 or newer and Yarn 4.9.1, and install with `yarn install --immutable`.
+Connect the repository to Workers Builds. Use the repository root (`/`) as the root directory so Yarn sees `yarn.lock` and all workspaces. Configure Node.js 22.9.0 or newer and Yarn 4.9.1, and install with `yarn install --immutable`.
 
 | Setting        | Production                             | Preview                                        |
 | -------------- | -------------------------------------- | ---------------------------------------------- |

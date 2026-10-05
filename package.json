@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.9.0"
   },
   "packageManager": "yarn@4.9.1",
   "workspaces": [
@@ -25,6 +25,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
+    "test:security": "node --test scripts/security-dependencies.test.mjs scripts/security-braces.test.mjs",
     "db:generate": "dotenv -- turbo run db:generate",
     "db:migrate": "dotenv -- turbo run db:migrate",
     "db:push": "dotenv -- turbo run db:push",
@@ -58,26 +59,29 @@
     "effect": "^3.21.2"
   },
   "resolutions": {
-    "fast-xml-parser": "^4.5.4",
     "handlebars": "^4.7.9",
     "basic-ftp": "^5.3.1",
-    "form-data": "^4.0.4",
-    "axios": "^1.16.1",
+    "form-data": "^4.0.6",
+    "axios": "^1.20.0",
     "follow-redirects": "^1.16.0",
     "kysely": "^0.28.17",
     "defu": "^6.1.7",
-    "postcss": "^8.5.15",
-    "tar": "^7.5.8",
+    "postcss": "^8.5.23",
+    "tar": "^7.5.21",
     "tmp": "^0.2.6",
     "flatted": "^3.4.2",
     "preact": "^10.26.10",
     "rollup": "^4.59.0",
-    "immutable": "^4.3.8",
     "mdast-util-to-hast": "^13.2.1",
     "serialize-javascript": "^7.0.5",
     "@eslint/plugin-kit": "^0.3.4",
     "playwright": "^1.55.1",
     "tar-fs": "^2.1.4",
-    "yaml": "^2.8.3"
+    "yaml": "^2.8.3",
+    "@esbuild-kit/core-utils/esbuild": "^0.25.0",
+    "remark-mdx-frontmatter/toml": "^4.3.0",
+    "mdx-bundler/uuid": "^11.1.1",
+    "node-gyp": "12.4.0",
+    "braces": "patch:braces@npm%3A3.0.3#./.yarn/patches/braces-npm-3.0.3-security.patch"
   }
 }
