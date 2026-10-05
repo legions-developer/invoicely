@@ -126,15 +126,23 @@ export function NavigationUser() {
 const LoginButtonModal = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [loginStatus, setLoginStatus] = useState<"idle" | "pending" | "error">("idle");
 
-  const handleLogin = () => {
-    setIsDisabled(true);
+  const handleLogin = async () => {
+    setLoginStatus("pending");
 
-    clientAuth.signIn.social({
-      provider: "google",
-      callbackURL: pathname,
-    });
+    try {
+      const { error } = await clientAuth.signIn.social({
+        provider: "google",
+        callbackURL: pathname,
+      });
+
+      if (error) {
+        setLoginStatus("error");
+      }
+    } catch {
+      setLoginStatus("error");
+    }
   };
 
   return (
@@ -153,11 +161,18 @@ const LoginButtonModal = () => {
               Login with your google account to continue
             </DialogDescription>
           </div>
-          <button disabled={isDisabled} className="mt-2 cursor-pointer" onClick={handleLogin}>
+          <button
+            type="button"
+            disabled={loginStatus === "pending"}
+            aria-busy={loginStatus === "pending"}
+            aria-label="Google Login"
+            className="mt-2 cursor-pointer disabled:cursor-wait"
+            onClick={handleLogin}
+          >
             <Image
               className="dark:hidden"
               src="/social/google-login-btn-light.svg"
-              alt="Google Login"
+              alt=""
               width={200}
               height={40}
               priority
@@ -165,12 +180,17 @@ const LoginButtonModal = () => {
             <Image
               className="hidden dark:block"
               src="/social/google-login-btn-dark.svg"
-              alt="Google Login"
+              alt=""
               width={200}
               height={40}
               priority
             />
           </button>
+          {loginStatus === "error" && (
+            <p role="alert" className="text-destructive text-sm">
+              Couldn&apos;t start Google sign-in. Please try again.
+            </p>
+          )}
         </DialogContentContainer>
       </DialogContent>
     </Dialog>

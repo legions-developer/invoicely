@@ -61,11 +61,13 @@ For Cloudflare Workers hosting with OpenNext, follow the [deployment guide](docs
 
 ## Dependency security checks
 
-Run `yarn test:security` to check dependency compatibility and the local security patch. Run `yarn npm audit --all --recursive --no-deprecations` to check published vulnerability advisories across all workspaces.
+Run `yarn test:security` to check dependency compatibility and the local patches. Run `yarn npm audit --all --recursive --no-deprecations` to check published vulnerability advisories across all workspaces.
 
 The Yarn patch in `.yarn/patches/braces-npm-3.0.3-security.patch` mitigates [GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) by rejecting brace/parenthesis and AST nesting beyond 100 levels. No upstream patched release is available as of October 5, 2026, so version-based scanners can still flag `braces@3.0.3`. Yarn's audit returns no advisories for this patched tree; that result must be paired with the patch regression tests. Keep the upstream warning visible and replace the patch with a fixed release when available.
 
 The `node-gyp` resolution removes the vulnerable `make-fetch-happen` → `http-cache-semantics` dependency chain. Retain Node.js 22.9.0 or newer for this build tool.
+
+The Sentry resolution pins `@sentry/nextjs@10.76.0` to `.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch`. Its server entry imports a build helper that eagerly calls `createRequire(__filename)`; OpenNext's Worker bundle supplies an empty filename, causing instrumentation startup and auth requests to fail. The patch defers that call until the build helper is used. Remove the patch, resolution, and `sentryRuntimePatch` cache dependency in `apps/web/next.config.ts` when an upstream fix passes `yarn test:security` and auth requests against the built Worker, including `/api/auth/ok` and an unauthenticated `/api/auth/get-session`.
 
 ## Financial Dashboard
 

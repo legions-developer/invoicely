@@ -1,9 +1,21 @@
 import { withContentCollections } from "@content-collections/next";
 import { withSentryConfig } from "@sentry/nextjs/config";
 import type { NextConfig } from "next";
+import { resolve } from "node:path";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  webpack(config) {
+    if (config.cache && typeof config.cache === "object") {
+      // Webpack treats node_modules as immutable by package version. Track the
+      // same-version Yarn patch so restored build caches cannot retain the crash.
+      config.cache.buildDependencies = {
+        ...config.cache.buildDependencies,
+        sentryRuntimePatch: [resolve(__dirname, "../../.yarn/patches/sentry-nextjs-npm-10.76.0-runtime.patch")],
+      };
+    }
+    return config;
+  },
   async headers() {
     return [
       {
